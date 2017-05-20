@@ -4,15 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-
-import de.zabuza.treeflood.tree.ITree;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import de.zabuza.treeflood.tree.ITreeNode;
-import de.zabuza.treeflood.tree.RandomTreeGenerator;
-import de.zabuza.treeflood.tree.util.HierarchicalTreeStringifier;
-import de.zabuza.treeflood.tree.util.ITreeStringifier;
-import de.zabuza.treeflood.util.MapUtil;
 
 /**
  * Algorithm that distributedly explores a given tree. The distributed processes
@@ -92,7 +86,15 @@ public final class LocalStorageExploration {
 	 *         continued anymore, <tt>false</tt> otherwise
 	 */
 	public boolean exploreOneStep() {
-		return true;
+		// One step always consists of three pulses that execute the tree stages
+		// MOVE, WRITE, READ
+		for (int i = 0; i < 3; i++) {
+			// Stop if all robots have finished after a pulse
+			if (pulse()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -102,5 +104,43 @@ public final class LocalStorageExploration {
 	 */
 	public List<Robot> getRobots() {
 		return Collections.unmodifiableList(this.mRobots);
+	}
+
+	/**
+	 * Pulses all robots distributedly with groups of {@link Thread}s. This
+	 * demands the robots to execute one single step.
+	 * 
+	 * @return <tt>True</tt> if all robots have stopped because they finished
+	 *         the algorithm, <tt>false<tt> otherwise
+	 */
+	private boolean pulse() {
+		final ExecutorService executor = Executors.newFixedThreadPool(this.mRobots.size());
+		LinkedList<RobotPulse> pulses = new LinkedList<>();
+
+		for (final Robot robot : this.mRobots) {
+			final RobotPulse pulse = new RobotPulse(robot);
+			pulses.add(pulse);
+			executor.execute(pulse);
+		}
+
+		executor.shutdown();
+		// Wait until all threads have finished
+		while (!executor.isTerminated()) {
+			try {
+				Thread.sleep(5);
+			} catch (final InterruptedException e) {
+				// Just ignore the interrupt and continue
+			}
+		}
+
+		// Fetch the result of the pulse
+		for (final RobotPulse pulse : pulses) {
+			if (!pulse.hasRobotStopped()) {
+				// Found a robot that has not stopped yet
+				return false;
+			}
+		}
+		// All robots have stopped
+		return true;
 	}
 }

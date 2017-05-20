@@ -19,7 +19,7 @@ public final class LocalStorage {
 	/**
 	 * Data-structure that maps nodes to their local storage.
 	 */
-	private final Map<ITreeNode, List<String>> mNodeToStorage;
+	private final Map<ITreeNode, List<Information>> mNodeToStorage;
 
 	/**
 	 * Creates a new empty local storage.
@@ -35,21 +35,21 @@ public final class LocalStorage {
 	 *            The node to read from
 	 * @return The storage of the given node as unmodifiable list
 	 */
-	public List<String> read(final ITreeNode node) {
+	public List<Information> read(final ITreeNode node) {
 		return Collections.unmodifiableList(getWithCreateOnInexistent(node));
 	}
 
 	/**
 	 * Writes to the storage of the given node.
 	 * 
-	 * @param content
-	 *            The content to write
+	 * @param information
+	 *            The information to write
 	 * @param node
 	 *            The node to write to
 	 */
-	public void write(final String content, final ITreeNode node) {
-		List<String> storage = getWithCreateOnInexistent(node);
-		storage.add(content);
+	public void write(final Information information, final ITreeNode node) {
+		List<Information> storage = getWithCreateOnInexistent(node);
+		storage.add(information);
 	}
 
 	/**
@@ -61,12 +61,12 @@ public final class LocalStorage {
 	 * @return The storage of the given node. The returned object is backed with
 	 *         the storage.
 	 */
-	private List<String> getWithCreateOnInexistent(final ITreeNode node) {
-		final List<String> storage;
+	private List<Information> getWithCreateOnInexistent(final ITreeNode node) {
+		final List<Information> storage;
 
-		final List<String> currentStorage = this.mNodeToStorage.get(node);
+		final List<Information> currentStorage = this.mNodeToStorage.get(node);
 		if (currentStorage == null) {
-			final List<String> nextStorage = new LinkedList<>();
+			final List<Information> nextStorage = new LinkedList<>();
 			this.mNodeToStorage.put(node, nextStorage);
 			storage = nextStorage;
 		} else {
