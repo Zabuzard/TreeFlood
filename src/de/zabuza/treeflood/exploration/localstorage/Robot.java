@@ -1,5 +1,7 @@
 package de.zabuza.treeflood.exploration.localstorage;
 
+import java.util.List;
+
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
@@ -11,16 +13,16 @@ import de.zabuza.treeflood.tree.ITreeNode;
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
-public final class Robot {
+public final class Robot implements Comparable<Robot> {
 	/**
 	 * The current node the robot is in.
 	 */
 	private ITreeNode mCurrentNode;
 	/**
-	 * The object that wants to receive events each time a new edge was explored
-	 * by this robot.
+	 * A list of objects that want to receive events each time a new edge was
+	 * explored by this robot.
 	 */
-	private final IExploreEdgeReceiver mExploreEdgeReceiver;
+	private final List<IExploreEdgeListener> mExploreEdgeListeners;
 	/**
 	 * The unique id of this robot.
 	 */
@@ -29,6 +31,11 @@ public final class Robot {
 	 * The object that provides the local storage of nodes.
 	 */
 	private final LocalStorage mLocalStorage;
+	/**
+	 * A list of objects that want to receive events each time this robot moves
+	 * to another node.
+	 */
+	private final List<IRobotMovedListener> mRobotMovedListeners;
 
 	/**
 	 * Creates a new robot with a unique id starting at the given node.
@@ -39,15 +46,48 @@ public final class Robot {
 	 *            The node the robot starts in
 	 * @param localStorage
 	 *            The object that provides the local storage of nodes
-	 * @param exploreEdgeReceiver
-	 *            The object that wants to receive events each time a new edge
-	 *            was explored by this robot
+	 * @param exploreEdgeListeners
+	 *            A list of objects that want to receive events each time a new
+	 *            edge was explored by this robot
+	 * @param robotMovedListeners
+	 *            A list of objects that want to receive events each time this
+	 *            robot moves to another node
 	 */
 	public Robot(final int id, final ITreeNode startingNode, final LocalStorage localStorage,
-			IExploreEdgeReceiver exploreEdgeReceiver) {
+			final List<IExploreEdgeListener> exploreEdgeListeners,
+			final List<IRobotMovedListener> robotMovedListeners) {
 		this.mId = id;
 		this.mCurrentNode = startingNode;
 		this.mLocalStorage = localStorage;
-		this.mExploreEdgeReceiver = exploreEdgeReceiver;
+		this.mExploreEdgeListeners = exploreEdgeListeners;
+		this.mRobotMovedListeners = robotMovedListeners;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(final Robot other) {
+		return Integer.compare(this.mId, other.getId());
+	}
+
+	/**
+	 * Gets the unique id of this robot.
+	 * 
+	 * @return The unique id of this robot
+	 */
+	public int getId() {
+		return this.mId;
+	}
+
+	/**
+	 * Gets the tree node the robot is currently located at.
+	 * 
+	 * @return The tree node the robot is currently located at
+	 */
+	public ITreeNode getLocation() {
+		return this.mCurrentNode;
 	}
 }

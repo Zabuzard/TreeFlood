@@ -2,10 +2,17 @@ package de.zabuza.treeflood.exploration.localstorage;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
+import de.zabuza.treeflood.tree.ITree;
 import de.zabuza.treeflood.tree.ITreeNode;
-import de.zabuza.treeflood.tree.Tree;
+import de.zabuza.treeflood.tree.RandomTreeGenerator;
+import de.zabuza.treeflood.tree.util.HierarchicalTreeStringifier;
+import de.zabuza.treeflood.tree.util.ITreeStringifier;
+import de.zabuza.treeflood.util.MapUtil;
 
 /**
  * Algorithm that distributedly explores a given tree. The distributed processes
@@ -22,14 +29,11 @@ public final class LocalStorageExploration {
 	 * The object that provides the local storage for nodes.
 	 */
 	private final LocalStorage mLocalStorage;
+
 	/**
 	 * The list of robots.
 	 */
 	private final ArrayList<Robot> mRobots;
-	/**
-	 * Builder that is used by the robots to build the exploration tree.
-	 */
-	private final ExplorationTreeBuilder mTreeBuilder;
 
 	/**
 	 * Creates a new instance of a local storage exploration algorithm ready to
@@ -41,19 +45,38 @@ public final class LocalStorageExploration {
 	 *            The amount of robots to use for the distributed exploration
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots) {
+		this(root, amountOfRobots, Collections.emptyList(), Collections.emptyList());
+	}
+
+	/**
+	 * Creates a new instance of a local storage exploration algorithm ready to
+	 * explore the tree starting at the given root.
+	 * 
+	 * @param root
+	 *            The root of the tree to explore
+	 * @param amountOfRobots
+	 *            The amount of robots to use for the distributed exploration
+	 * @param exploreEdgeListeners
+	 *            A list of objects that want to receive events each time a new
+	 *            edge was explored by a robot
+	 * @param robotMovedListeners
+	 *            A list of objects that want to receive events each time a
+	 *            robot moves to another node
+	 */
+	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots,
+			final List<IExploreEdgeListener> exploreEdgeListeners,
+			final List<IRobotMovedListener> robotMovedListeners) {
 		this.mLocalStorage = new LocalStorage();
-		this.mTreeBuilder = new ExplorationTreeBuilder(root);
 		this.mRobots = new ArrayList<>(amountOfRobots);
 
 		// Create robots
 		for (int i = 0; i < amountOfRobots; i++) {
-			this.mRobots.add(new Robot(i, root, this.mLocalStorage, this.mTreeBuilder));
+			this.mRobots.add(new Robot(i, root, this.mLocalStorage, exploreEdgeListeners, robotMovedListeners));
 		}
 	}
 
 	/**
-	 * Executes the algorithm and explores the tree. The resulting exploration
-	 * tree can be accessed with {@link #getExplorationTree()}.
+	 * Executes the algorithm and explores the tree.
 	 */
 	public void explore() {
 		boolean finished = false;
@@ -70,15 +93,6 @@ public final class LocalStorageExploration {
 	 */
 	public boolean exploreOneStep() {
 		return true;
-	}
-
-	/**
-	 * Gets the current exploration tree.
-	 * 
-	 * @return The current exploration tree
-	 */
-	public Tree getExplorationTree() {
-		return this.mTreeBuilder.getExploredTree();
 	}
 
 	/**

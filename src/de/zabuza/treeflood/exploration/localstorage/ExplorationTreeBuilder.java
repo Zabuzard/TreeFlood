@@ -1,8 +1,10 @@
 package de.zabuza.treeflood.exploration.localstorage;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.zabuza.treeflood.tree.ITree;
 import de.zabuza.treeflood.tree.ITreeNode;
 import de.zabuza.treeflood.tree.Tree;
 
@@ -13,12 +15,12 @@ import de.zabuza.treeflood.tree.Tree;
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
-public final class ExplorationTreeBuilder implements IExploreEdgeReceiver {
+public final class ExplorationTreeBuilder implements IExploreEdgeListener {
 	/**
 	 * The exploration tree. It is not backed to the original nodes of the tree
 	 * that is being explored.
 	 */
-	private final Tree mExploredTree;
+	private final ITree mExploredTree;
 	/**
 	 * Data-structure that maps the original nodes to the nodes of the
 	 * exploration tree.
@@ -39,18 +41,32 @@ public final class ExplorationTreeBuilder implements IExploreEdgeReceiver {
 		this.mOriginalToExploredNode.put(root, this.mExploredTree.getRoot());
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Explores the given edge by adding it to the exploration tree.
 	 * 
-	 * @see
-	 * de.zabuza.treeflood.exploration.localstorage.IExploreEdgeReceiver#addEdge
-	 * (de.zabuza.treeflood.tree.ITreeNode, de.zabuza.treeflood.tree.ITreeNode)
+	 * @param parent
+	 *            The parent node of the edge which must be contained in the
+	 *            tree already
+	 * @param child
+	 *            The child node of the edge which must not be contained in the
+	 *            tree already
 	 */
-	@Override
 	public void addEdge(final ITreeNode parent, final ITreeNode child) {
 		final ITreeNode exploredParent = this.mOriginalToExploredNode.get(parent);
 		final ITreeNode exploredChild = this.mExploredTree.addNode(exploredParent);
 		this.mOriginalToExploredNode.put(child, exploredChild);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.zabuza.treeflood.exploration.localstorage.IExploreEdgeReceiver#
+	 * exploredEdge(de.zabuza.treeflood.tree.ITreeNode,
+	 * de.zabuza.treeflood.tree.ITreeNode)
+	 */
+	@Override
+	public void exploredEdge(ITreeNode parent, ITreeNode child) {
+		addEdge(parent, child);
 	}
 
 	/**
@@ -59,7 +75,17 @@ public final class ExplorationTreeBuilder implements IExploreEdgeReceiver {
 	 * 
 	 * @return The exploration tree
 	 */
-	public Tree getExploredTree() {
+	public ITree getExploredTree() {
 		return this.mExploredTree;
+	}
+
+	/**
+	 * Gets an unmodifiable map of the node aliases. It maps the original nodes
+	 * to the alias nodes of the exploration tree.
+	 * 
+	 * @return An unmodifiable map of the node aliases
+	 */
+	public Map<ITreeNode, ITreeNode> getNodeAlias() {
+		return Collections.unmodifiableMap(this.mOriginalToExploredNode);
 	}
 }

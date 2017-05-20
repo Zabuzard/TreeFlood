@@ -3,6 +3,8 @@ package de.zabuza.treeflood.tree;
 import java.util.ArrayList;
 import java.util.Random;
 
+import de.zabuza.treeflood.tree.util.HierarchicalTreeStringifier;
+import de.zabuza.treeflood.tree.util.ITreeStringifier;
 import de.zabuza.treeflood.tree.util.UniqueIdTreeNodeStringifier;
 
 /**
@@ -20,14 +22,14 @@ public final class RandomTreeGenerator {
 	 */
 	public static void main(final String[] args) {
 		final RandomTreeGenerator generator = new RandomTreeGenerator(10);
-		final Tree tree = generator.generateRandomTree();
+		final ITree tree = generator.generateRandomTree();
 		final long seed = generator.getSeedOfLastGeneration().longValue();
 
-		tree.setNodeStringifier(new UniqueIdTreeNodeStringifier());
+		final ITreeStringifier treeStringifier = new HierarchicalTreeStringifier(new UniqueIdTreeNodeStringifier());
 
 		System.out.println("Seed is: " + seed);
 		System.out.println("Tree is: ");
-		System.out.println(tree);
+		System.out.println(treeStringifier.treeToString(tree));
 	}
 
 	/**
@@ -62,7 +64,7 @@ public final class RandomTreeGenerator {
 	 * 
 	 * @return The generated random tree
 	 */
-	public Tree generateRandomTree() {
+	public ITree generateRandomTree() {
 		return generateRandomTree(System.currentTimeMillis());
 	}
 
@@ -73,7 +75,7 @@ public final class RandomTreeGenerator {
 	 *            The seed to use for generation
 	 * @return The generated random tree
 	 */
-	public Tree generateRandomTree(final long seed) {
+	public ITree generateRandomTree(final long seed) {
 		final Random random = new Random(seed);
 		this.mLastSeed = Long.valueOf(seed);
 
