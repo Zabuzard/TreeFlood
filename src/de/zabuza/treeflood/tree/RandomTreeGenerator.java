@@ -19,7 +19,7 @@ public final class RandomTreeGenerator {
 	 *            Not supported
 	 */
 	public static void main(final String[] args) {
-		final RandomTreeGenerator generator = new RandomTreeGenerator(100);
+		final RandomTreeGenerator generator = new RandomTreeGenerator(10);
 		final Tree tree = generator.generateRandomTree();
 		final long seed = generator.getSeedOfLastGeneration().longValue();
 

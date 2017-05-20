@@ -12,7 +12,7 @@ import de.zabuza.treeflood.tree.ITreeNode;
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
-public class UniqueIdTreeNodeStringifier implements ITreeNodeStringifier {
+public final class UniqueIdTreeNodeStringifier implements ITreeNodeStringifier {
 
 	/**
 	 * A data-structure that maps nodes to their unique id.

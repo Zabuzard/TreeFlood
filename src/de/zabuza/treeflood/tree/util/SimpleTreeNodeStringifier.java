@@ -9,7 +9,7 @@ import de.zabuza.treeflood.tree.ITreeNode;
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
-public class SimpleTreeNodeStringifier implements ITreeNodeStringifier {
+public final class SimpleTreeNodeStringifier implements ITreeNodeStringifier {
 
 	/**
 	 * Returns the {@link ITreeNode#toString()} representation of the given
