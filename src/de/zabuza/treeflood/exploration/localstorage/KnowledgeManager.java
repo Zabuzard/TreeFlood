@@ -8,13 +8,14 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage;
 import de.zabuza.treeflood.tree.ITreeNode;
 import de.zabuza.treeflood.util.NestedMap2;
 
 /**
  * Manages the knowledge of nodes for a given {@link Robot}. It offers method to
  * construct knowledge for a given round out of all information available at the
- * {@link LocalStorage} of a node. It uses caching to speed up the process when
+ * {@link ILocalStorage} of a node. It uses caching to speed up the process when
  * visiting a node again.
  * 
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
@@ -31,7 +32,7 @@ public final class KnowledgeManager {
 	 * @param node
 	 *            The node to build the initial knowledge of
 	 * @param localStorage
-	 *            The information available at the {@link LocalStorage} of the
+	 *            The information available at the {@link ILocalStorage} of the
 	 *            given node
 	 * @return The initial knowledge available at the given node. Which
 	 *         corresponds to the round the node was first discovered by a
@@ -79,8 +80,8 @@ public final class KnowledgeManager {
 		final SortedSet<Integer> unfinishedChildrenPorts = new TreeSet<>();
 		for (int i = 1; i <= node.getAmountOfChildren(); i++) {
 			// Initially all children are unfinished
-			// XXX Note that we discard the parent pointer here as it is not
-			// part of the children
+			// NOTE We discard the exclusion of the parent pointer here as it is
+			// not part of the children
 			unfinishedChildrenPorts.add(Integer.valueOf(i));
 		}
 		// Initially there are no advantaged children as all robots must be
@@ -122,7 +123,7 @@ public final class KnowledgeManager {
 
 	/**
 	 * Constructs the knowledge of the given node for the given round by using
-	 * the given information available at the {@link LocalStorage} of the node.
+	 * the given information available at the {@link ILocalStorage} of the node.
 	 * Uses caching to speed up the process if a node was already visited
 	 * before.
 	 * 
@@ -131,7 +132,7 @@ public final class KnowledgeManager {
 	 * @param node
 	 *            The node to build the knowledge of
 	 * @param localStorage
-	 *            The information available at the {@link LocalStorage} of the
+	 *            The information available at the {@link ILocalStorage} of the
 	 *            given node
 	 * @return The knowledge of the given node for the given round
 	 */
@@ -200,6 +201,10 @@ public final class KnowledgeManager {
 		if (currentKnowledge.getRound() != round) {
 			throw new AssertionError();
 		}
+
+		// Put the knowledge into the cache
+		this.mNodeToKnowledgeCache.put(node, currentKnowledge);
+
 		return currentKnowledge;
 	}
 

@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 
 import de.zabuza.treeflood.exploration.localstorage.listener.IExploreEdgeListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
+import de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage;
+import de.zabuza.treeflood.exploration.localstorage.storage.NodeStorageManager;
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
@@ -25,7 +27,7 @@ public final class LocalStorageExploration {
 	/**
 	 * The object that provides the local storage for nodes.
 	 */
-	private final LocalStorage mLocalStorage;
+	private final ILocalStorage mLocalStorage;
 
 	/**
 	 * The list of robots.
@@ -34,7 +36,8 @@ public final class LocalStorageExploration {
 
 	/**
 	 * Creates a new instance of a local storage exploration algorithm ready to
-	 * explore the tree starting at the given root.
+	 * explore the tree starting at the given root. The algorithm uses a
+	 * centralized manager for the local storage of nodes.
 	 * 
 	 * @param root
 	 *            The root of the tree to explore
@@ -42,7 +45,22 @@ public final class LocalStorageExploration {
 	 *            The amount of robots to use for the distributed exploration
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots) {
-		this(root, amountOfRobots, Collections.emptyList(), Collections.emptyList());
+		this(root, amountOfRobots, new NodeStorageManager(), Collections.emptyList(), Collections.emptyList());
+	}
+
+	/**
+	 * Creates a new instance of a local storage exploration algorithm ready to
+	 * explore the tree starting at the given root.
+	 * 
+	 * @param root
+	 *            The root of the tree to explore
+	 * @param localStorage
+	 *            Object that provides a local storage for nodes
+	 * @param amountOfRobots
+	 *            The amount of robots to use for the distributed exploration
+	 */
+	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage) {
+		this(root, amountOfRobots, localStorage, Collections.emptyList(), Collections.emptyList());
 	}
 
 	/**
@@ -53,6 +71,8 @@ public final class LocalStorageExploration {
 	 *            The root of the tree to explore
 	 * @param amountOfRobots
 	 *            The amount of robots to use for the distributed exploration
+	 * @param localStorage
+	 *            Object that provides a local storage for nodes
 	 * @param exploreEdgeListeners
 	 *            A list of objects that want to receive events each time a new
 	 *            edge was explored by a robot
@@ -60,10 +80,10 @@ public final class LocalStorageExploration {
 	 *            A list of objects that want to receive events each time a
 	 *            robot moves to another node
 	 */
-	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots,
+	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage,
 			final List<IExploreEdgeListener> exploreEdgeListeners,
 			final List<IRobotMovedListener> robotMovedListeners) {
-		this.mLocalStorage = new LocalStorage();
+		this.mLocalStorage = localStorage;
 		this.mRobots = new ArrayList<>(amountOfRobots);
 
 		// Create robots

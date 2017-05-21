@@ -1,8 +1,9 @@
-package de.zabuza.treeflood.exploration.localstorage;
+package de.zabuza.treeflood.exploration.localstorage.storage;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import de.zabuza.treeflood.exploration.localstorage.Information;
 import de.zabuza.treeflood.tree.ITreeNode;
 import de.zabuza.treeflood.util.NestedMap2;
 
@@ -12,8 +13,7 @@ import de.zabuza.treeflood.util.NestedMap2;
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
-public final class LocalStorage {
-
+public final class NodeStorageManager implements ILocalStorage {
 	/**
 	 * Data-structure that maps nodes to their local storage.
 	 */
@@ -22,30 +22,31 @@ public final class LocalStorage {
 	/**
 	 * Creates a new empty local storage.
 	 */
-	public LocalStorage() {
+	public NodeStorageManager() {
 		this.mNodeToStorage = new HashMap<>();
 	}
 
-	/**
-	 * Reads the storage from a given node. The content is unmodifiable. The
-	 * first key is the step of entries, the second key the robot id.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param node
-	 *            The node to read from
-	 * @return The storage of the given node as unmodifiable map
+	 * @see
+	 * de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage#read(
+	 * de.zabuza.treeflood.tree.ITreeNode)
 	 */
+	@Override
 	public NestedMap2<Integer, Integer, Information> read(final ITreeNode node) {
 		return getWithCreateOnInexistent(node);
 	}
 
-	/**
-	 * Writes to the storage of the given node.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param information
-	 *            The information to write
-	 * @param node
-	 *            The node to write to
+	 * @see
+	 * de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage#write(
+	 * de.zabuza.treeflood.exploration.localstorage.Information,
+	 * de.zabuza.treeflood.tree.ITreeNode)
 	 */
+	@Override
 	public void write(final Information information, final ITreeNode node) {
 		NestedMap2<Integer, Integer, Information> storage = getWithCreateOnInexistent(node);
 		storage.put(Integer.valueOf(information.getStep()), Integer.valueOf(information.getRobotId()), information);

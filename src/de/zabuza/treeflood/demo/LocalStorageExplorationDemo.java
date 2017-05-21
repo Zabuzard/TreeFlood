@@ -10,6 +10,7 @@ import de.zabuza.treeflood.exploration.localstorage.listener.ExplorationTreeBuil
 import de.zabuza.treeflood.exploration.localstorage.listener.IExploreEdgeListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.RobotNodeStringifier;
+import de.zabuza.treeflood.exploration.localstorage.storage.NodeStorageManager;
 import de.zabuza.treeflood.tree.ITree;
 import de.zabuza.treeflood.tree.ITreeNode;
 import de.zabuza.treeflood.tree.RandomTreeGenerator;
@@ -48,7 +49,7 @@ public final class LocalStorageExplorationDemo {
 
 		// Create an instance of the algorithm
 		final LocalStorageExploration algorithm = new LocalStorageExploration(treeToExplore.getRoot(), 3,
-				exploreEdgeListener, robotMovedListener);
+				new NodeStorageManager(), exploreEdgeListener, robotMovedListener);
 
 		// Initialize objects
 		robotNodeStringifier.setInitialLocation(algorithm.getRobots());

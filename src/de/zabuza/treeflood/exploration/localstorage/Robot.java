@@ -4,6 +4,7 @@ import java.util.List;
 
 import de.zabuza.treeflood.exploration.localstorage.listener.IExploreEdgeListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
+import de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage;
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
@@ -16,11 +17,6 @@ import de.zabuza.treeflood.tree.ITreeNode;
  *
  */
 public final class Robot implements Comparable<Robot> {
-	/**
-	 * A special port indicating that the robot did not move in the last move
-	 * stage.
-	 */
-	private static final int STAYED_PORT = -2;
 	/**
 	 * The current node the robot is in.
 	 */
@@ -49,7 +45,7 @@ public final class Robot implements Comparable<Robot> {
 	/**
 	 * The object that provides the local storage of nodes.
 	 */
-	private final LocalStorage mLocalStorage;
+	private final ILocalStorage mLocalStorage;
 	/**
 	 * The port used in the last move stage.
 	 */
@@ -85,7 +81,7 @@ public final class Robot implements Comparable<Robot> {
 	 *            A list of objects that want to receive events each time this
 	 *            robot moves to another node
 	 */
-	public Robot(final int id, final ITreeNode startingNode, final LocalStorage localStorage,
+	public Robot(final int id, final ITreeNode startingNode, final ILocalStorage localStorage,
 			final List<IExploreEdgeListener> exploreEdgeListeners,
 			final List<IRobotMovedListener> robotMovedListeners) {
 		this.mId = id;
@@ -99,7 +95,7 @@ public final class Robot implements Comparable<Robot> {
 		this.mHasStopped = false;
 		this.mStepCounter = 1;
 		this.mRoundCounter = 0;
-		this.mPortUsedLastMoveStage = STAYED_PORT;
+		this.mPortUsedLastMoveStage = Information.STAYED_PORT;
 	}
 
 	/**
@@ -276,7 +272,7 @@ public final class Robot implements Comparable<Robot> {
 	 */
 	private void writeAction() {
 		// Write information only if robot moved in the last stage
-		if (this.mPortUsedLastMoveStage == STAYED_PORT) {
+		if (this.mPortUsedLastMoveStage == Information.STAYED_PORT) {
 			return;
 		}
 
