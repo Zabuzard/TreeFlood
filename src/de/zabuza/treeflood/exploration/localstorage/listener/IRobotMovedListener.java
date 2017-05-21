@@ -1,5 +1,6 @@
-package de.zabuza.treeflood.exploration.localstorage;
+package de.zabuza.treeflood.exploration.localstorage.listener;
 
+import de.zabuza.treeflood.exploration.localstorage.Robot;
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**

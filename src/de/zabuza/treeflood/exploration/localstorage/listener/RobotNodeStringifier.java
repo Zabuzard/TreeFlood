@@ -1,4 +1,4 @@
-package de.zabuza.treeflood.exploration.localstorage;
+package de.zabuza.treeflood.exploration.localstorage.listener;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.SortedSet;
 import java.util.StringJoiner;
 import java.util.TreeSet;
 
+import de.zabuza.treeflood.exploration.localstorage.Robot;
 import de.zabuza.treeflood.tree.ITreeNode;
 import de.zabuza.treeflood.tree.util.ITreeNodeStringifier;
 

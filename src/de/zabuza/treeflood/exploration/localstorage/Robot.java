@@ -2,6 +2,8 @@ package de.zabuza.treeflood.exploration.localstorage;
 
 import java.util.List;
 
+import de.zabuza.treeflood.exploration.localstorage.listener.IExploreEdgeListener;
+import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
@@ -100,10 +102,8 @@ public final class Robot implements Comparable<Robot> {
 		this.mPortUsedLastMoveStage = STAYED_PORT;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	/**
+	 * Compares robots by their unique id, ascending.
 	 */
 	@Override
 	public int compareTo(final Robot other) {
