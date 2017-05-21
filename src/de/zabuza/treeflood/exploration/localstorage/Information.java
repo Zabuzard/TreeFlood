@@ -1,7 +1,5 @@
 package de.zabuza.treeflood.exploration.localstorage;
 
-import de.zabuza.treeflood.tree.ITreeNode;
-
 /**
  * Container holding information of a robot entering a node.
  * 
@@ -24,7 +22,7 @@ public final class Information {
 	 * A special port indicating that a robot did not move in the last move
 	 * stage.
 	 */
-	public static final int STAYED_PORT = -3;
+	public static final int STAY_PORT = -3;
 	/**
 	 * The number of the port the robot entered a node in the given step.
 	 */

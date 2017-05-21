@@ -23,6 +23,49 @@ import de.zabuza.treeflood.util.NestedMap2;
  */
 public final class KnowledgeManager {
 	/**
+	 * Determines the action the given robot will perform based on the
+	 * underlying knowledge at the given node.
+	 * 
+	 * @param robotId
+	 *            The id of the robot to compute its action
+	 * @param knowledge
+	 *            The knowledge available at the current node based on which the
+	 *            action should be determined
+	 * @param node
+	 *            The node the given knowledge corresponds to
+	 * @return An integer representing the port the given robot will use to
+	 *         leave the node. The value {@link Information#STAY_PORT} indicates
+	 *         that the robot will not leave the node whereas
+	 *         {@link Information#PARENT_PORT} indicates that the robot moves to
+	 *         the parent of the given node and {@link Information#STAR_PORT}
+	 *         means that the robot stops as it has finished the algorithm.
+	 */
+	public static int robotAction(final int robotId, final Knowledge knowledge, final ITreeNode node) {
+		// Case 1: The node is finished, i.e. all children have finished
+		if (knowledge.getUnfinishedChildrenPorts().isEmpty() && knowledge.getAdvantagedChildrenPorts().isEmpty()) {
+			// Stop if at root, else move to parent
+			if (node.isRoot()) {
+				return Information.STAR_PORT;
+			}
+			return Information.PARENT_PORT;
+		}
+
+		// Case 2: At least one child is unfinished
+		if (!knowledge.getUnfinishedChildrenPorts().isEmpty()) {
+			// TODO Implement distribution
+
+		}
+
+		// Case 3: The children are all finished but at least one is inhabited
+		if (knowledge.getUnfinishedChildrenPorts().isEmpty() && !knowledge.getAdvantagedChildrenPorts().isEmpty()) {
+			// Stay at the node and wait for other robots to come
+			return Information.STAY_PORT;
+		}
+
+		throw new AssertionError();
+	}
+
+	/**
 	 * Constructs the initial knowledge available at the given node. Which
 	 * corresponds to the round the node was first discovered by a robot.
 	 * 
@@ -170,7 +213,8 @@ public final class KnowledgeManager {
 
 			// We discard all children where a robot entered in the UPDATE step
 			// to confirm that his subtree has finished
-			final SortedSet<Integer> unfinishedChildrenPorts = pastKnowledge.getUnfinishedChildrenPorts();
+			final SortedSet<Integer> unfinishedChildrenPorts = new TreeSet<>(
+					pastKnowledge.getUnfinishedChildrenPorts());
 			for (final Information info : pastUpdateEntries.values()) {
 				unfinishedChildrenPorts.remove(Integer.valueOf(info.getPort()));
 			}
@@ -178,17 +222,22 @@ public final class KnowledgeManager {
 			// We compute the complete past distribution of robots to children
 			// in order to know which children are advantaged
 			// TODO Implement this
-			final SortedSet<Integer> advantagedChildrenPorts = pastKnowledge.getAdvantagedChildrenPorts();
+			final SortedSet<Integer> advantagedChildrenPorts = new TreeSet<>(
+					pastKnowledge.getAdvantagedChildrenPorts());
 
 			// We add robots that entered the node and delete those that left in
 			// this round
-			final SortedSet<Integer> robotsAtLocation = pastKnowledge.getRobotsAtLocation();
+			final SortedSet<Integer> robotsAtLocation = new TreeSet<>(pastKnowledge.getRobotsAtLocation());
+			// Determine which robots left in this round
+			for (final int robotId : robotsAtLocation) {
+				final int port = robotAction(robotId, pastKnowledge, node);
+				if (port != Information.STAY_PORT) {
+					// The robot leaves the node
+					robotsAtLocation.remove(Integer.valueOf(robotId));
+				}
+			}
 			// Determine which robots entered the node
 			final Set<Integer> robotsEntered = pastRegularEntries.keySet();
-			// Determine which robots left in this round
-			// TODO Implement this
-			final Set<Integer> robotsLeft = new HashSet<>();
-			robotsAtLocation.removeAll(robotsLeft);
 			robotsAtLocation.addAll(robotsEntered);
 
 			// Create the knowledge for the next round
