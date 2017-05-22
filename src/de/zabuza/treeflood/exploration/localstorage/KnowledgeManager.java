@@ -2,7 +2,7 @@ package de.zabuza.treeflood.exploration.localstorage;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -41,8 +41,10 @@ public final class KnowledgeManager {
 	 *         means that the robot stops as it has finished the algorithm.
 	 */
 	public static int robotAction(final int robotId, final Knowledge knowledge, final ITreeNode node) {
-		// Case 1: The node is finished, i.e. all children have finished
-		if (knowledge.getUnfinishedChildrenPorts().isEmpty() && knowledge.getAdvantagedChildrenPorts().isEmpty()) {
+		// Case 1: The node is finished, i.e. all children have finished and are
+		// not inhabited
+		if (knowledge.getUnfinishedChildrenPorts().isEmpty()
+				&& knowledge.getFinishedButInhabitedChildrenPorts().isEmpty()) {
 			// Stop if at root, else move to parent
 			if (node.isRoot()) {
 				return Information.STAR_PORT;
@@ -52,12 +54,68 @@ public final class KnowledgeManager {
 
 		// Case 2: At least one child is unfinished
 		if (!knowledge.getUnfinishedChildrenPorts().isEmpty()) {
-			// TODO Implement distribution
+			// We distribute all robots to the unfinished children by first
+			// assigning as much robots as possible such that each child gets
+			// the same amount of robots. After that we assign robots from left
+			// to right to the disadvantaged children. If there are some robots
+			// left we assign them from left to right starting at the leftmost
+			// unfinished child.
+			// We now simulate this procedure until the given robot was assigned
+			final SortedSet<Integer> robotsAtLocation = knowledge.getRobotsAtLocation();
+			final SortedSet<Integer> unfinishedChildren = knowledge.getUnfinishedChildrenPorts();
+			final SortedSet<Integer> advantagedChildren = knowledge.getAdvantagedChildrenPorts();
+			final Iterator<Integer> robotsToAssign = knowledge.getRobotsAtLocation().iterator();
+
+			// Assign robots equally to all unfinished children
+			int amountOfRobotsForEachChild = (int) Math
+					.floor((robotsAtLocation.size() + 0.0) / unfinishedChildren.size());
+			for (final Integer unfinishedChild : unfinishedChildren) {
+				// Simulate the assignment of robots for this child
+				for (int i = 0; i < amountOfRobotsForEachChild; i++) {
+					final int robotToAssign = robotsToAssign.next().intValue();
+					if (robotToAssign == robotId) {
+						// The given robot is assigned to this child
+						return unfinishedChild.intValue();
+					}
+				}
+			}
+
+			// Now assign robots from left to right starting at the first
+			// disadvantaged child
+			if (advantagedChildren.size() != unfinishedChildren.size()) {
+				// Skip all advantaged children
+				final Iterator<Integer> unfinishedChildrenIter = unfinishedChildren.iterator();
+				for (int i = 0; i < advantagedChildren.size(); i++) {
+					unfinishedChildrenIter.next();
+				}
+				// Now assign robots to each disadvantaged child
+				while (unfinishedChildrenIter.hasNext()) {
+					final int child = unfinishedChildrenIter.next().intValue();
+					final int robotToAssign = robotsToAssign.next().intValue();
+					if (robotToAssign == robotId) {
+						// The given robot is assigned to this child
+						return child;
+					}
+				}
+			}
+
+			// Start from the leftmost unfinished child and assign the remaining
+			// robots
+			final Iterator<Integer> unfinishedChildrenIter = unfinishedChildren.iterator();
+			while (unfinishedChildrenIter.hasNext()) {
+				final int child = unfinishedChildrenIter.next().intValue();
+				final int robotToAssign = robotsToAssign.next().intValue();
+				if (robotToAssign == robotId) {
+					// The given robot is assigned to this child
+					return child;
+				}
+			}
 
 		}
 
 		// Case 3: The children are all finished but at least one is inhabited
-		if (knowledge.getUnfinishedChildrenPorts().isEmpty() && !knowledge.getAdvantagedChildrenPorts().isEmpty()) {
+		if (knowledge.getUnfinishedChildrenPorts().isEmpty()
+				&& !knowledge.getFinishedButInhabitedChildrenPorts().isEmpty()) {
 			// Stay at the node and wait for other robots to come
 			return Information.STAY_PORT;
 		}
@@ -130,6 +188,10 @@ public final class KnowledgeManager {
 		// Initially there are no advantaged children as all robots must be
 		// above the children at its first discovery
 		final SortedSet<Integer> advantagedChildrenPorts = new TreeSet<>();
+		// Initially there are no finished children at all as they have not been
+		// visited yet
+		final SortedSet<Integer> finishedButInhabitedChildrenPorts = new TreeSet<>();
+		final SortedSet<Integer> finishedAndNotInhabitedChildrenPorts = new TreeSet<>();
 
 		final SortedSet<Integer> robotsAtLocation = new TreeSet<>();
 		for (final Integer robotId : initialRoundData.keySet()) {
@@ -138,7 +200,8 @@ public final class KnowledgeManager {
 		}
 
 		final Knowledge initialKnowledge = new Knowledge(initialRound, node, parentPort, unfinishedChildrenPorts,
-				advantagedChildrenPorts, robotsAtLocation);
+				advantagedChildrenPorts, finishedButInhabitedChildrenPorts, finishedAndNotInhabitedChildrenPorts,
+				robotsAtLocation);
 		return initialKnowledge;
 	}
 
@@ -148,19 +211,10 @@ public final class KnowledgeManager {
 	private final Map<ITreeNode, Knowledge> mNodeToKnowledgeCache;
 
 	/**
-	 * The unique id of the robot to manage knowledge for.
+	 * Creates a new knowledge manager that manages knowledge of nodes for a
+	 * robot.
 	 */
-	private final int mRobotId;
-
-	/**
-	 * Creates a new knowledge manager that manages knowledge of nodes for the
-	 * given robot.
-	 * 
-	 * @param robotId
-	 *            The unique id of the robot to manage knowledge for
-	 */
-	public KnowledgeManager(final int robotId) {
-		this.mRobotId = robotId;
+	public KnowledgeManager() {
 		this.mNodeToKnowledgeCache = new HashMap<>();
 	}
 
@@ -211,20 +265,6 @@ public final class KnowledgeManager {
 			// The parent port remains unchanged
 			final int parentPort = pastKnowledge.getParentPort();
 
-			// We discard all children where a robot entered in the UPDATE step
-			// to confirm that his subtree has finished
-			final SortedSet<Integer> unfinishedChildrenPorts = new TreeSet<>(
-					pastKnowledge.getUnfinishedChildrenPorts());
-			for (final Information info : pastUpdateEntries.values()) {
-				unfinishedChildrenPorts.remove(Integer.valueOf(info.getPort()));
-			}
-
-			// We compute the complete past distribution of robots to children
-			// in order to know which children are advantaged
-			// TODO Implement this
-			final SortedSet<Integer> advantagedChildrenPorts = new TreeSet<>(
-					pastKnowledge.getAdvantagedChildrenPorts());
-
 			// We add robots that entered the node and delete those that left in
 			// this round
 			final SortedSet<Integer> robotsAtLocation = new TreeSet<>(pastKnowledge.getRobotsAtLocation());
@@ -240,9 +280,83 @@ public final class KnowledgeManager {
 			final Set<Integer> robotsEntered = pastRegularEntries.keySet();
 			robotsAtLocation.addAll(robotsEntered);
 
+			// All children from where a robot entered in the UPDATE step are
+			// confirmed to have finished.
+			// We first assume that a finished child is inhabited.
+			// A finished but inhabited child stays inhabited if there did not
+			// enter any robot from that child in this round. If there entered
+			// any we call the child finished and not inhabited as robots will
+			// leave such nodes all together.
+			final SortedSet<Integer> unfinishedChildrenPorts = new TreeSet<>(
+					pastKnowledge.getUnfinishedChildrenPorts());
+			final SortedSet<Integer> finishedButInhabitedChildrenPorts = new TreeSet<>(
+					pastKnowledge.getFinishedButInhabitedChildrenPorts());
+			final SortedSet<Integer> finishedAndNotInhabitedChildrenPorts = new TreeSet<>(
+					pastKnowledge.getFinishedAndNotInhabitedChildrenPorts());
+			final SortedSet<Integer> advantagedChildrenPortsStart = new TreeSet<>(
+					pastKnowledge.getAdvantagedChildrenPorts());
+			for (final Information info : pastUpdateEntries.values()) {
+				// The child of that port is now finished
+				final Integer port = Integer.valueOf(info.getPort());
+				unfinishedChildrenPorts.remove(port);
+				advantagedChildrenPortsStart.remove(port);
+
+				// First assume that it also is inhabited
+				finishedButInhabitedChildrenPorts.add(port);
+			}
+			// Check which finished but inhabited children are now not inhabited
+			// anymore
+			// This is the case if a robot entered from that child in this round
+			for (final Integer robotEntered : robotsEntered) {
+				final Information info = pastRegularEntries.get(robotEntered);
+				if (info.wasEnteredFromParent()) {
+					// The robot did not enter from the child
+					continue;
+				}
+				final Integer portOfChild = Integer.valueOf(info.getPort());
+				if (finishedButInhabitedChildrenPorts.contains(portOfChild)) {
+					// The robot entered from a inhabited child, it is now not
+					// inhabited anymore
+					finishedButInhabitedChildrenPorts.remove(portOfChild);
+					finishedAndNotInhabitedChildrenPorts.add(portOfChild);
+				}
+			}
+
+			// We compute the complete past distribution of robots to children
+			// in order to know which children are advantaged
+			final SortedSet<Integer> advantagedChildrenPorts = new TreeSet<>();
+			// If we have more robots than unfinished children we first
+			// distribute that many robots to each child such that each receives
+			// the same amount. The remaining amount of robots is given by the
+			// modulo.
+			final int amountOfRemainingRobots = robotsAtLocation.size() % unfinishedChildrenPorts.size();
+			// We begin to distribute robots to the disadvantaged children, from
+			// left to right. After that we begin at the leftmost child and
+			// assign robots from left to right. We now determine the child
+			// position where all robots where assigned. All children left to
+			// this position (inclusive) are advantaged now, all to the right
+			// are disadvantaged.
+			final int amountOfAdvantagedChildren;
+			if (amountOfRemainingRobots <= unfinishedChildrenPorts.size() - advantagedChildrenPortsStart.size()) {
+				// We have not enough robots to even assign them to all
+				// disadvantaged children in the first place
+				amountOfAdvantagedChildren = advantagedChildrenPortsStart.size() + amountOfRemainingRobots;
+			} else {
+				amountOfAdvantagedChildren = amountOfRemainingRobots - unfinishedChildrenPorts.size()
+						+ advantagedChildrenPortsStart.size();
+			}
+			// Iterate unfinished children and determine all advantaged children
+			final Iterator<Integer> unfinishedChildrenIter = unfinishedChildrenPorts.iterator();
+			for (int i = 1; i <= amountOfAdvantagedChildren; i++) {
+				// The child specified by this port is advantaged
+				final Integer port = unfinishedChildrenIter.next();
+				advantagedChildrenPorts.add(port);
+			}
+
 			// Create the knowledge for the next round
 			pastKnowledge = new Knowledge(pastRound + 1, node, parentPort, unfinishedChildrenPorts,
-					advantagedChildrenPorts, robotsAtLocation);
+					advantagedChildrenPorts, finishedButInhabitedChildrenPorts, finishedAndNotInhabitedChildrenPorts,
+					robotsAtLocation);
 		}
 
 		// Take the last knowledge built, it is valid for the round 'round'

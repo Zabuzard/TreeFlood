@@ -14,9 +14,19 @@ import de.zabuza.treeflood.tree.ITreeNode;
 public class Knowledge {
 	/**
 	 * The set of children ports that are advantaged, i.e. they have one more
-	 * robot located in them than the other children.
+	 * robot located in them than the other children. The set must be a subset
+	 * of the unfinishedChildrenPorts, that means that we only count unfinished
+	 * children here. Finished but inhabited children do not count for this set.
 	 */
 	private final SortedSet<Integer> mAdvantagedChildrenPorts;
+	/**
+	 * The set of children ports that are finished and not inhabited.
+	 */
+	private final SortedSet<Integer> mFinishedAndNotInhabitedChildrenPorts;
+	/**
+	 * The set of children ports that are finished but inhabited.
+	 */
+	private final SortedSet<Integer> mFinishedButInhabitedChildrenPorts;
 	/**
 	 * The node this knowledge belongs to.
 	 */
@@ -51,32 +61,61 @@ public class Knowledge {
 	 *            The set of children ports that are unfinished
 	 * @param advantagedChildrenPorts
 	 *            The set of children ports that are advantaged, i.e. they have
-	 *            one more robot located in them than the other children
+	 *            one more robot located in them than the other children. The
+	 *            set must be a subset of the unfinishedChildrenPorts, that
+	 *            means that we only count unfinished children here. Finished
+	 *            but inhabited children do not count for this set.
+	 * @param finishedButInhabitedChildrenPorts
+	 *            The set of children ports that are finished but inhabited.
+	 * @param finishedAndNotInhabitedChildrenPorts
+	 *            The set of children ports that are finished and not inhabited.
 	 * @param robotsAtLocation
 	 *            The set of robots that also are at the node this knowledge
 	 *            belongs to
 	 */
 	public Knowledge(final int round, final ITreeNode node, final int parentPort,
 			final SortedSet<Integer> unfinishedChildrenPorts, final SortedSet<Integer> advantagedChildrenPorts,
-			SortedSet<Integer> robotsAtLocation) {
-		// TODO Evaluate which sets need to be sorted
+			final SortedSet<Integer> finishedButInhabitedChildrenPorts,
+			final SortedSet<Integer> finishedAndNotInhabitedChildrenPorts, SortedSet<Integer> robotsAtLocation) {
 		this.mRound = round;
 		this.mNode = node;
 		this.mParentPort = parentPort;
 		this.mUnfinishedChildrenPorts = unfinishedChildrenPorts;
 		this.mAdvantagedChildrenPorts = advantagedChildrenPorts;
+		this.mFinishedButInhabitedChildrenPorts = finishedButInhabitedChildrenPorts;
+		this.mFinishedAndNotInhabitedChildrenPorts = finishedAndNotInhabitedChildrenPorts;
 		this.mRobotsAtLocation = robotsAtLocation;
 	}
 
 	/**
 	 * Gets the set of children ports that are advantaged, i.e. they have one
-	 * more robot located in them than the other children.
+	 * more robot located in them than the other children. The set must be a
+	 * subset of the unfinishedChildrenPorts, that means that we only count
+	 * unfinished children here. Finished but inhabited children do not count
+	 * for this set.
 	 * 
-	 * @return The set of children ports that are advantaged, i.e. they have one
-	 *         more robot located in them than the other children
+	 * @return The set of children ports that are advantaged
 	 */
 	public SortedSet<Integer> getAdvantagedChildrenPorts() {
 		return this.mAdvantagedChildrenPorts;
+	}
+
+	/**
+	 * Gets the set of children ports that are finished and not inhabited.
+	 * 
+	 * @return The set of children ports that are finished and not inhabited
+	 */
+	public SortedSet<Integer> getFinishedAndNotInhabitedChildrenPorts() {
+		return this.mFinishedAndNotInhabitedChildrenPorts;
+	}
+
+	/**
+	 * Gets the set of children ports that are finished but inhabited.
+	 * 
+	 * @return The set of children ports that are finished but inhabited
+	 */
+	public SortedSet<Integer> getFinishedButInhabitedChildrenPorts() {
+		return this.mFinishedButInhabitedChildrenPorts;
 	}
 
 	/**

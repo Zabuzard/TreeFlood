@@ -24,6 +24,10 @@ public final class Information {
 	 */
 	public static final int STAY_PORT = -3;
 	/**
+	 * Whether the robot entered the node through its parent or from a child.
+	 */
+	private final boolean mFromParent;
+	/**
 	 * The number of the port the robot entered a node in the given step.
 	 */
 	private final int mPort;
@@ -47,11 +51,15 @@ public final class Information {
 	 * @param port
 	 *            The number of the port the robot entered the node in the given
 	 *            step
+	 * @param fromParent
+	 *            <tt>True</tt> if the robot entered the node through its
+	 *            parent, <tt>false</tt> if he entered from a child
 	 */
-	public Information(int step, int robotId, int port) {
+	public Information(final int step, final int robotId, final int port, final boolean fromParent) {
 		this.mStep = step;
 		this.mRobotId = robotId;
 		this.mPort = port;
+		this.mFromParent = fromParent;
 	}
 
 	/**
@@ -80,6 +88,16 @@ public final class Information {
 	 */
 	public int getStep() {
 		return this.mStep;
+	}
+
+	/**
+	 * Whether the robot entered the node through its parent or from a child.
+	 * 
+	 * @return <tt>True</tt> if the robot entered the node through its parent,
+	 *         <tt>false</tt> if he entered from a child
+	 */
+	public boolean wasEnteredFromParent() {
+		return this.mFromParent;
 	}
 
 }

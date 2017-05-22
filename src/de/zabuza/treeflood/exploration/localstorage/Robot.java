@@ -57,6 +57,11 @@ public final class Robot implements Comparable<Robot> {
 	 */
 	private NestedMap2<Integer, Integer, Information> mLocalStorageData;
 	/**
+	 * Whether the movement in the last move stage was done from parent to a
+	 * child or from child to its parent.
+	 */
+	private boolean mMovedFromParentToChildLastMoveStage;
+	/**
 	 * The port used in the last move stage.
 	 */
 	private int mPortUsedLastMoveStage;
@@ -99,7 +104,7 @@ public final class Robot implements Comparable<Robot> {
 		this.mExploreEdgeListeners = exploreEdgeListeners;
 		this.mRobotMovedListeners = robotMovedListeners;
 		this.mLocalStorageData = null;
-		this.mKnowledgeManager = new KnowledgeManager(this.mId);
+		this.mKnowledgeManager = new KnowledgeManager();
 
 		this.mCurrentStep = EStep.INITIAL;
 		this.mCurrentStage = EStage.MOVE;
@@ -107,6 +112,7 @@ public final class Robot implements Comparable<Robot> {
 		this.mStepCounter = 1;
 		this.mRoundCounter = 0;
 		this.mPortUsedLastMoveStage = Information.STAY_PORT;
+		this.mMovedFromParentToChildLastMoveStage = true;
 	}
 
 	/**
@@ -196,6 +202,7 @@ public final class Robot implements Comparable<Robot> {
 				// Only set the star port which indicates the initial movement
 				// to the root
 				this.mPortUsedLastMoveStage = Information.STAR_PORT;
+				this.mMovedFromParentToChildLastMoveStage = true;
 				return;
 			}
 
@@ -225,11 +232,14 @@ public final class Robot implements Comparable<Robot> {
 				if (port == Information.PARENT_PORT) {
 					// Move to the parent of the current node
 					moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(),
-							false);
+							false, false);
 				}
 
 				// Move along the given port to a child of the current node
-				moveAlongEdge(this.mCurrentNode, port, this.mCurrentNode.getChild(port), true);
+				// TODO Sure that the edge is unexplored? Maybe there is
+				// currently a robot located in the subtree, the knowledge
+				// should be an indicator
+				moveAlongEdge(this.mCurrentNode, port, this.mCurrentNode.getChild(port), true, true);
 				return;
 			}
 
@@ -251,7 +261,8 @@ public final class Robot implements Comparable<Robot> {
 
 				// Temporarily move to the parent to inform it that its child
 				// has finished
-				moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(), false);
+				moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(), false,
+						false);
 				return;
 			}
 
@@ -273,7 +284,7 @@ public final class Robot implements Comparable<Robot> {
 
 				// Undo the temporary move of the last stage
 				final int portOfChild = info.getPort();
-				moveAlongEdge(this.mCurrentNode, portOfChild, this.mCurrentNode.getChild(portOfChild), false);
+				moveAlongEdge(this.mCurrentNode, portOfChild, this.mCurrentNode.getChild(portOfChild), true, false);
 				return;
 			}
 		}
@@ -290,14 +301,18 @@ public final class Robot implements Comparable<Robot> {
 	 *            The port that identifies the edge
 	 * @param destination
 	 *            The destination of the edge
+	 * @param fromParent
+	 *            <tt>True</tt> if the movement is from parent to its child or
+	 *            <tt>false</tt> if it is from a child to its parent
 	 * @param isEdgeUnexplored
 	 *            <tt>True</tt> if the edge is unexplored, that is no other
 	 *            robot moved along this edge until now, <tt>false</tt>
 	 *            otherwise
 	 */
 	private void moveAlongEdge(final ITreeNode source, final int port, final ITreeNode destination,
-			final boolean isEdgeUnexplored) {
+			final boolean fromParent, final boolean isEdgeUnexplored) {
 		this.mPortUsedLastMoveStage = port;
+		this.mMovedFromParentToChildLastMoveStage = fromParent;
 		this.mCurrentNode = destination;
 
 		// Notify listeners
@@ -374,6 +389,7 @@ public final class Robot implements Comparable<Robot> {
 	 */
 	private void stayAtNode() {
 		this.mPortUsedLastMoveStage = Information.STAY_PORT;
+		this.mMovedFromParentToChildLastMoveStage = true;
 	}
 
 	/**
@@ -388,7 +404,8 @@ public final class Robot implements Comparable<Robot> {
 		// Write (step, id, port) to current node. This means that the robot
 		// specified by the given id moved in the given step to the current node
 		// by using the given port.
-		final Information info = new Information(this.mStepCounter, this.mId, this.mPortUsedLastMoveStage);
+		final Information info = new Information(this.mStepCounter, this.mId, this.mPortUsedLastMoveStage,
+				this.mMovedFromParentToChildLastMoveStage);
 		this.mLocalStorage.write(info, this.mCurrentNode);
 	}
 }
