@@ -2,7 +2,6 @@ package de.zabuza.treeflood.exploration.localstorage;
 
 import java.util.List;
 
-import de.zabuza.treeflood.exploration.localstorage.listener.IExploreEdgeListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage;
 import de.zabuza.treeflood.tree.ITreeNode;
@@ -30,11 +29,6 @@ public final class Robot implements Comparable<Robot> {
 	 * The current step the robot is in.
 	 */
 	private EStep mCurrentStep;
-	/**
-	 * A list of objects that want to receive events each time a new edge was
-	 * explored by this robot.
-	 */
-	private final List<IExploreEdgeListener> mExploreEdgeListeners;
 	/**
 	 * Whether the robot has stopped, i.e. finished the algorithm.
 	 */
@@ -88,20 +82,15 @@ public final class Robot implements Comparable<Robot> {
 	 *            The node the robot starts in
 	 * @param localStorage
 	 *            The object that provides the local storage of nodes
-	 * @param exploreEdgeListeners
-	 *            A list of objects that want to receive events each time a new
-	 *            edge was explored by this robot
 	 * @param robotMovedListeners
 	 *            A list of objects that want to receive events each time this
 	 *            robot moves to another node
 	 */
 	public Robot(final int id, final ITreeNode startingNode, final ILocalStorage localStorage,
-			final List<IExploreEdgeListener> exploreEdgeListeners,
 			final List<IRobotMovedListener> robotMovedListeners) {
 		this.mId = id;
 		this.mCurrentNode = startingNode;
 		this.mLocalStorage = localStorage;
-		this.mExploreEdgeListeners = exploreEdgeListeners;
 		this.mRobotMovedListeners = robotMovedListeners;
 		this.mLocalStorageData = null;
 		this.mKnowledgeManager = new KnowledgeManager();
@@ -232,14 +221,14 @@ public final class Robot implements Comparable<Robot> {
 				if (port == Information.PARENT_PORT) {
 					// Move to the parent of the current node
 					moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(),
-							false, false);
+							false);
 				}
 
 				// Move along the given port to a child of the current node
 				// TODO Sure that the edge is unexplored? Maybe there is
 				// currently a robot located in the subtree, the knowledge
 				// should be an indicator
-				moveAlongEdge(this.mCurrentNode, port, this.mCurrentNode.getChild(port), true, true);
+				moveAlongEdge(this.mCurrentNode, port, this.mCurrentNode.getChild(port), true);
 				return;
 			}
 
@@ -261,8 +250,7 @@ public final class Robot implements Comparable<Robot> {
 
 				// Temporarily move to the parent to inform it that its child
 				// has finished
-				moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(), false,
-						false);
+				moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(), false);
 				return;
 			}
 
@@ -284,7 +272,7 @@ public final class Robot implements Comparable<Robot> {
 
 				// Undo the temporary move of the last stage
 				final int portOfChild = info.getPort();
-				moveAlongEdge(this.mCurrentNode, portOfChild, this.mCurrentNode.getChild(portOfChild), true, false);
+				moveAlongEdge(this.mCurrentNode, portOfChild, this.mCurrentNode.getChild(portOfChild), true);
 				return;
 			}
 		}
@@ -304,13 +292,9 @@ public final class Robot implements Comparable<Robot> {
 	 * @param fromParent
 	 *            <tt>True</tt> if the movement is from parent to its child or
 	 *            <tt>false</tt> if it is from a child to its parent
-	 * @param isEdgeUnexplored
-	 *            <tt>True</tt> if the edge is unexplored, that is no other
-	 *            robot moved along this edge until now, <tt>false</tt>
-	 *            otherwise
 	 */
 	private void moveAlongEdge(final ITreeNode source, final int port, final ITreeNode destination,
-			final boolean fromParent, final boolean isEdgeUnexplored) {
+			final boolean fromParent) {
 		this.mPortUsedLastMoveStage = port;
 		this.mMovedFromParentToChildLastMoveStage = fromParent;
 		this.mCurrentNode = destination;
@@ -318,11 +302,6 @@ public final class Robot implements Comparable<Robot> {
 		// Notify listeners
 		for (final IRobotMovedListener listener : this.mRobotMovedListeners) {
 			listener.movedTo(this, source, destination);
-		}
-		if (isEdgeUnexplored) {
-			for (final IExploreEdgeListener listener : this.mExploreEdgeListeners) {
-				listener.exploredEdge(source, destination);
-			}
 		}
 	}
 

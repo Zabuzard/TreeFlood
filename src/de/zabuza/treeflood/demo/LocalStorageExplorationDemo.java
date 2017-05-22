@@ -7,7 +7,6 @@ import java.util.Scanner;
 
 import de.zabuza.treeflood.exploration.localstorage.LocalStorageExploration;
 import de.zabuza.treeflood.exploration.localstorage.listener.ExplorationTreeBuilder;
-import de.zabuza.treeflood.exploration.localstorage.listener.IExploreEdgeListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.RobotNodeStringifier;
 import de.zabuza.treeflood.exploration.localstorage.storage.NodeStorageManager;
@@ -39,17 +38,16 @@ public final class LocalStorageExplorationDemo {
 		final ITree treeToExplore = generator.generateRandomTree(1495295715797L);
 
 		// Create event listeners
+		final List<IRobotMovedListener> robotMovedListener = new LinkedList<>();
 		final ExplorationTreeBuilder explorationTreeBuilder = new ExplorationTreeBuilder(treeToExplore.getRoot());
-		final List<IExploreEdgeListener> exploreEdgeListener = new LinkedList<>();
-		exploreEdgeListener.add(explorationTreeBuilder);
+		robotMovedListener.add(explorationTreeBuilder);
 
 		final RobotNodeStringifier robotNodeStringifier = new RobotNodeStringifier();
-		final List<IRobotMovedListener> robotMovedListener = new LinkedList<>();
 		robotMovedListener.add(robotNodeStringifier);
 
 		// Create an instance of the algorithm
 		final LocalStorageExploration algorithm = new LocalStorageExploration(treeToExplore.getRoot(), 3,
-				new NodeStorageManager(), exploreEdgeListener, robotMovedListener);
+				new NodeStorageManager(), robotMovedListener);
 
 		// Initialize objects
 		robotNodeStringifier.setInitialLocation(algorithm.getRobots());

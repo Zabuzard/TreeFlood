@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import de.zabuza.treeflood.exploration.localstorage.listener.IExploreEdgeListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage;
 import de.zabuza.treeflood.exploration.localstorage.storage.NodeStorageManager;
@@ -45,7 +44,7 @@ public final class LocalStorageExploration {
 	 *            The amount of robots to use for the distributed exploration
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots) {
-		this(root, amountOfRobots, new NodeStorageManager(), Collections.emptyList(), Collections.emptyList());
+		this(root, amountOfRobots, new NodeStorageManager(), Collections.emptyList());
 	}
 
 	/**
@@ -60,7 +59,7 @@ public final class LocalStorageExploration {
 	 *            The amount of robots to use for the distributed exploration
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage) {
-		this(root, amountOfRobots, localStorage, Collections.emptyList(), Collections.emptyList());
+		this(root, amountOfRobots, localStorage, Collections.emptyList());
 	}
 
 	/**
@@ -73,22 +72,18 @@ public final class LocalStorageExploration {
 	 *            The amount of robots to use for the distributed exploration
 	 * @param localStorage
 	 *            Object that provides a local storage for nodes
-	 * @param exploreEdgeListeners
-	 *            A list of objects that want to receive events each time a new
-	 *            edge was explored by a robot
 	 * @param robotMovedListeners
 	 *            A list of objects that want to receive events each time a
 	 *            robot moves to another node
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage,
-			final List<IExploreEdgeListener> exploreEdgeListeners,
 			final List<IRobotMovedListener> robotMovedListeners) {
 		this.mLocalStorage = localStorage;
 		this.mRobots = new ArrayList<>(amountOfRobots);
 
 		// Create robots
 		for (int i = 0; i < amountOfRobots; i++) {
-			this.mRobots.add(new Robot(i, root, this.mLocalStorage, exploreEdgeListeners, robotMovedListeners));
+			this.mRobots.add(new Robot(i, root, this.mLocalStorage, robotMovedListeners));
 		}
 	}
 
