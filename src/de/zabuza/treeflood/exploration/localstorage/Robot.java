@@ -154,7 +154,7 @@ public final class Robot implements Comparable<Robot> {
 	 * Pulses the robot which demands him to execute one step of the algorithm.
 	 * 
 	 * @return <tt>True</tt> if the robot has stopped because he finished the
-	 *         algorithm, <tt>false<tt> otherwise
+	 *         algorithm, <tt>false</tt> otherwise
 	 */
 	public boolean pulse() {
 		try {

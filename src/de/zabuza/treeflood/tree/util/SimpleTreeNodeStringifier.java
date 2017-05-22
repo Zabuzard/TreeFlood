@@ -4,7 +4,7 @@ import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
  * A simple implementation of a tree node stringifier that returns the
- * {@link ITreeNode#toString()} representation of a given node.
+ * {@link Object#toString()} representation of a given node.
  * 
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
@@ -12,8 +12,7 @@ import de.zabuza.treeflood.tree.ITreeNode;
 public final class SimpleTreeNodeStringifier implements ITreeNodeStringifier {
 
 	/**
-	 * Returns the {@link ITreeNode#toString()} representation of the given
-	 * node.
+	 * Returns the {@link Object#toString()} representation of the given node.
 	 */
 	@Override
 	public String nodeToString(final ITreeNode node) {
