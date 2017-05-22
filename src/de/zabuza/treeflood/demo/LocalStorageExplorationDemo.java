@@ -44,6 +44,7 @@ public final class LocalStorageExplorationDemo {
 			final ITree treeToExplore;
 			if (seedCandidate.trim().isEmpty()) {
 				treeToExplore = generator.generateRandomTree();
+				System.out.println("Using seed: " + generator.getSeedOfLastGeneration());
 			} else {
 				final long seed = Long.parseLong(seedCandidate);
 				treeToExplore = generator.generateRandomTree(seed);
@@ -110,10 +111,12 @@ public final class LocalStorageExplorationDemo {
 					isFinished = algorithm.exploreOneStep();
 					step++;
 				}
+
 				// Print the result
 				if (previousStep < step) {
 					System.out.println();
 					System.out.println("After step " + step + ":");
+					System.out.flush();
 					final ITree explorationTree = explorationTreeBuilder.getExploredTree();
 
 					// Fiddle the aliases
