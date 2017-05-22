@@ -33,30 +33,43 @@ public final class LocalStorageExplorationDemo {
 	 *            Not supported
 	 */
 	public static void main(final String[] args) {
-		// Generate a tree to explore
-		final RandomTreeGenerator generator = new RandomTreeGenerator(10);
-		final ITree treeToExplore = generator.generateRandomTree(1495295715797L);
-
-		// Create event listeners
-		final List<IRobotMovedListener> robotMovedListener = new LinkedList<>();
-		final ExplorationTreeBuilder explorationTreeBuilder = new ExplorationTreeBuilder(treeToExplore.getRoot());
-		robotMovedListener.add(explorationTreeBuilder);
-
-		final RobotNodeStringifier robotNodeStringifier = new RobotNodeStringifier();
-		robotMovedListener.add(robotNodeStringifier);
-
-		// Create an instance of the algorithm
-		final LocalStorageExploration algorithm = new LocalStorageExploration(treeToExplore.getRoot(), 3,
-				new NodeStorageManager(), robotMovedListener);
-
-		// Initialize objects
-		robotNodeStringifier.setInitialLocation(algorithm.getRobots());
-		final ITreeStringifier treeStringifier = new HierarchicalTreeStringifier(robotNodeStringifier);
-
-		// Start the service
-		boolean shouldStop = false;
-		int step = 0;
 		try (final Scanner scanner = new Scanner(System.in)) {
+			// Generate a tree to explore
+			System.out.println("Enter a size for a random tree:");
+			final int size = Integer.parseInt(scanner.nextLine());
+			final RandomTreeGenerator generator = new RandomTreeGenerator(size);
+
+			System.out.println("Enter a seed for the random tree or leave blank:");
+			final String seedCandidate = scanner.nextLine();
+			final ITree treeToExplore;
+			if (seedCandidate.trim().isEmpty()) {
+				treeToExplore = generator.generateRandomTree();
+			} else {
+				final long seed = Long.parseLong(seedCandidate);
+				treeToExplore = generator.generateRandomTree(seed);
+			}
+
+			// Create event listeners
+			final List<IRobotMovedListener> robotMovedListener = new LinkedList<>();
+			final ExplorationTreeBuilder explorationTreeBuilder = new ExplorationTreeBuilder(treeToExplore.getRoot());
+			robotMovedListener.add(explorationTreeBuilder);
+
+			final RobotNodeStringifier robotNodeStringifier = new RobotNodeStringifier();
+			robotMovedListener.add(robotNodeStringifier);
+
+			// Create an instance of the algorithm
+			System.out.println("Enter a number for the amount of robots:");
+			final int robots = Integer.parseInt(scanner.nextLine());
+			final LocalStorageExploration algorithm = new LocalStorageExploration(treeToExplore.getRoot(), robots,
+					new NodeStorageManager(), robotMovedListener);
+
+			// Initialize objects
+			robotNodeStringifier.setInitialLocation(algorithm.getRobots());
+			final ITreeStringifier treeStringifier = new HierarchicalTreeStringifier(robotNodeStringifier);
+
+			// Start the service
+			boolean shouldStop = false;
+			int step = 0;
 			while (!shouldStop) {
 				// Fetch the command
 				System.out.println("Enter command: ");
@@ -73,6 +86,8 @@ public final class LocalStorageExplorationDemo {
 					}
 				} else if (command.equalsIgnoreCase("n")) {
 					stepToGo = step + 1;
+				} else if (command.equalsIgnoreCase("r")) {
+					stepToGo = step + 3;
 				} else if (command.equalsIgnoreCase("q")) {
 					shouldStop = true;
 					stepToGo = step;
@@ -81,6 +96,7 @@ public final class LocalStorageExplorationDemo {
 				} else {
 					System.out.println("Unknown command, available are:");
 					System.out.println("\tn - Explore one step");
+					System.out.println("\tr - Explore one round, i.e. three steps");
 					System.out.println("\t<int> - Explore to step number <int>");
 					System.out.println("\tf - Fully explore until the algorithm is finished");
 					System.out.println("\tq - Quit");

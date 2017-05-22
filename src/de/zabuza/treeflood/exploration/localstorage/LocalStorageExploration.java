@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import de.zabuza.treeflood.exploration.localstorage.listener.IRobotEncounteredExceptionListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage;
 import de.zabuza.treeflood.exploration.localstorage.storage.NodeStorageManager;
@@ -22,11 +23,21 @@ import de.zabuza.treeflood.tree.ITreeNode;
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
-public final class LocalStorageExploration {
+public final class LocalStorageExploration implements IRobotEncounteredExceptionListener {
+	/**
+	 * If not <tt>null</tt> it stores the exception a robot encountered.
+	 */
+	private Throwable mExceptionEncounteredByRobot;
+
 	/**
 	 * The object that provides the local storage for nodes.
 	 */
 	private final ILocalStorage mLocalStorage;
+
+	/**
+	 * If not <tt>null</tt> it stores the robot that encountered an exception.
+	 */
+	private Robot mRobotIdThatEncounteredException;
 
 	/**
 	 * The list of robots.
@@ -78,12 +89,31 @@ public final class LocalStorageExploration {
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage,
 			final List<IRobotMovedListener> robotMovedListeners) {
+		this.mExceptionEncounteredByRobot = null;
+		this.mRobotIdThatEncounteredException = null;
 		this.mLocalStorage = localStorage;
 		this.mRobots = new ArrayList<>(amountOfRobots);
 
 		// Create robots
 		for (int i = 0; i < amountOfRobots; i++) {
-			this.mRobots.add(new Robot(i, root, this.mLocalStorage, robotMovedListeners));
+			this.mRobots
+					.add(new Robot(i, root, this.mLocalStorage, robotMovedListeners, Collections.singletonList(this)));
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.zabuza.treeflood.exploration.localstorage.listener.
+	 * IRobotEncounteredExceptionListener#encounteredException(de.zabuza.
+	 * treeflood.exploration.localstorage.Robot, java.lang.Throwable)
+	 */
+	@Override
+	public synchronized void encounteredException(final Robot robot, final Throwable e) {
+		// Only set it once
+		if (this.mExceptionEncounteredByRobot == null) {
+			this.mExceptionEncounteredByRobot = e;
+			this.mRobotIdThatEncounteredException = robot;
 		}
 	}
 
@@ -149,6 +179,10 @@ public final class LocalStorageExploration {
 			} catch (final InterruptedException e) {
 				// Just ignore the interrupt and continue
 			}
+		}
+		// Fail if a robot encounter an exception
+		if (this.mExceptionEncounteredByRobot != null) {
+			throw new RobotFailedException(this.mRobotIdThatEncounteredException, this.mExceptionEncounteredByRobot);
 		}
 
 		// Fetch the result of the pulse

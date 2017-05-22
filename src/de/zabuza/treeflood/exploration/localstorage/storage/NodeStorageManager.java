@@ -8,7 +8,7 @@ import de.zabuza.treeflood.tree.ITreeNode;
 import de.zabuza.treeflood.util.NestedMap2;
 
 /**
- * Provides a local storage for tree nodes. The storage is not thread safe.
+ * Provides a local storage for tree nodes. The storage is thread safe.
  * 
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
@@ -34,7 +34,7 @@ public final class NodeStorageManager implements ILocalStorage {
 	 * de.zabuza.treeflood.tree.ITreeNode)
 	 */
 	@Override
-	public NestedMap2<Integer, Integer, Information> read(final ITreeNode node) {
+	public synchronized NestedMap2<Integer, Integer, Information> read(final ITreeNode node) {
 		return getWithCreateOnInexistent(node);
 	}
 
@@ -47,7 +47,7 @@ public final class NodeStorageManager implements ILocalStorage {
 	 * de.zabuza.treeflood.tree.ITreeNode)
 	 */
 	@Override
-	public void write(final Information information, final ITreeNode node) {
+	public synchronized void write(final Information information, final ITreeNode node) {
 		NestedMap2<Integer, Integer, Information> storage = getWithCreateOnInexistent(node);
 		storage.put(Integer.valueOf(information.getStep()), Integer.valueOf(information.getRobotId()), information);
 	}
@@ -61,7 +61,7 @@ public final class NodeStorageManager implements ILocalStorage {
 	 * @return The storage of the given node. The returned object is backed with
 	 *         the storage.
 	 */
-	private NestedMap2<Integer, Integer, Information> getWithCreateOnInexistent(final ITreeNode node) {
+	private synchronized NestedMap2<Integer, Integer, Information> getWithCreateOnInexistent(final ITreeNode node) {
 		final NestedMap2<Integer, Integer, Information> storage;
 
 		final NestedMap2<Integer, Integer, Information> currentStorage = this.mNodeToStorage.get(node);

@@ -90,6 +90,17 @@ public final class Information {
 		return this.mStep;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Information [step=" + this.mStep + ", robotId=" + this.mRobotId + ", port=" + this.mPort
+				+ ", fromParent=" + this.mFromParent + "]";
+	}
+
 	/**
 	 * Whether the robot entered the node through its parent or from a child.
 	 * 

@@ -13,7 +13,10 @@ import de.zabuza.treeflood.util.NestedMap2;
 public interface ILocalStorage {
 	/**
 	 * Reads the storage from a given node. The content is unmodifiable. The
-	 * first key is the step of entries, the second key the robot id.
+	 * first key is the step of entries, the second key the robot id. An
+	 * implementation should note that this method will be called from multiple
+	 * threads at the same time. It may be necessary to implement the method
+	 * thread safe.
 	 * 
 	 * @param node
 	 *            The node to read from
@@ -22,7 +25,9 @@ public interface ILocalStorage {
 	public NestedMap2<Integer, Integer, Information> read(final ITreeNode node);
 
 	/**
-	 * Writes to the storage of the given node.
+	 * Writes to the storage of the given node. An implementation should note
+	 * that this method will be called from multiple threads at the same time.
+	 * It may be necessary to implement the method thread safe.
 	 * 
 	 * @param information
 	 *            The information to write

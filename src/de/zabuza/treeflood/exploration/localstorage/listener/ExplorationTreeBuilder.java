@@ -98,7 +98,7 @@ public final class ExplorationTreeBuilder implements IRobotMovedListener {
 	 * de.zabuza.treeflood.tree.ITreeNode, de.zabuza.treeflood.tree.ITreeNode)
 	 */
 	@Override
-	public void movedTo(final Robot robot, final ITreeNode source, final ITreeNode destination) {
+	public synchronized void movedTo(final Robot robot, final ITreeNode source, final ITreeNode destination) {
 		// Reject the edge if robot moved from child to parent as the edge then
 		// must already be explored seen from the other side
 		if (source.getParent().isPresent() && source.getParent().get().equals(destination)) {

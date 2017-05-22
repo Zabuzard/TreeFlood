@@ -23,6 +23,11 @@ import java.util.Set;
 public final class NestedMap2<K1, K2, V> {
 
 	/**
+	 * The size of an empty map.
+	 */
+	private final static int EMPTY_SIZE = 0;
+
+	/**
 	 * Internal map which stores maps of second keys and values for the first
 	 * keys.
 	 */
@@ -128,6 +133,15 @@ public final class NestedMap2<K1, K2, V> {
 		int result = 1;
 		result = prime * result + ((this.mK1ToK2ToV == null) ? 0 : this.mK1ToK2ToV.hashCode());
 		return result;
+	}
+
+	/**
+	 * Whether the map is empty, i.e. contains no entry.
+	 * 
+	 * @return <tt>True</tt> if the map is empty, <tt>false</tt> otherwise
+	 */
+	public boolean isEmpty() {
+		return size() == EMPTY_SIZE;
 	}
 
 	/**

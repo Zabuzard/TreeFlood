@@ -2,6 +2,7 @@ package de.zabuza.treeflood.exploration.localstorage;
 
 import java.util.List;
 
+import de.zabuza.treeflood.exploration.localstorage.listener.IRobotEncounteredExceptionListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.exploration.localstorage.storage.ILocalStorage;
 import de.zabuza.treeflood.tree.ITreeNode;
@@ -29,6 +30,11 @@ public final class Robot implements Comparable<Robot> {
 	 * The current step the robot is in.
 	 */
 	private EStep mCurrentStep;
+	/**
+	 * A list of objects that want to receive events each time the robot
+	 * encounters an uncatched exception in {@link #pulse()}.
+	 */
+	private final List<IRobotEncounteredExceptionListener> mExceptionListeners;
 	/**
 	 * Whether the robot has stopped, i.e. finished the algorithm.
 	 */
@@ -85,13 +91,18 @@ public final class Robot implements Comparable<Robot> {
 	 * @param robotMovedListeners
 	 *            A list of objects that want to receive events each time this
 	 *            robot moves to another node
+	 * @param exceptionListeners
+	 *            A list of objects that want to receive events each time the
+	 *            robot encounters an uncatched exception in {@link #pulse()}.
 	 */
 	public Robot(final int id, final ITreeNode startingNode, final ILocalStorage localStorage,
-			final List<IRobotMovedListener> robotMovedListeners) {
+			final List<IRobotMovedListener> robotMovedListeners,
+			final List<IRobotEncounteredExceptionListener> exceptionListeners) {
 		this.mId = id;
 		this.mCurrentNode = startingNode;
 		this.mLocalStorage = localStorage;
 		this.mRobotMovedListeners = robotMovedListeners;
+		this.mExceptionListeners = exceptionListeners;
 		this.mLocalStorageData = null;
 		this.mKnowledgeManager = new KnowledgeManager();
 
@@ -146,17 +157,26 @@ public final class Robot implements Comparable<Robot> {
 	 *         algorithm, <tt>false<tt> otherwise
 	 */
 	public boolean pulse() {
-		// Directly return if already stopped
-		if (hasStopped()) {
-			return true;
+		try {
+			// Directly return if already stopped
+			if (hasStopped()) {
+				return true;
+			}
+
+			// Execute the stage of the current step
+			executeStage(this.mCurrentStep, this.mCurrentStage);
+
+			// Select the next step and stage and finish the pulse
+			selectNextStepAndStage();
+			return hasStopped();
+		} catch (final Throwable e) {
+			// Forward every exception to listeners
+			for (final IRobotEncounteredExceptionListener listener : this.mExceptionListeners) {
+				listener.encounteredException(this, e);
+			}
+			// Then fail
+			throw e;
 		}
-
-		// Execute the stage of the current step
-		executeStage(this.mCurrentStep, this.mCurrentStage);
-
-		// Select the next step and stage and finish the pulse
-		selectNextStepAndStage();
-		return hasStopped();
 	}
 
 	/**
@@ -222,12 +242,10 @@ public final class Robot implements Comparable<Robot> {
 					// Move to the parent of the current node
 					moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(),
 							false);
+					return;
 				}
 
 				// Move along the given port to a child of the current node
-				// TODO Sure that the edge is unexplored? Maybe there is
-				// currently a robot located in the subtree, the knowledge
-				// should be an indicator
 				moveAlongEdge(this.mCurrentNode, port, this.mCurrentNode.getChild(port), true);
 				return;
 			}
@@ -248,8 +266,14 @@ public final class Robot implements Comparable<Robot> {
 					return;
 				}
 
+				// Do not move up if child is root.
+				if (this.mCurrentNode.isRoot()) {
+					stayAtNode();
+					return;
+				}
+
 				// Temporarily move to the parent to inform it that its child
-				// has finished
+				// has finished.
 				moveAlongEdge(this.mCurrentNode, knowledge.getParentPort(), this.mCurrentNode.getParent().get(), false);
 				return;
 			}

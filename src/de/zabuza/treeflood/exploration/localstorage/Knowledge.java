@@ -164,4 +164,18 @@ public class Knowledge {
 	public SortedSet<Integer> getUnfinishedChildrenPorts() {
 		return this.mUnfinishedChildrenPorts;
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "Knowledge [round=" + this.mRound + ", node=" + this.mNode + ", parentPort=" + this.mParentPort
+				+ ", mRobotsAtLocation=" + this.mRobotsAtLocation + ", unfinishedChildrenPorts="
+				+ this.mUnfinishedChildrenPorts + ", advantagedChildrenPorts=" + this.mAdvantagedChildrenPorts
+				+ ", finishedButInhabitedChildrenPorts=" + this.mFinishedButInhabitedChildrenPorts
+				+ ", finishedAndNotInhabitedChildrenPorts=" + this.mFinishedAndNotInhabitedChildrenPorts + "]";
+	}
 }

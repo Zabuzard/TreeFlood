@@ -3,6 +3,7 @@ package de.zabuza.treeflood.exploration.localstorage;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -155,7 +156,7 @@ public final class KnowledgeManager {
 			// Search for the first entries in the storage of the node
 			int startingRound = -1;
 			Map<Integer, Information> startingRoundData = null;
-			for (int pastRound = 1; pastRound < round; pastRound++) {
+			for (int pastRound = 1; pastRound <= round; pastRound++) {
 				final int pastStep = 3 * pastRound;
 				startingRoundData = localStorage.get(Integer.valueOf(pastStep));
 				// Found some initial data
@@ -181,8 +182,6 @@ public final class KnowledgeManager {
 		final SortedSet<Integer> unfinishedChildrenPorts = new TreeSet<>();
 		for (int i = 1; i <= node.getAmountOfChildren(); i++) {
 			// Initially all children are unfinished
-			// NOTE We discard the exclusion of the parent pointer here as it is
-			// not part of the children
 			unfinishedChildrenPorts.add(Integer.valueOf(i));
 		}
 		// Initially there are no advantaged children as all robots must be
@@ -269,13 +268,15 @@ public final class KnowledgeManager {
 			// this round
 			final SortedSet<Integer> robotsAtLocation = new TreeSet<>(pastKnowledge.getRobotsAtLocation());
 			// Determine which robots left in this round
+			final LinkedList<Integer> robotsLeft = new LinkedList<>();
 			for (final int robotId : robotsAtLocation) {
 				final int port = robotAction(robotId, pastKnowledge, node);
 				if (port != Information.STAY_PORT) {
 					// The robot leaves the node
-					robotsAtLocation.remove(Integer.valueOf(robotId));
+					robotsLeft.add(Integer.valueOf(robotId));
 				}
 			}
+			robotsAtLocation.removeAll(robotsLeft);
 			// Determine which robots entered the node
 			final Set<Integer> robotsEntered = pastRegularEntries.keySet();
 			robotsAtLocation.addAll(robotsEntered);
@@ -325,32 +326,42 @@ public final class KnowledgeManager {
 			// We compute the complete past distribution of robots to children
 			// in order to know which children are advantaged
 			final SortedSet<Integer> advantagedChildrenPorts = new TreeSet<>();
-			// If we have more robots than unfinished children we first
-			// distribute that many robots to each child such that each receives
-			// the same amount. The remaining amount of robots is given by the
-			// modulo.
-			final int amountOfRemainingRobots = robotsAtLocation.size() % unfinishedChildrenPorts.size();
-			// We begin to distribute robots to the disadvantaged children, from
-			// left to right. After that we begin at the leftmost child and
-			// assign robots from left to right. We now determine the child
-			// position where all robots where assigned. All children left to
-			// this position (inclusive) are advantaged now, all to the right
-			// are disadvantaged.
-			final int amountOfAdvantagedChildren;
-			if (amountOfRemainingRobots <= unfinishedChildrenPorts.size() - advantagedChildrenPortsStart.size()) {
-				// We have not enough robots to even assign them to all
-				// disadvantaged children in the first place
-				amountOfAdvantagedChildren = advantagedChildrenPortsStart.size() + amountOfRemainingRobots;
-			} else {
-				amountOfAdvantagedChildren = amountOfRemainingRobots - unfinishedChildrenPorts.size()
-						+ advantagedChildrenPortsStart.size();
-			}
-			// Iterate unfinished children and determine all advantaged children
-			final Iterator<Integer> unfinishedChildrenIter = unfinishedChildrenPorts.iterator();
-			for (int i = 1; i <= amountOfAdvantagedChildren; i++) {
-				// The child specified by this port is advantaged
-				final Integer port = unfinishedChildrenIter.next();
-				advantagedChildrenPorts.add(port);
+			// If all children are finished then obviously there can not be any
+			// unfinished advantaged children anymore
+			if (!unfinishedChildrenPorts.isEmpty()) {
+				// If we have more robots than unfinished children we first
+				// distribute that many robots to each child such that each
+				// receives
+				// the same amount. The remaining amount of robots is given by
+				// the
+				// modulo.
+				final int amountOfRemainingRobots = robotsAtLocation.size() % unfinishedChildrenPorts.size();
+				// We begin to distribute robots to the disadvantaged children,
+				// from
+				// left to right. After that we begin at the leftmost child and
+				// assign robots from left to right. We now determine the child
+				// position where all robots where assigned. All children left
+				// to
+				// this position (inclusive) are advantaged now, all to the
+				// right
+				// are disadvantaged.
+				final int amountOfAdvantagedChildren;
+				if (amountOfRemainingRobots <= unfinishedChildrenPorts.size() - advantagedChildrenPortsStart.size()) {
+					// We have not enough robots to even assign them to all
+					// disadvantaged children in the first place
+					amountOfAdvantagedChildren = advantagedChildrenPortsStart.size() + amountOfRemainingRobots;
+				} else {
+					amountOfAdvantagedChildren = amountOfRemainingRobots - unfinishedChildrenPorts.size()
+							+ advantagedChildrenPortsStart.size();
+				}
+				// Iterate unfinished children and determine all advantaged
+				// children
+				final Iterator<Integer> unfinishedChildrenIter = unfinishedChildrenPorts.iterator();
+				for (int i = 1; i <= amountOfAdvantagedChildren; i++) {
+					// The child specified by this port is advantaged
+					final Integer port = unfinishedChildrenIter.next();
+					advantagedChildrenPorts.add(port);
+				}
 			}
 
 			// Create the knowledge for the next round

@@ -11,7 +11,9 @@ import de.zabuza.treeflood.tree.ITreeNode;
  */
 public interface IRobotMovedListener {
 	/**
-	 * Event listener callback for robot movement events.
+	 * Event listener callback for robot movement events. An implementation
+	 * should note that this method will be called from multiple threads at the
+	 * same time. It may be necessary to implement the method thread safe.
 	 * 
 	 * @param robot
 	 *            The robot that moved
