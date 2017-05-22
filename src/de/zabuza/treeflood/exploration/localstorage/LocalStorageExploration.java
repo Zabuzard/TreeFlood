@@ -18,7 +18,11 @@ import de.zabuza.treeflood.tree.ITreeNode;
  * are called robots, they move along the nodes of the tree and are only allowed
  * to read and write data to the node they are currently located at. Thus they
  * are limited to a local storages and can not remotely exchange data with each
- * other.
+ * other. <br>
+ * <br>
+ * The algorithm was developed by <tt>Fraigniaud Pierre et al.</tt> in their
+ * research <a href="http://dx.doi.org/10.1007/978-3-540-24698-5_18">Collective
+ * Tree Exploration</a>.
  * 
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
