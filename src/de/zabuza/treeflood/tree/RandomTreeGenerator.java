@@ -3,35 +3,13 @@ package de.zabuza.treeflood.tree;
 import java.util.ArrayList;
 import java.util.Random;
 
-import de.zabuza.treeflood.tree.util.HierarchicalTreeStringifier;
-import de.zabuza.treeflood.tree.util.ITreeStringifier;
-import de.zabuza.treeflood.tree.util.UniqueIdTreeNodeStringifier;
-
 /**
- * Generator which produces random tree graphs.
+ * Generator which produces uniformly distributed random tree graphs.
  * 
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
 public final class RandomTreeGenerator {
-	/**
-	 * Demonstrates the usage of the random tree generator.
-	 * 
-	 * @param args
-	 *            Not supported
-	 */
-	public static void main(final String[] args) {
-		final RandomTreeGenerator generator = new RandomTreeGenerator(10);
-		final ITree tree = generator.generateRandomTree();
-		final long seed = generator.getSeedOfLastGeneration().longValue();
-
-		final ITreeStringifier treeStringifier = new HierarchicalTreeStringifier(new UniqueIdTreeNodeStringifier());
-
-		System.out.println("Seed is: " + seed);
-		System.out.println("Tree is: ");
-		System.out.println(treeStringifier.treeToString(tree));
-	}
-
 	/**
 	 * The seed of the last generation or <tt>null</tt> if there was no.
 	 */
@@ -43,7 +21,8 @@ public final class RandomTreeGenerator {
 	private final int mSize;
 
 	/**
-	 * Creates a new generator which produces random trees of the given size.
+	 * Creates a new generator which produces uniformly distributed random trees
+	 * of the given size.
 	 * 
 	 * @param size
 	 *            The size of the trees to produces
@@ -59,8 +38,8 @@ public final class RandomTreeGenerator {
 	}
 
 	/**
-	 * Generates a new random tree. The seed used by the method can be obtained
-	 * by {@link #getSeedOfLastGeneration()}.
+	 * Generates a new uniformly distributed random tree. The seed used by the
+	 * method can be obtained by {@link #getSeedOfLastGeneration()}.
 	 * 
 	 * @return The generated random tree
 	 */
@@ -69,7 +48,7 @@ public final class RandomTreeGenerator {
 	}
 
 	/**
-	 * Generates a new random tree with the given seed.
+	 * Generates a new uniformly distributed random tree with the given seed.
 	 * 
 	 * @param seed
 	 *            The seed to use for generation
