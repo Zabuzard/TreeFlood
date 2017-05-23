@@ -3,6 +3,7 @@ package de.zabuza.treeflood.exploration.localstorage;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
@@ -62,10 +63,10 @@ public final class KnowledgeManager {
 			// left we assign them from left to right starting at the leftmost
 			// unfinished child.
 			// We now simulate this procedure until the given robot was assigned
-			final SortedSet<Integer> robotsAtLocation = knowledge.getRobotsAtLocation();
-			final SortedSet<Integer> unfinishedChildren = knowledge.getUnfinishedChildrenPorts();
-			final SortedSet<Integer> advantagedChildren = knowledge.getAdvantagedChildrenPorts();
-			final Iterator<Integer> robotsToAssign = knowledge.getRobotsAtLocation().iterator();
+			final Set<Integer> robotsAtLocation = knowledge.getRobotsAtLocation();
+			final Set<Integer> unfinishedChildren = knowledge.getUnfinishedChildrenPorts();
+			final Set<Integer> advantagedChildren = knowledge.getAdvantagedChildrenPorts();
+			final Iterator<Integer> robotsToAssign = robotsAtLocation.iterator();
 
 			// Assign robots equally to all unfinished children
 			int amountOfRobotsForEachChild = (int) Math
@@ -179,20 +180,26 @@ public final class KnowledgeManager {
 		// All entries must have the same port, namely the port they used to
 		// discover the node in the first place which is also the parent port
 		final int parentPort = initialRoundData.values().iterator().next().getPort();
-		final SortedSet<Integer> unfinishedChildrenPorts = new TreeSet<>();
+		// The algorithm can maintain this set ordered without a sorted set
+		// structure
+		final LinkedHashSet<Integer> unfinishedChildrenPorts = new LinkedHashSet<>();
 		for (int i = 1; i <= node.getAmountOfChildren(); i++) {
 			// Initially all children are unfinished
 			unfinishedChildrenPorts.add(Integer.valueOf(i));
 		}
 		// Initially there are no advantaged children as all robots must be
 		// above the children at its first discovery
-		final SortedSet<Integer> advantagedChildrenPorts = new TreeSet<>();
+		// The algorithm creates this set newly every step so we do not need a
+		// sorted set structure now
+		final Set<Integer> advantagedChildrenPorts = Collections.emptySet();
 		// Initially there are no finished children at all as they have not been
 		// visited yet
+		// The algorithm can not guarantee a sorted order on this sets so we
+		// need a sorted set structure
 		final SortedSet<Integer> finishedButInhabitedChildrenPorts = new TreeSet<>();
 		final SortedSet<Integer> finishedAndNotInhabitedChildrenPorts = new TreeSet<>();
-
 		final SortedSet<Integer> robotsAtLocation = new TreeSet<>();
+
 		for (final Integer robotId : initialRoundData.keySet()) {
 			// All robots that have written to the node in step 1 are in it
 			robotsAtLocation.add(robotId);
@@ -288,14 +295,11 @@ public final class KnowledgeManager {
 			// enter any robot from that child in this round. If there entered
 			// any we call the child finished and not inhabited as robots will
 			// leave such nodes all together.
-			final SortedSet<Integer> unfinishedChildrenPorts = new TreeSet<>(
-					pastKnowledge.getUnfinishedChildrenPorts());
-			final SortedSet<Integer> finishedButInhabitedChildrenPorts = new TreeSet<>(
-					pastKnowledge.getFinishedButInhabitedChildrenPorts());
-			final SortedSet<Integer> finishedAndNotInhabitedChildrenPorts = new TreeSet<>(
-					pastKnowledge.getFinishedAndNotInhabitedChildrenPorts());
-			final SortedSet<Integer> advantagedChildrenPortsStart = new TreeSet<>(
-					pastKnowledge.getAdvantagedChildrenPorts());
+			final Set<Integer> unfinishedChildrenPorts = pastKnowledge.getUnfinishedChildrenPorts();
+			final Set<Integer> finishedButInhabitedChildrenPorts = pastKnowledge.getFinishedButInhabitedChildrenPorts();
+			final Set<Integer> finishedAndNotInhabitedChildrenPorts = pastKnowledge
+					.getFinishedAndNotInhabitedChildrenPorts();
+			final Set<Integer> advantagedChildrenPortsStart = pastKnowledge.getAdvantagedChildrenPorts();
 			for (final Information info : pastUpdateEntries.values()) {
 				// The child of that port is now finished
 				final Integer port = Integer.valueOf(info.getPort());
@@ -325,26 +329,21 @@ public final class KnowledgeManager {
 
 			// We compute the complete past distribution of robots to children
 			// in order to know which children are advantaged
-			final SortedSet<Integer> advantagedChildrenPorts = new TreeSet<>();
+			final LinkedHashSet<Integer> advantagedChildrenPorts = new LinkedHashSet<>();
 			// If all children are finished then obviously there can not be any
 			// unfinished advantaged children anymore
 			if (!unfinishedChildrenPorts.isEmpty()) {
 				// If we have more robots than unfinished children we first
 				// distribute that many robots to each child such that each
-				// receives
-				// the same amount. The remaining amount of robots is given by
-				// the
-				// modulo.
+				// receives the same amount. The remaining amount of robots is
+				// given by the modulo.
 				final int amountOfRemainingRobots = robotsAtLocation.size() % unfinishedChildrenPorts.size();
 				// We begin to distribute robots to the disadvantaged children,
-				// from
-				// left to right. After that we begin at the leftmost child and
-				// assign robots from left to right. We now determine the child
-				// position where all robots where assigned. All children left
-				// to
-				// this position (inclusive) are advantaged now, all to the
-				// right
-				// are disadvantaged.
+				// from left to right. After that we begin at the leftmost child
+				// and assign robots from left to right. We now determine the
+				// child position where all robots where assigned. All children
+				// left to this position (inclusive) are advantaged now, all to
+				// the right are disadvantaged.
 				final int amountOfAdvantagedChildren;
 				if (amountOfRemainingRobots <= unfinishedChildrenPorts.size() - advantagedChildrenPortsStart.size()) {
 					// We have not enough robots to even assign them to all

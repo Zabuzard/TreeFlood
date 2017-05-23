@@ -1,6 +1,6 @@
 package de.zabuza.treeflood.exploration.localstorage;
 
-import java.util.SortedSet;
+import java.util.Set;
 
 import de.zabuza.treeflood.tree.ITreeNode;
 
@@ -17,16 +17,19 @@ public class Knowledge {
 	 * robot located in them than the other children. The set must be a subset
 	 * of the unfinishedChildrenPorts, that means that we only count unfinished
 	 * children here. Finished but inhabited children do not count for this set.
+	 * It is important that this set is maintained in a sorted order.
 	 */
-	private final SortedSet<Integer> mAdvantagedChildrenPorts;
+	private final Set<Integer> mAdvantagedChildrenPorts;
 	/**
-	 * The set of children ports that are finished and not inhabited.
+	 * The set of children ports that are finished and not inhabited. It is
+	 * important that this set is maintained in a sorted order.
 	 */
-	private final SortedSet<Integer> mFinishedAndNotInhabitedChildrenPorts;
+	private final Set<Integer> mFinishedAndNotInhabitedChildrenPorts;
 	/**
-	 * The set of children ports that are finished but inhabited.
+	 * The set of children ports that are finished but inhabited. It is
+	 * important that this set is maintained in a sorted order.
 	 */
-	private final SortedSet<Integer> mFinishedButInhabitedChildrenPorts;
+	private final Set<Integer> mFinishedButInhabitedChildrenPorts;
 	/**
 	 * The node this knowledge belongs to.
 	 */
@@ -36,17 +39,19 @@ public class Knowledge {
 	 */
 	private final int mParentPort;
 	/**
-	 * The set of robots that also are at the node this knowledge belongs to.
+	 * The set of robots that also are at the node this knowledge belongs to. It
+	 * is important that this set is maintained in a sorted order.
 	 */
-	private final SortedSet<Integer> mRobotsAtLocation;
+	private final Set<Integer> mRobotsAtLocation;
 	/**
 	 * The round this knowledge is of.
 	 */
 	private final int mRound;
 	/**
-	 * The set of children ports that are unfinished.
+	 * The set of children ports that are unfinished. It is important that this
+	 * set is maintained in a sorted order.
 	 */
-	private final SortedSet<Integer> mUnfinishedChildrenPorts;
+	private final Set<Integer> mUnfinishedChildrenPorts;
 
 	/**
 	 * Creates a new knowledge for the given round and the given node.
@@ -58,25 +63,30 @@ public class Knowledge {
 	 * @param parentPort
 	 *            The parent port of the node this knowledge belongs to
 	 * @param unfinishedChildrenPorts
-	 *            The set of children ports that are unfinished
+	 *            The set of children ports that are unfinished. It is important
+	 *            that this set is in a sorted order.
 	 * @param advantagedChildrenPorts
 	 *            The set of children ports that are advantaged, i.e. they have
 	 *            one more robot located in them than the other children. The
 	 *            set must be a subset of the unfinishedChildrenPorts, that
 	 *            means that we only count unfinished children here. Finished
-	 *            but inhabited children do not count for this set.
+	 *            but inhabited children do not count for this set. It is
+	 *            important that this set is in a sorted order.
 	 * @param finishedButInhabitedChildrenPorts
-	 *            The set of children ports that are finished but inhabited.
+	 *            The set of children ports that are finished but inhabited. It
+	 *            is important that this set is in a sorted order.
 	 * @param finishedAndNotInhabitedChildrenPorts
 	 *            The set of children ports that are finished and not inhabited.
+	 *            It is important that this set is in a sorted order.
 	 * @param robotsAtLocation
 	 *            The set of robots that also are at the node this knowledge
-	 *            belongs to
+	 *            belongs to. It is important that this set is in a sorted
+	 *            order.
 	 */
 	public Knowledge(final int round, final ITreeNode node, final int parentPort,
-			final SortedSet<Integer> unfinishedChildrenPorts, final SortedSet<Integer> advantagedChildrenPorts,
-			final SortedSet<Integer> finishedButInhabitedChildrenPorts,
-			final SortedSet<Integer> finishedAndNotInhabitedChildrenPorts, SortedSet<Integer> robotsAtLocation) {
+			final Set<Integer> unfinishedChildrenPorts, final Set<Integer> advantagedChildrenPorts,
+			final Set<Integer> finishedButInhabitedChildrenPorts,
+			final Set<Integer> finishedAndNotInhabitedChildrenPorts, Set<Integer> robotsAtLocation) {
 		this.mRound = round;
 		this.mNode = node;
 		this.mParentPort = parentPort;
@@ -92,29 +102,32 @@ public class Knowledge {
 	 * more robot located in them than the other children. The set must be a
 	 * subset of the unfinishedChildrenPorts, that means that we only count
 	 * unfinished children here. Finished but inhabited children do not count
-	 * for this set.
+	 * for this set. It is important that this set is maintained in a sorted
+	 * order.
 	 * 
 	 * @return The set of children ports that are advantaged
 	 */
-	public SortedSet<Integer> getAdvantagedChildrenPorts() {
+	public Set<Integer> getAdvantagedChildrenPorts() {
 		return this.mAdvantagedChildrenPorts;
 	}
 
 	/**
-	 * Gets the set of children ports that are finished and not inhabited.
+	 * Gets the set of children ports that are finished and not inhabited. It is
+	 * important that this set is maintained in a sorted order.
 	 * 
 	 * @return The set of children ports that are finished and not inhabited
 	 */
-	public SortedSet<Integer> getFinishedAndNotInhabitedChildrenPorts() {
+	public Set<Integer> getFinishedAndNotInhabitedChildrenPorts() {
 		return this.mFinishedAndNotInhabitedChildrenPorts;
 	}
 
 	/**
-	 * Gets the set of children ports that are finished but inhabited.
+	 * Gets the set of children ports that are finished but inhabited. It is
+	 * important that this set is maintained in a sorted order.
 	 * 
 	 * @return The set of children ports that are finished but inhabited
 	 */
-	public SortedSet<Integer> getFinishedButInhabitedChildrenPorts() {
+	public Set<Integer> getFinishedButInhabitedChildrenPorts() {
 		return this.mFinishedButInhabitedChildrenPorts;
 	}
 
@@ -138,12 +151,12 @@ public class Knowledge {
 
 	/**
 	 * Gets the set of robots that also are at the node this knowledge belongs
-	 * to.
+	 * to. It is important that this set is maintained in a sorted order.
 	 * 
 	 * @return The set of robots that also are at the node this knowledge
 	 *         belongs to
 	 */
-	public SortedSet<Integer> getRobotsAtLocation() {
+	public Set<Integer> getRobotsAtLocation() {
 		return this.mRobotsAtLocation;
 	}
 
@@ -157,11 +170,12 @@ public class Knowledge {
 	}
 
 	/**
-	 * Gets the set of children ports that are unfinished.
+	 * Gets the set of children ports that are unfinished. It is important that
+	 * this set is maintained in a sorted order.
 	 * 
 	 * @return The set of children ports that are unfinished
 	 */
-	public SortedSet<Integer> getUnfinishedChildrenPorts() {
+	public Set<Integer> getUnfinishedChildrenPorts() {
 		return this.mUnfinishedChildrenPorts;
 	}
 
