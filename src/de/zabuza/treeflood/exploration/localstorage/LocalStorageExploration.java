@@ -2,10 +2,7 @@ package de.zabuza.treeflood.exploration.localstorage;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotEncounteredExceptionListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
@@ -32,17 +29,18 @@ public final class LocalStorageExploration implements IRobotEncounteredException
 	 * If not <tt>null</tt> it stores the exception a robot encountered.
 	 */
 	private Throwable mExceptionEncounteredByRobot;
-
 	/**
 	 * The object that provides the local storage for nodes.
 	 */
 	private final ILocalStorage mLocalStorage;
-
+	/**
+	 * The object used to manage pulses for robots.
+	 */
+	private final IRobotPulseManager mPulseManager;
 	/**
 	 * If not <tt>null</tt> it stores the robot that encountered an exception.
 	 */
 	private Robot mRobotIdThatEncounteredException;
-
 	/**
 	 * The list of robots.
 	 */
@@ -59,7 +57,8 @@ public final class LocalStorageExploration implements IRobotEncounteredException
 	 *            The amount of robots to use for the distributed exploration
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots) {
-		this(root, amountOfRobots, new NodeStorageManager(), Collections.emptyList());
+		this(root, amountOfRobots, new NodeStorageManager(), new OneThreadPerRobotPulseManager(),
+				Collections.emptyList());
 	}
 
 	/**
@@ -70,11 +69,14 @@ public final class LocalStorageExploration implements IRobotEncounteredException
 	 *            The root of the tree to explore
 	 * @param localStorage
 	 *            Object that provides a local storage for nodes
+	 * @param pulseManager
+	 *            The object used to manage the pulses for robots
 	 * @param amountOfRobots
 	 *            The amount of robots to use for the distributed exploration
 	 */
-	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage) {
-		this(root, amountOfRobots, localStorage, Collections.emptyList());
+	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage,
+			final IRobotPulseManager pulseManager) {
+		this(root, amountOfRobots, localStorage, pulseManager, Collections.emptyList());
 	}
 
 	/**
@@ -87,12 +89,14 @@ public final class LocalStorageExploration implements IRobotEncounteredException
 	 *            The amount of robots to use for the distributed exploration
 	 * @param localStorage
 	 *            Object that provides a local storage for nodes
+	 * @param pulseManager
+	 *            The object used to manage the pulses for robots
 	 * @param robotMovedListeners
 	 *            A list of objects that want to receive events each time a
 	 *            robot moves to another node
 	 */
 	public LocalStorageExploration(final ITreeNode root, final int amountOfRobots, final ILocalStorage localStorage,
-			final List<IRobotMovedListener> robotMovedListeners) {
+			final IRobotPulseManager pulseManager, final List<IRobotMovedListener> robotMovedListeners) {
 		this.mExceptionEncounteredByRobot = null;
 		this.mRobotIdThatEncounteredException = null;
 		this.mLocalStorage = localStorage;
@@ -103,6 +107,8 @@ public final class LocalStorageExploration implements IRobotEncounteredException
 			this.mRobots
 					.add(new Robot(i, root, this.mLocalStorage, robotMovedListeners, Collections.singletonList(this)));
 		}
+		this.mPulseManager = pulseManager;
+		this.mPulseManager.setRobots(this.mRobots);
 	}
 
 	/*
@@ -166,37 +172,13 @@ public final class LocalStorageExploration implements IRobotEncounteredException
 	 *         the algorithm, <tt>false<tt> otherwise
 	 */
 	private boolean pulse() {
-		final ExecutorService executor = Executors.newFixedThreadPool(this.mRobots.size());
-		LinkedList<RobotPulse> pulses = new LinkedList<>();
+		final boolean finished = this.mPulseManager.pulse();
 
-		for (final Robot robot : this.mRobots) {
-			final RobotPulse pulse = new RobotPulse(robot);
-			pulses.add(pulse);
-			executor.execute(pulse);
-		}
-
-		executor.shutdown();
-		// Wait until all threads have finished
-		while (!executor.isTerminated()) {
-			try {
-				Thread.sleep(5);
-			} catch (final InterruptedException e) {
-				// Just ignore the interrupt and continue
-			}
-		}
 		// Fail if a robot encounter an exception
 		if (this.mExceptionEncounteredByRobot != null) {
 			throw new RobotFailedException(this.mRobotIdThatEncounteredException, this.mExceptionEncounteredByRobot);
 		}
 
-		// Fetch the result of the pulse
-		for (final RobotPulse pulse : pulses) {
-			if (!pulse.hasRobotStopped()) {
-				// Found a robot that has not stopped yet
-				return false;
-			}
-		}
-		// All robots have stopped
-		return true;
+		return finished;
 	}
 }

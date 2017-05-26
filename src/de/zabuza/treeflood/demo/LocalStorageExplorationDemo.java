@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 import de.zabuza.treeflood.exploration.localstorage.LocalStorageExploration;
+import de.zabuza.treeflood.exploration.localstorage.OneThreadPerRobotPulseManager;
 import de.zabuza.treeflood.exploration.localstorage.listener.ExplorationTreeBuilder;
 import de.zabuza.treeflood.exploration.localstorage.listener.IRobotMovedListener;
 import de.zabuza.treeflood.exploration.localstorage.listener.RobotNodeStringifier;
@@ -62,7 +63,7 @@ public final class LocalStorageExplorationDemo {
 			System.out.println("Enter a number for the amount of robots:");
 			final int robots = Integer.parseInt(scanner.nextLine());
 			final LocalStorageExploration algorithm = new LocalStorageExploration(treeToExplore.getRoot(), robots,
-					new NodeStorageManager(), robotMovedListener);
+					new NodeStorageManager(), new OneThreadPerRobotPulseManager(), robotMovedListener);
 
 			// Initialize objects
 			robotNodeStringifier.setInitialLocation(algorithm.getRobots());
@@ -104,6 +105,7 @@ public final class LocalStorageExplorationDemo {
 					stepToGo = step;
 				}
 
+				final long startTime = System.currentTimeMillis();
 				// Execute steps until stepToGo
 				boolean isFinished = false;
 				final int previousStep = step;
@@ -111,11 +113,13 @@ public final class LocalStorageExplorationDemo {
 					isFinished = algorithm.exploreOneStep();
 					step++;
 				}
+				final long endTime = System.currentTimeMillis();
 
 				// Print the result
 				if (previousStep < step) {
 					System.out.println();
 					System.out.println("After step " + step + ":");
+					System.out.println("Time was " + (endTime - startTime) + "ms");
 					System.out.flush();
 					final ITree explorationTree = explorationTreeBuilder.getExploredTree();
 
