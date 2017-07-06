@@ -56,20 +56,28 @@ public final class RandomBenchmark {
 
 			final int benchmarkDensity = 500;
 			final int amountOfRobots = 100;
-			final int minTreeSize = 1;
+			final int minTreeSize = 0;
 			final int maxTreeSize = 1_000;
-			final int stepWidth = 10;
+			final int stepWidth = 50;
 
 			for (int treeSize = minTreeSize; treeSize <= maxTreeSize; treeSize += stepWidth) {
-				final RandomBenchmark benchmark = new RandomBenchmark(benchmarkDensity, treeSize, amountOfRobots);
+				final int treeSizeToUse;
+				if (treeSize == 0) {
+					treeSizeToUse = 1;
+				} else {
+					treeSizeToUse = treeSize;
+				}
+				final RandomBenchmark benchmark = new RandomBenchmark(benchmarkDensity, treeSizeToUse, amountOfRobots);
 				benchmark.executeMeasuring();
 				final long overalTime = benchmark.getAverageOverallTime();
 				final int amountOfSteps = benchmark.getAverageAmountOfSteps();
 
 				// Log the data in a file
-				fw.write(treeSize + "\t" + amountOfRobots + "\t" + overalTime + "\t" + amountOfSteps + lineSeparator);
+				fw.write(treeSizeToUse + "\t" + amountOfRobots + "\t" + overalTime + "\t" + amountOfSteps
+						+ lineSeparator);
+				fw.flush();
 
-				System.out.println("From size " + minTreeSize + " to " + maxTreeSize + ", at " + treeSize);
+				System.out.println("From size " + minTreeSize + " to " + maxTreeSize + ", at " + treeSizeToUse);
 			}
 		}
 	}
@@ -100,21 +108,30 @@ public final class RandomBenchmark {
 
 			final int benchmarkDensity = 500;
 			final float robotCoverage = 0.1f;
-			final int minTreeSize = 1;
+			final int minTreeSize = 0;
 			final int maxTreeSize = 1_000;
-			final int stepWidth = 10;
+			final int stepWidth = 50;
 
 			for (int treeSize = minTreeSize; treeSize <= maxTreeSize; treeSize += stepWidth) {
-				final int amountOfRobots = (int) Math.ceil(treeSize * robotCoverage);
-				final RandomBenchmark benchmark = new RandomBenchmark(benchmarkDensity, treeSize, amountOfRobots);
+				final int treeSizeToUse;
+				if (treeSize == 0) {
+					treeSizeToUse = 1;
+				} else {
+					treeSizeToUse = treeSize;
+				}
+
+				final int amountOfRobots = (int) Math.ceil(treeSizeToUse * robotCoverage);
+				final RandomBenchmark benchmark = new RandomBenchmark(benchmarkDensity, treeSizeToUse, amountOfRobots);
 				benchmark.executeMeasuring();
 				final long overalTime = benchmark.getAverageOverallTime();
 				final int amountOfSteps = benchmark.getAverageAmountOfSteps();
 
 				// Log the data in a file
-				fw.write(treeSize + "\t" + amountOfRobots + "\t" + overalTime + "\t" + amountOfSteps + lineSeparator);
+				fw.write(treeSizeToUse + "\t" + amountOfRobots + "\t" + overalTime + "\t" + amountOfSteps
+						+ lineSeparator);
+				fw.flush();
 
-				System.out.println("From size " + minTreeSize + " to " + maxTreeSize + ", at " + treeSize);
+				System.out.println("From size " + minTreeSize + " to " + maxTreeSize + ", at " + treeSizeToUse);
 			}
 		}
 	}
