@@ -33,13 +33,16 @@ public final class RandomBenchmark {
 	/**
 	 * Creates and executes a benchmark with a fixed size of robots.
 	 * 
+	 * @param amountOfRobots
+	 *            The amount of robots to use
+	 * 
 	 * @throws IOException
 	 *             If an I/O-Exception occurs
 	 */
-	public static void executeBenchmarkFixedRobots() throws IOException {
+	public static void executeBenchmarkFixedRobots(final int amountOfRobots) throws IOException {
 		// Create a file for the results
 		final String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		final String fileName = "fixedRobotsBenchmark_" + timeStamp;
+		final String fileName = "fixedRobotsBenchmark_" + amountOfRobots + "_" + timeStamp;
 		final String fileFormat = ".tsv";
 
 		if (!DATA_PATH.exists()) {
@@ -55,9 +58,8 @@ public final class RandomBenchmark {
 			fw.write("TREE_SIZE\tROBOTS\tTIME\tSTEPS" + lineSeparator);
 
 			final int benchmarkDensity = 500;
-			final int amountOfRobots = 100;
 			final int minTreeSize = 0;
-			final int maxTreeSize = 1_000;
+			final int maxTreeSize = 5_000;
 			final int stepWidth = 50;
 
 			for (int treeSize = minTreeSize; treeSize <= maxTreeSize; treeSize += stepWidth) {
@@ -85,13 +87,15 @@ public final class RandomBenchmark {
 	/**
 	 * Creates and executes a benchmark with a scaling amount of robots.
 	 * 
+	 * @param robotCoverage
+	 *            Percentage of the robot coverage
 	 * @throws IOException
 	 *             If an I/O-Exception occurs
 	 */
-	public static void executeBenchmarkScalingRobots() throws IOException {
+	public static void executeBenchmarkScalingRobots(final float robotCoverage) throws IOException {
 		// Create a file for the results
 		final String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		final String fileName = "scalingRobotsBenchmark_" + timeStamp;
+		final String fileName = "scalingRobotsBenchmark_" + robotCoverage + "_" + timeStamp;
 		final String fileFormat = ".tsv";
 
 		if (!DATA_PATH.exists()) {
@@ -107,9 +111,8 @@ public final class RandomBenchmark {
 			fw.write("TREE_SIZE\tROBOTS\tTIME\tSTEPS" + lineSeparator);
 
 			final int benchmarkDensity = 500;
-			final float robotCoverage = 0.1f;
 			final int minTreeSize = 0;
-			final int maxTreeSize = 1_000;
+			final int maxTreeSize = 5_000;
 			final int stepWidth = 50;
 
 			for (int treeSize = minTreeSize; treeSize <= maxTreeSize; treeSize += stepWidth) {
@@ -145,8 +148,18 @@ public final class RandomBenchmark {
 	 *             If an I/O-Exception occurs
 	 */
 	public static void main(final String[] args) throws IOException {
-		executeBenchmarkFixedRobots();
-		// executeBenchmarkScalingRobots();
+		executeBenchmarkFixedRobots(200);
+		System.out.println("--Finished fixed 200");
+		executeBenchmarkFixedRobots(1_000);
+		System.out.println("--Finished fixed 1_000");
+		executeBenchmarkFixedRobots(3_000);
+		System.out.println("--Finished fixed 3_000");
+		executeBenchmarkScalingRobots(0.1f);
+		System.out.println("--Finished scaling 10%");
+		executeBenchmarkScalingRobots(0.5f);
+		System.out.println("--Finished scaling 50%");
+		executeBenchmarkScalingRobots(0.7f);
+		System.out.println("--Finished scaling 70%");
 	}
 
 	/**
