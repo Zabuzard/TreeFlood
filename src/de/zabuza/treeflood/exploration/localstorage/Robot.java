@@ -224,6 +224,8 @@ public final class Robot implements Comparable<Robot> {
 
 				// Determine the action to perform based on the given knowledge
 				final int port = KnowledgeManager.robotAction(this.mId, knowledge, this.mCurrentNode);
+				//TODO: Remove Debug Print!
+				System.out.println("Robot: " + this.mId + " goes to: " + port);
 
 				if (port == Information.STAR_PORT && this.mCurrentNode.isRoot()) {
 					// The robot stops as it has finished the algorithm

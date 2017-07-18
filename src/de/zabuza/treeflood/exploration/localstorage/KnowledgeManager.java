@@ -69,7 +69,7 @@ public final class KnowledgeManager {
 			final Iterator<Integer> robotsToAssign = robotsAtLocation.iterator();
 
 			// Assign robots equally to all unfinished children
-			int amountOfRobotsForEachChild = (int) Math
+			final int amountOfRobotsForEachChild = (int) Math
 					.floor((robotsAtLocation.size() + 0.0) / unfinishedChildren.size());
 			for (final Integer unfinishedChild : unfinishedChildren) {
 				// Simulate the assignment of robots for this child

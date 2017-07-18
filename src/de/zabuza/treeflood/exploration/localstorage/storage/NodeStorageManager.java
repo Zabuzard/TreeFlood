@@ -48,7 +48,7 @@ public final class NodeStorageManager implements ILocalStorage {
 	 */
 	@Override
 	public synchronized void write(final Information information, final ITreeNode node) {
-		NestedMap2<Integer, Integer, Information> storage = getWithCreateOnInexistent(node);
+		final NestedMap2<Integer, Integer, Information> storage = getWithCreateOnInexistent(node);
 		storage.put(Integer.valueOf(information.getStep()), Integer.valueOf(information.getRobotId()), information);
 	}
 

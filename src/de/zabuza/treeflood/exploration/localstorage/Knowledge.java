@@ -11,7 +11,7 @@ import de.zabuza.treeflood.tree.ITreeNode;
  * @author Zabuza {@literal <zabuza.dev@gmail.com>}
  *
  */
-public class Knowledge {
+public final class Knowledge {
 	/**
 	 * The set of children ports that are advantaged, i.e. they have one more
 	 * robot located in them than the other children. The set must be a subset
@@ -86,7 +86,7 @@ public class Knowledge {
 	public Knowledge(final int round, final ITreeNode node, final int parentPort,
 			final Set<Integer> unfinishedChildrenPorts, final Set<Integer> advantagedChildrenPorts,
 			final Set<Integer> finishedButInhabitedChildrenPorts,
-			final Set<Integer> finishedAndNotInhabitedChildrenPorts, Set<Integer> robotsAtLocation) {
+			final Set<Integer> finishedAndNotInhabitedChildrenPorts, final Set<Integer> robotsAtLocation) {
 		this.mRound = round;
 		this.mNode = node;
 		this.mParentPort = parentPort;
