@@ -124,7 +124,8 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 			g2d.setColor(edge.getColor());
 
 			g2d.drawLine(edge.getStartX(), edge.getStartY(), edge.getEndX(), edge.getEndY());
-
+			
+			g2d.setFont(Window.EDGE_PORT_FONT);
 			g2d.drawString(edge.getDescription(), edge.getDescriptionX(), edge.getDescriptionY());
 
 		}
@@ -136,6 +137,14 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 			g2d.setColor(nodeData.getColor());
 			g2d.fillOval(nodeData.getX() - nodeData.getRadius(), nodeData.getY() - nodeData.getRadius(),
 					nodeData.getRadius() * 2, nodeData.getRadius() * 2);
+			
+			//TODO: better handling of cases
+			if(nodeData.getColor().equals(Window.VISITED_NODE_COLOR)){
+				g2d.setStroke(new BasicStroke(3));
+				g2d.setColor(Color.BLACK);
+				g2d.drawOval(nodeData.getX() - nodeData.getRadius(), nodeData.getY() - nodeData.getRadius(), nodeData.getRadius() * 2, nodeData.getRadius() * 2);
+				
+			}
 
 			g2d.setColor(Color.BLACK);
 			g2d.setFont(Window.DESCRIPTION_FONT);
@@ -160,7 +169,7 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 				g2d.drawRect(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight());
 
 				int i = 20;
-				for (final String line : panel.getInformation().split(System.lineSeparator())) {
+				for (final String line : panel.getInformation()) {
 					g2d.drawString(line, panel.getX() + 3, panel.getY() + i);
 					i += 20;
 				}

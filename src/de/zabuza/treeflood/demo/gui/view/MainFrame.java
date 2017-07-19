@@ -171,11 +171,11 @@ public final class MainFrame extends JFrame {
 	/**
 	 * Sets the current executed step-count on the option panel.
 	 * 
-	 * @param mSteps
+	 * @param mStep
 	 *            The current executed step-count.
 	 */
-	public void setCurrentStep(final int mSteps) {
-		this.optionPanel.setCurrentStep(mSteps);
+	public void setCurrentStep(final String mStep) {
+		this.optionPanel.setCurrentStep(mStep);
 
 	}
 

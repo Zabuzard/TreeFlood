@@ -1,6 +1,10 @@
 package de.zabuza.treeflood.demo.gui.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.zabuza.treeflood.demo.gui.view.util.Window;
+import de.zabuza.treeflood.exploration.localstorage.Information;
 
 /**
  * The information panel holds
@@ -15,7 +19,12 @@ public class InformationPanel {
 	/**
 	 * The information this panel holds at the moment.
 	 */
-	private String information;
+	private List<Information> informations;
+
+	/**
+	 * A string representation for every information this panel currently holds.
+	 */
+	private List<String> informationsAsString;
 
 	/**
 	 * The node on which to operate.
@@ -44,12 +53,13 @@ public class InformationPanel {
 	 */
 	public InformationPanel(final DrawableNodeData mNodeData, final Window mWindow) {
 		this.nodeData = mNodeData;
-		this.information = "";
 		this.x = 0;
 		this.y = 0;
 		this.height = 0;
 		this.width = 0;
 		this.window = mWindow;
+		this.informations = new ArrayList<>();
+		this.informationsAsString = new ArrayList<>();
 	}
 
 	/**
@@ -67,8 +77,8 @@ public class InformationPanel {
 	 * 
 	 * @return The information mentioned.
 	 */
-	public String getInformation() {
-		return this.information;
+	public List<String> getInformation() {
+		return this.informationsAsString;
 
 	}
 
@@ -120,8 +130,8 @@ public class InformationPanel {
 	 * @param mInformation
 	 *            The new information for this panel.
 	 */
-	public void setInformation(final String mInformation) {
-		this.information = mInformation;
+	public void setInformation(final List<Information> mInformation) {
+		this.informations = mInformation;
 		this.adjustWidth();
 		this.adjustHeight();
 
@@ -133,9 +143,7 @@ public class InformationPanel {
 	 * 
 	 */
 	private void adjustHeight() {
-		final String[] splitInformation = this.information.split(System.lineSeparator());
-
-		this.height = 20 * splitInformation.length + 5;
+		this.height = 20 * this.informations.size() + 5;
 
 	}
 
@@ -144,16 +152,32 @@ public class InformationPanel {
 	 * stored in this panel.
 	 */
 	private void adjustWidth() {
-		final String[] splitInformation = this.information.split(System.lineSeparator());
 
 		int mostChars = 0;
-		for (final String line : splitInformation) {
-			if (line.length() > mostChars) {
-				mostChars = line.length();
+		for (final Information line : this.informations) {
+			final String informationString;
+
+			if (line.wasEnteredFromParent()) {
+				informationString = "#" + line.getStep() + ", [" + line.getRobotId() + "], ↑"
+						+ line.getPort();
+			} else {
+				informationString = "#" + line.getStep() + ", [" + line.getRobotId() + "],	 ↓"
+						+ line.getPort();
+			}
+
+			if (informationString.length() > mostChars) {
+				mostChars = informationString.length();
 
 			}
+
+			if (this.informationsAsString.contains(informationString)) {
+				continue;
+
+			}
+			this.informationsAsString.add(informationString);
+
 		}
-		this.width = 8 * mostChars + 5;
+		this.width = 8 * mostChars;
 
 	}
 

@@ -15,6 +15,11 @@ import java.awt.Point;
 public final class Window {
 
 	/**
+	 * The font used by the ports displayed at edges.
+	 */
+	public static final Font EDGE_PORT_FONT = new Font("", Font.BOLD, 20);
+
+	/**
 	 * The color of the buttons used throughout this view.
 	 */
 	public static final Color BUTTON_COLOR = new Color(255, 255, 255);
@@ -42,7 +47,7 @@ public final class Window {
 	/**
 	 * The color of the rectangle surrounding the tooltips.
 	 */
-	public static final Color TOOLTIP_FILL_COLOR = new Color(120, 120, 120, 150);
+	public static final Color TOOLTIP_FILL_COLOR = new Color(230, 230, 230, 200);
 
 	/**
 	 * The font used for the tooltips.

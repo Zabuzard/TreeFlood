@@ -219,7 +219,7 @@ public final class Optionpanel extends JPanel {
 
 		this.add(this.fullyButton, constraints);
 
-		final OptionTextPane stepShow = new OptionTextPane("Current Step:", this.getBackground());
+		final OptionTextPane stepShow = new OptionTextPane("After Step:", this.getBackground());
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.gridx = 0;
@@ -229,7 +229,7 @@ public final class Optionpanel extends JPanel {
 
 		this.add(stepShow, constraints);
 
-		this.stepArea = new OptionTextArea("0");
+		this.stepArea = new OptionTextArea();
 		this.stepArea.setEditable(false);
 
 		constraints.weightx = 0.8;
@@ -342,8 +342,8 @@ public final class Optionpanel extends JPanel {
 	 * @param mSteps
 	 *            The new amount of executed steps.
 	 */
-	public void setCurrentStep(final int mSteps) {
-		this.stepArea.setText("" + mSteps);
+	public void setCurrentStep(final String mSteps) {
+		this.stepArea.setText(mSteps);
 
 	}
 

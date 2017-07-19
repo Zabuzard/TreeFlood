@@ -21,6 +21,8 @@ import de.zabuza.treeflood.demo.gui.model.properties.INodeHoverListener;
 import de.zabuza.treeflood.demo.gui.view.MainFrame;
 import de.zabuza.treeflood.demo.gui.view.Optionpanel;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
+import de.zabuza.treeflood.exploration.localstorage.EStage;
+import de.zabuza.treeflood.exploration.localstorage.EStep;
 import de.zabuza.treeflood.exploration.localstorage.Information;
 import de.zabuza.treeflood.exploration.localstorage.LocalStorageExploration;
 import de.zabuza.treeflood.exploration.localstorage.OneThreadPerRobotPulseManager;
@@ -224,11 +226,32 @@ public final class LocalStorageExplorationGUIController
 					this.isFinished = this.algorithm.exploreOneStep();
 					this.step++;
 				}
-
 				this.endAlgorithmCycle();
 
 			}
 		}
+	}
+
+	public EStep getStageByStep(final int mStep) {
+		if (mStep == 1) {
+			return EStep.INITIAL;
+
+		} else if (mStep == 2) {
+			return EStep.NOP;
+
+		} else if (mStep % 3 == 0) {
+			return EStep.REGULAR;
+
+		} else if (mStep % 3 == 1) {
+			return EStep.UPDATE;
+
+		} else if (mStep % 3 == 2) {
+			return EStep.RETURN;
+
+		}
+		// there was not step type associated with the current step count.
+		throw new AssertionError();
+
 	}
 
 	/*
@@ -261,14 +284,9 @@ public final class LocalStorageExplorationGUIController
 	@Override
 	public void startHover(final ITreeNode mNode) {
 		if (this.nodeInformationMapping.get(mNode) != null) {
-			final StringJoiner joiner = new StringJoiner(System.lineSeparator());
 
-			for (final Information information : this.nodeInformationMapping.get(mNode)) {
-				joiner.add(information.toString());
-
-			}
 			final DrawableNodeData data = this.nodeMapping.get(mNode);
-			data.setInformation(joiner.toString());
+			data.setInformation(this.nodeInformationMapping.get(mNode));
 			data.showTooltip();
 
 			this.view.repaint();
@@ -385,9 +403,9 @@ public final class LocalStorageExplorationGUIController
 	private void endAlgorithmCycle() {
 		this.updateKnowledge();
 
-		this.view.setCurrentStep(this.step);
+		this.view.setCurrentStep(this.step + " | " + this.getStageByStep(this.step).toString());
 		this.view.repaint();
-
+		
 		// Fiddle the aliases
 		final Map<ITreeNode, ITreeNode> originalToExploredNodes = this.explorationTreeBuilder.getNodeAlias();
 		final Map<ITreeNode, ITreeNode> exploredToOriginalNodes = MapUtil.reverseMap(originalToExploredNodes);
@@ -395,9 +413,9 @@ public final class LocalStorageExplorationGUIController
 
 		if (this.isFinished) {
 			this.algorithm = null;
-
+			return;
 		}
-
+		
 	}
 
 	/**
@@ -442,7 +460,7 @@ public final class LocalStorageExplorationGUIController
 	private void resetData(final RandomTreeGenerator mGenerator) {
 		this.view.setTree(this.tree);
 		this.view.setSeed(mGenerator.getSeedOfLastGeneration().longValue());
-		this.view.setCurrentStep(0);
+		this.view.setCurrentStep("");
 		this.nodeMapping = this.tree.getNodeMapping();
 		this.edgeMapping = this.tree.getEdgeMapping();
 		this.algorithm = null;

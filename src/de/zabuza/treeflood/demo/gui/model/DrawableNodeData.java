@@ -8,6 +8,7 @@ import de.zabuza.treeflood.demo.gui.model.properties.IColorable;
 import de.zabuza.treeflood.demo.gui.model.properties.IHasDescription;
 import de.zabuza.treeflood.demo.gui.model.properties.INodeHoverListener;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
+import de.zabuza.treeflood.exploration.localstorage.Information;
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
@@ -425,9 +426,9 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 	 * Sets the information for this objects {@link InformationPanel}.
 	 * 
 	 * @param mInformation
-	 *            The information to be set.
+	 *            The informations to be set.
 	 */
-	public void setInformation(final String mInformation) {
+	public void setInformation(final List<Information> mInformation) {
 		this.informationTooltip.setInformation(mInformation);
 
 	}
