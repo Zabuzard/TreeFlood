@@ -1,5 +1,6 @@
 /**
- * Provides different properties for the classes in {@link de.zabuza.treeflood.demo.gui.controller}.
+ * Provides different properties for the classes in
+ * {@link de.zabuza.treeflood.demo.gui.controller}.
  *
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *

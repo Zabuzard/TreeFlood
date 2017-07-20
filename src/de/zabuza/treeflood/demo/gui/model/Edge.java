@@ -1,10 +1,7 @@
 package de.zabuza.treeflood.demo.gui.model;
 
-import java.awt.Color;
-
-import de.zabuza.treeflood.demo.gui.model.properties.IColorable;
 import de.zabuza.treeflood.demo.gui.model.properties.IHasDescription;
-import de.zabuza.treeflood.demo.gui.view.util.Window;
+import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
  * An edge is defined by having its own {@link ITreeNode} = source and
@@ -14,17 +11,12 @@ import de.zabuza.treeflood.demo.gui.view.util.Window;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class Edge implements IColorable, IHasDescription {
+public final class Edge implements IHasDescription {
 
 	/**
 	 * The default stroke width for this edge, when drawn onto GUI.
 	 */
 	public static final int DEFAULT_WIDTH = 5;
-
-	/**
-	 * The current color for this edge.
-	 */
-	private Color color;
 
 	/**
 	 * The description of this edge, e.g. the port number.
@@ -42,6 +34,11 @@ public final class Edge implements IColorable, IHasDescription {
 	private final DrawableNodeData source;
 
 	/**
+	 * determines whether this edge got visited.
+	 */
+	private boolean isVisited;
+
+	/**
 	 * Constructs a new Edge with the given source and destination data from
 	 * their respective nodes.
 	 * 
@@ -53,20 +50,9 @@ public final class Edge implements IColorable, IHasDescription {
 	public Edge(final DrawableNodeData mSource, final DrawableNodeData mDestination) {
 		this.source = mSource;
 		this.destination = mDestination;
-		this.color = Window.UNVISITED_EDGE_COLOR;
 		this.description = "";
+		this.isVisited = false;
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.zabuza.treeflood.demo.gui.controller.properties.IColorable#getColor()
-	 */
-	@Override
-	public Color getColor() {
-		return this.color;
 	}
 
 	/*
@@ -87,13 +73,23 @@ public final class Edge implements IColorable, IHasDescription {
 	 * @return The x-Coordinate mentioned.
 	 */
 	public int getDescriptionX() {
-		int valueToAdd = this.getStartX() + 10;
+		int valueToAdd = this.getStartX();
 
 		if (this.getStartX() > this.getEndX()) {
-			valueToAdd = this.getEndX() - 10;
+			valueToAdd = this.getEndX() - 20;
 
 		}
 
+		if (this.getSlope() == Double.MAX_VALUE) {
+			valueToAdd += 10;
+
+		} else {
+			if (this.getSlope() > 0) {
+				valueToAdd += (int) (5 * this.getSlope());
+
+			}
+
+		}
 		return valueToAdd + (Math.abs(this.getStartX() - this.getEndX()) / 2);
 
 	}
@@ -112,8 +108,30 @@ public final class Edge implements IColorable, IHasDescription {
 
 		}
 
-		return valueToAdd + (Math.abs(this.getStartY() - this.getEndY()) / 2);
+		int adjustmentY = 0;
+		if (!(this.getSlope() == Double.MAX_VALUE) && this.getSlope() < 1 && this.getSlope() > -1) {
+			adjustmentY = (int) (9 * (1 - Math.abs(this.getSlope())));
 
+		}
+
+		return valueToAdd + (Math.abs(this.getStartY() - this.getEndY()) / 2) - adjustmentY;
+
+	}
+
+	/**
+	 * Sets the visited status of this edge to true.
+	 */
+	public void setVisited() {
+		this.isVisited = true;
+	}
+
+	/**
+	 * Gets the current visited status of this edge.
+	 * 
+	 * @return <tt>True</tt> if the edge was visited, <tt>false</tt> otherwise.
+	 */
+	public boolean getVisitedStatus() {
+		return this.isVisited;
 	}
 
 	/**
@@ -156,16 +174,25 @@ public final class Edge implements IColorable, IHasDescription {
 
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Gets the slope of this edge. Retuns {@link Double#MAX_VALUE} if the slope
+	 * is infinite.
 	 * 
-	 * @see
-	 * de.zabuza.treeflood.demo.gui.controller.properties.IColorable#setColor(
-	 * java.awt.Color)
+	 * @return The slope of this edge.
 	 */
-	@Override
-	public void setColor(final Color mColor) {
-		this.color = mColor;
+	public double getSlope() {
+		final int x_1 = this.getStartX();
+		final int y_1 = this.getStartY();
+
+		final int x_2 = this.getEndX();
+		final int y_2 = this.getEndY();
+
+		// the slope is per definition infinite, returning special value;
+		if (x_1 - x_2 == 0) {
+			return Double.MAX_VALUE;
+
+		}
+		return (float) (y_2 - y_1) / (float) (x_2 - x_1);
 
 	}
 

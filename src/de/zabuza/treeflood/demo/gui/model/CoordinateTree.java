@@ -73,6 +73,11 @@ public final class CoordinateTree implements ITree {
 	private final HashMap<ITreeNode, Integer> nodeToID;
 
 	/**
+	 * The proportions of this tree;
+	 */
+	private final int proportions;
+
+	/**
 	 * Maps two nodes to their respective edge. The first key is the source of
 	 * the edge and the second key is the destination of the edge. Note that
 	 * switching first and second key will result in <tt>null</tt> since there
@@ -104,6 +109,32 @@ public final class CoordinateTree implements ITree {
 	 *            {@link INodeHoverListener} interface.
 	 */
 	public CoordinateTree(final ITree mTree, final List<INodeHoverListener> mListeners) {
+		this(mTree, mListeners, DrawableNodeData.DEFAULT_RADIUS);
+
+	}
+
+	/**
+	 * Constructs a new CoordinateTree, providing a wrapper for the given
+	 * {@link ITree}. Adds extra information to the nodes of the given tree
+	 * (needed for drawing, e.g.), while not changing the given tree, and is
+	 * able to {@link CoordinateTree#alignComponents(Window)}, to make the nodes
+	 * of the given tree have accurate coordinates. Make sure that the given
+	 * tree is "finished", in a sense that no more elements get added to the
+	 * tree, otherwise this class may not work as expected. Also note that
+	 * {@link CoordinateTree#initializeData()} should be called before operating
+	 * on this tree.
+	 * 
+	 * @param mTree
+	 *            The tree on which this coordinate tree should be based.
+	 * 
+	 * @param mListeners
+	 *            The hover listeners receiving callbacks from the
+	 *            {@link INodeHoverListener} interface.
+	 * 
+	 * @param mProportions
+	 *            the proportions of this tree (size of nodes, edges, e.t.c.)
+	 */
+	public CoordinateTree(final ITree mTree, final List<INodeHoverListener> mListeners, final int mProportions) {
 		this.tree = mTree;
 		this.nodeMapping = new HashMap<>();
 		this.depthToNodes = new HashMap<>();
@@ -112,6 +143,7 @@ public final class CoordinateTree implements ITree {
 		this.nodeToID = new HashMap<>();
 		this.sourceDestinationToEdge = new NestedMap2<>();
 		this.listeners = mListeners;
+		this.proportions = mProportions;
 		this.maxDepth = 0;
 	}
 
@@ -161,9 +193,9 @@ public final class CoordinateTree implements ITree {
 
 			for (final ITreeNode node : nodes) {
 				final DrawableNodeData nodeData = this.nodeMapping.get(node);
-				// nodeData.setDescription("" + this.nodeToID.get(node));
+				nodeData.setRadius(this.proportions);
 
-				nodeData.setY(i * (int) (15f / 100f * height) + DrawableNodeData.DEFAULT_RADIUS * 2);
+				nodeData.setY(i * (int) (15f / 100f * height) + nodeData.getRadius() * 2);
 
 				if (!this.leafs.contains(node)) {
 					nodeData.setX(nodeData.getRelativeXLocation());
@@ -303,6 +335,7 @@ public final class CoordinateTree implements ITree {
 		int nodeID = 0;
 		while (!queue.isEmpty()) {
 			final ITreeNode node = queue.poll();
+
 			this.nodeToID.put(node, Integer.valueOf(nodeID));
 			nodeID++;
 

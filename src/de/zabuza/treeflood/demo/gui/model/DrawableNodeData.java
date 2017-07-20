@@ -1,10 +1,8 @@
 package de.zabuza.treeflood.demo.gui.model;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.util.List;
 
-import de.zabuza.treeflood.demo.gui.model.properties.IColorable;
 import de.zabuza.treeflood.demo.gui.model.properties.IHasDescription;
 import de.zabuza.treeflood.demo.gui.model.properties.INodeHoverListener;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
@@ -12,24 +10,17 @@ import de.zabuza.treeflood.exploration.localstorage.Information;
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
- * Provides additional information for {@link ITreeNode}. Additional information
- * means, every {@link ITreeNode} gets the following values:<br>
- * <b>x-Coordinate, y-Coordinate, radius, depth, description, color</b><br>
+ * Provides additional information for {@link ITreeNode}.
  *
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class DrawableNodeData implements IHasDescription, IColorable {
+public final class DrawableNodeData implements IHasDescription {
 
 	/**
 	 * The default value for the radius for the node mapped to this data object.
 	 */
 	public static final int DEFAULT_RADIUS = 30;
-
-	/**
-	 * The color of this node.
-	 */
-	private Color color;
 
 	/**
 	 * The depth of the node mapped to this.
@@ -51,6 +42,11 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 	 * The tooltip shown for this node when hovered.
 	 */
 	private final InformationPanel informationTooltip;
+
+	/**
+	 * Whether this node was yet visited or not.
+	 */
+	private boolean isVisited;
 
 	/**
 	 * The x-Coordinate of the child with the largest x-Coordinate (the one
@@ -124,7 +120,7 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 		this.smallestChildX = -1;
 		this.largestChildX = -1;
 		this.description = "";
-		this.color = Window.UNVISITED_NODE_COLOR;
+		this.isVisited = false;
 
 		this.node = mNode;
 
@@ -192,6 +188,9 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 	 * 
 	 * @param mPoint
 	 *            The point of the mouse.
+	 * 
+	 * @param mListeners
+	 *            The listeners on which to fire the event.
 	 */
 	public void checkHover(final Point mPoint, final List<INodeHoverListener> mListeners) {
 		if (!this.hovering && this.contains(mPoint)) {
@@ -211,6 +210,14 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 		}
 	}
 
+	/**
+	 * Checks if the given point is contained in this node.
+	 * 
+	 * @param mPoint
+	 *            The point of which to check if its contained in this node.
+	 * @return <tt>True</tt> if the point is contained in this node,
+	 *         <tt>false</tt> otherwise.
+	 */
 	public boolean contains(final Point mPoint) {
 		if (Math.pow((mPoint.x - this.getX()), 2) + Math.pow((mPoint.y - this.getY()), 2) < Math.pow(this.getRadius(),
 				2)) {
@@ -218,18 +225,6 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 
 		}
 		return false;
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.zabuza.treeflood.demo.gui.controller.properties.IColorable#getColor()
-	 */
-	@Override
-	public Color getColor() {
-		return this.color;
 
 	}
 
@@ -310,6 +305,15 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 	}
 
 	/**
+	 * Gets the current visited status of this node.
+	 * 
+	 * @return <tt>True</tt> if the node was visited, <tt>false</tt> otherwise.
+	 */
+	public boolean getVisitedStatus() {
+		return this.isVisited;
+	}
+
+	/**
 	 * Gets the x-Coordinate of this object.
 	 * 
 	 * @return The x-Coordinate.
@@ -386,19 +390,6 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.zabuza.treeflood.demo.gui.controller.properties.IColorable#setColor(
-	 * java.awt.Color)
-	 */
-	@Override
-	public void setColor(final Color mColor) {
-		this.color = mColor;
-
-	}
-
 	/**
 	 * Sets the depth for this object.
 	 * 
@@ -428,7 +419,7 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 	 * @param mInformation
 	 *            The informations to be set.
 	 */
-	public void setInformation(final List<Information> mInformation) {
+	public synchronized void setInformation(final List<Information> mInformation) {
 		this.informationTooltip.setInformation(mInformation);
 
 	}
@@ -442,6 +433,13 @@ public final class DrawableNodeData implements IHasDescription, IColorable {
 	public void setRadius(final int mRadius) {
 		this.radius = mRadius;
 
+	}
+
+	/**
+	 * Sets the visited status of this node to true.
+	 */
+	public void setVisited() {
+		this.isVisited = true;
 	}
 
 	/**

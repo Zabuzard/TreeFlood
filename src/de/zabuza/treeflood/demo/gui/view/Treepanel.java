@@ -1,7 +1,6 @@
 package de.zabuza.treeflood.demo.gui.view;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -15,16 +14,18 @@ import de.zabuza.treeflood.demo.gui.model.CoordinateTree;
 import de.zabuza.treeflood.demo.gui.model.DrawableNodeData;
 import de.zabuza.treeflood.demo.gui.model.Edge;
 import de.zabuza.treeflood.demo.gui.model.InformationPanel;
+import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
+import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
 import de.zabuza.treeflood.tree.ITreeNode;
 
 /**
- * A panel which handles the drawing of the tree
+ * A panel which handles the drawing of the tree.
  *
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public class Treepanel extends JPanel implements MouseMotionListener {
+public class Treepanel extends JPanel implements MouseMotionListener, IRecolorable {
 
 	/**
 	 * The serial version UID used for serialization.
@@ -35,6 +36,11 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 	 * The rendering hints used for this trees graphics object.
 	 */
 	private final RenderingHints hints;
+
+	/**
+	 * The style manager for this panel used to get current colors.s
+	 */
+	private final StyleManager manager;
 
 	/**
 	 * The tree on which to operate.
@@ -51,18 +57,22 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 	 * 
 	 * @param mWindow
 	 *            The window used for position related information.
+	 * 
+	 * @param mManager
+	 *            The style manager used to handle colors.
 	 */
-	public Treepanel(final Window mWindow) {
+	public Treepanel(final Window mWindow, final StyleManager mManager) {
 		this.window = mWindow;
 		this.hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		this.hints.put(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
 		this.hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 		this.hints.put(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		this.manager = mManager;
 		this.addMouseMotionListener(this);
 
 		this.setPreferredSize(mWindow.getTreePanelSize());
 		this.setBorder(LineBorder.createBlackLineBorder());
-		this.setBackground(Color.WHITE);
+		this.setBackground(mManager.getTreepanelColor());
 	}
 
 	/*
@@ -93,6 +103,28 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.zabuza.treeflood.demo.gui.view.properties.IRecolorable#reColor()
+	 */
+	@Override
+	public void reColor() {
+		if (this.manager == null) {
+			return;
+
+		}
+		this.setBackground(this.manager.getTreepanelColor());
+
+	}
+
+	@Override
+	public void repaint() {
+		this.reColor();
+		super.repaint();
+
+	}
+
 	/**
 	 * Sets the current tree to the tree given.
 	 * 
@@ -111,6 +143,10 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 		super.paintComponent(g);
 
 		final Graphics2D g2d = (Graphics2D) g;
+		g2d.setStroke(new BasicStroke(8));
+		g2d.setColor(this.manager.getSeparatorColor());
+		g2d.drawLine(this.getWidth(), 0, this.getWidth(), this.getHeight());
+
 		g2d.setStroke(new BasicStroke(Edge.DEFAULT_WIDTH));
 
 		g2d.setRenderingHints(this.hints);
@@ -121,10 +157,16 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 		}
 
 		for (final Edge edge : this.tree.getEdges()) {
-			g2d.setColor(edge.getColor());
+			if (edge.getVisitedStatus()) {
+				g2d.setColor(this.manager.getVisitedEdgeColor());
+
+			} else {
+				g2d.setColor(this.manager.getUnvisitedEdgeColor());
+
+			}
 
 			g2d.drawLine(edge.getStartX(), edge.getStartY(), edge.getEndX(), edge.getEndY());
-			
+
 			g2d.setFont(Window.EDGE_PORT_FONT);
 			g2d.drawString(edge.getDescription(), edge.getDescriptionX(), edge.getDescriptionY());
 
@@ -134,19 +176,25 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 
 			final DrawableNodeData nodeData = this.tree.getNodeMapping().get(node);
 
-			g2d.setColor(nodeData.getColor());
+			if (nodeData.getVisitedStatus()) {
+				g2d.setColor(this.manager.getVisitedNodeColor());
+
+			} else {
+				g2d.setColor(this.manager.getUnvisitedNodeColor());
+
+			}
 			g2d.fillOval(nodeData.getX() - nodeData.getRadius(), nodeData.getY() - nodeData.getRadius(),
 					nodeData.getRadius() * 2, nodeData.getRadius() * 2);
-			
-			//TODO: better handling of cases
-			if(nodeData.getColor().equals(Window.VISITED_NODE_COLOR)){
+
+			if (nodeData.getVisitedStatus()) {
 				g2d.setStroke(new BasicStroke(3));
-				g2d.setColor(Color.BLACK);
-				g2d.drawOval(nodeData.getX() - nodeData.getRadius(), nodeData.getY() - nodeData.getRadius(), nodeData.getRadius() * 2, nodeData.getRadius() * 2);
-				
+				g2d.setColor(this.manager.getFringeColor());
+				g2d.drawOval(nodeData.getX() - nodeData.getRadius(), nodeData.getY() - nodeData.getRadius(),
+						nodeData.getRadius() * 2, nodeData.getRadius() * 2);
+
 			}
 
-			g2d.setColor(Color.BLACK);
+			g2d.setColor(this.manager.getDefaultFontColor());
 			g2d.setFont(Window.DESCRIPTION_FONT);
 
 			if (!nodeData.getDescription().equals("0")) {
@@ -163,10 +211,12 @@ public class Treepanel extends JPanel implements MouseMotionListener {
 			if (nodeData.isTooltipOn()) {
 
 				final InformationPanel panel = nodeData.getInformationPanel();
-				g2d.setColor(Window.TOOLTIP_FILL_COLOR);
+				g2d.setColor(this.manager.getToolTipFillColor());
 				g2d.fillRect(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight());
-				g2d.setColor(Color.BLACK);
+				g2d.setColor(this.manager.getFringeColor());
 				g2d.drawRect(panel.getX(), panel.getY(), panel.getWidth(), panel.getHeight());
+
+				g2d.setColor(this.manager.getDefaultFontColor());
 
 				int i = 20;
 				for (final String line : panel.getInformation()) {

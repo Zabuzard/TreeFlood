@@ -2,6 +2,8 @@ package de.zabuza.treeflood.demo.gui.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -9,10 +11,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.StringJoiner;
 
 import javax.swing.JButton;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import de.zabuza.treeflood.demo.gui.model.CoordinateTree;
 import de.zabuza.treeflood.demo.gui.model.DrawableNodeData;
@@ -20,8 +23,7 @@ import de.zabuza.treeflood.demo.gui.model.Edge;
 import de.zabuza.treeflood.demo.gui.model.properties.INodeHoverListener;
 import de.zabuza.treeflood.demo.gui.view.MainFrame;
 import de.zabuza.treeflood.demo.gui.view.Optionpanel;
-import de.zabuza.treeflood.demo.gui.view.util.Window;
-import de.zabuza.treeflood.exploration.localstorage.EStage;
+import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
 import de.zabuza.treeflood.exploration.localstorage.EStep;
 import de.zabuza.treeflood.exploration.localstorage.Information;
 import de.zabuza.treeflood.exploration.localstorage.LocalStorageExploration;
@@ -43,8 +45,37 @@ import de.zabuza.treeflood.util.NestedMap2;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class LocalStorageExplorationGUIController
-		implements WindowListener, ActionListener, IRobotMovedListener, INodeHoverListener {
+public final class LocalStorageExplorationGUIController implements WindowListener, ActionListener, IRobotMovedListener,
+		INodeHoverListener, ChangeListener, ItemListener {
+
+	/**
+	 * Gets the step type by the current step.
+	 * 
+	 * @param mStep
+	 *            The current step of the algorithm.
+	 * @return The corresponding step type.
+	 */
+	private static EStep getStepTypeByStep(final int mStep) {
+		if (mStep == 1) {
+			return EStep.INITIAL;
+
+		} else if (mStep == 2) {
+			return EStep.NOP;
+
+		} else if (mStep % 3 == 0) {
+			return EStep.REGULAR;
+
+		} else if (mStep % 3 == 1) {
+			return EStep.UPDATE;
+
+		} else if (mStep % 3 == 2) {
+			return EStep.RETURN;
+
+		}
+		// there was not step type associated with the current step count.
+		throw new AssertionError();
+
+	}
 
 	/**
 	 * The current {@link LocalStorageExploration} in progress.
@@ -68,6 +99,9 @@ public final class LocalStorageExplorationGUIController
 	 */
 	private boolean isFinished;
 
+	/**
+	 * All the threads currently getting callbacks from the trees hover event.
+	 */
 	private final List<INodeHoverListener> listeners;
 
 	/**
@@ -84,6 +118,11 @@ public final class LocalStorageExplorationGUIController
 	 * The current node storage manager used for this algorithm;
 	 */
 	private NodeStorageManager nodeStorageManager;
+
+	/**
+	 * The current proportions of the tree.
+	 */
+	private int proportions;
 
 	/**
 	 * The {@link RobotNodeStringifier} used.
@@ -119,6 +158,7 @@ public final class LocalStorageExplorationGUIController
 		this.listeners.add(this);
 
 		this.nodeInformationMapping = new HashMap<>();
+		this.proportions = DrawableNodeData.DEFAULT_RADIUS;
 
 		mView.addWindowListener(this);
 		mView.addUseSeedButtonListener(this);
@@ -126,6 +166,8 @@ public final class LocalStorageExplorationGUIController
 		mView.addStepButtonListener(this);
 		mView.addFullyButtonListener(this);
 		mView.addRoundButtonListener(this);
+		mView.addSizeSliderListener(this);
+		mView.addStyleItemListener(this);
 
 	}
 
@@ -151,7 +193,8 @@ public final class LocalStorageExplorationGUIController
 				}
 
 				final RandomTreeGenerator generator = new RandomTreeGenerator(this.view.getTreeSize());
-				this.tree = new CoordinateTree(generator.generateRandomTree(this.view.getSeed()), this.listeners);
+				this.tree = new CoordinateTree(generator.generateRandomTree(this.view.getSeed()), this.listeners,
+						this.proportions);
 				this.resetData(generator);
 
 			} else if (sourceAsButton.getText().equals(Optionpanel.WITHOUT_SEED_BUTTON_TEXT)) {
@@ -163,7 +206,7 @@ public final class LocalStorageExplorationGUIController
 				}
 
 				final RandomTreeGenerator generator = new RandomTreeGenerator(this.view.getTreeSize());
-				this.tree = new CoordinateTree(generator.generateRandomTree(), this.listeners);
+				this.tree = new CoordinateTree(generator.generateRandomTree(), this.listeners, this.proportions);
 				this.resetData(generator);
 
 			} else if (sourceAsButton.getText().equals(Optionpanel.STEP_BUTTON_TEXT)) {
@@ -232,26 +275,19 @@ public final class LocalStorageExplorationGUIController
 		}
 	}
 
-	public EStep getStageByStep(final int mStep) {
-		if (mStep == 1) {
-			return EStep.INITIAL;
-
-		} else if (mStep == 2) {
-			return EStep.NOP;
-
-		} else if (mStep % 3 == 0) {
-			return EStep.REGULAR;
-
-		} else if (mStep % 3 == 1) {
-			return EStep.UPDATE;
-
-		} else if (mStep % 3 == 2) {
-			return EStep.RETURN;
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+	 */
+	@Override
+	public void itemStateChanged(final ItemEvent e) {
+		if (e.getStateChange() == ItemEvent.SELECTED) {
+			this.view.setStyle((EStyle) e.getItem());
+			this.view.repaint();
 
 		}
-		// there was not step type associated with the current step count.
-		throw new AssertionError();
-
 	}
 
 	/*
@@ -271,7 +307,7 @@ public final class LocalStorageExplorationGUIController
 		destinationData.setDescription(Integer.parseInt(destinationData.getDescription()) + 1 + "");
 
 		this.paintNode(destination);
-		this.paintEdge(this.edgeMapping.get(source, destination));
+		this.setVisited(this.edgeMapping.get(source, destination));
 
 	}
 
@@ -291,6 +327,23 @@ public final class LocalStorageExplorationGUIController
 
 			this.view.repaint();
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.
+	 * ChangeEvent)
+	 */
+	@Override
+	public void stateChanged(final ChangeEvent e) {
+		if (!(e.getSource() instanceof JSlider)) {
+			return;
+
+		}
+		final JSlider sizeSlider = (JSlider) e.getSource();
+		this.changeTreeProportions(sizeSlider.getValue());
+
 	}
 
 	/*
@@ -395,6 +448,21 @@ public final class LocalStorageExplorationGUIController
 	}
 
 	/**
+	 * Changes the proportions of the tree by the given value.
+	 * 
+	 * @param mValue
+	 *            The value with which to re-proporte the tree.
+	 */
+	private void changeTreeProportions(final int mValue) {
+		for (final ITreeNode node : this.tree.getNodes()) {
+			this.nodeMapping.get(node).setRadius(mValue);
+
+		}
+		this.proportions = mValue;
+		this.view.repaint();
+	}
+
+	/**
 	 * Ends the current algorithm cycle. Updates the steps on the view and
 	 * repaints the view, since there may have been robots moving, thus we need
 	 * to update the graphics. Also sets the algorithm to <tt>null</tt> if it
@@ -403,9 +471,10 @@ public final class LocalStorageExplorationGUIController
 	private void endAlgorithmCycle() {
 		this.updateKnowledge();
 
-		this.view.setCurrentStep(this.step + " | " + this.getStageByStep(this.step).toString());
+		this.view.setCurrentStep(this.step + "");
+		this.view.setStepType(getStepTypeByStep(this.step));
 		this.view.repaint();
-		
+
 		// Fiddle the aliases
 		final Map<ITreeNode, ITreeNode> originalToExploredNodes = this.explorationTreeBuilder.getNodeAlias();
 		final Map<ITreeNode, ITreeNode> exploredToOriginalNodes = MapUtil.reverseMap(originalToExploredNodes);
@@ -415,39 +484,17 @@ public final class LocalStorageExplorationGUIController
 			this.algorithm = null;
 			return;
 		}
-		
-	}
-
-	/**
-	 * Paints the given edge to the color specified in
-	 * {@link Window#VISITED_EDGE_COLOR}.
-	 * 
-	 * @param mEdgeToPaint
-	 *            The edge which should be painted.
-	 */
-	@SuppressWarnings("static-method")
-	private void paintEdge(final Edge mEdgeToPaint) {
-
-		// happens when robots try to walk edges backwards, since there is no
-		// destination -> source mapping for the edges. Handling needs to be
-		// implemented for animations.
-		if (mEdgeToPaint == null) {
-			return;
-
-		}
-		mEdgeToPaint.setColor(Window.VISITED_EDGE_COLOR);
 
 	}
 
 	/**
-	 * Paints the given node to the color specified in
-	 * {@link Window#VISITED_NODE_COLOR}.
+	 * Sets the given node to visited. Used for painting related logic.
 	 * 
 	 * @param mNodeToPaint
-	 *            The node which should be painted.
+	 *            The node which should be set to visited.
 	 */
 	private void paintNode(final ITreeNode mNodeToPaint) {
-		this.nodeMapping.get(mNodeToPaint).setColor(Window.VISITED_NODE_COLOR);
+		this.nodeMapping.get(mNodeToPaint).setVisited();
 	}
 
 	/**
@@ -461,10 +508,31 @@ public final class LocalStorageExplorationGUIController
 		this.view.setTree(this.tree);
 		this.view.setSeed(mGenerator.getSeedOfLastGeneration().longValue());
 		this.view.setCurrentStep("");
+		this.view.setStepType(null);
 		this.nodeMapping = this.tree.getNodeMapping();
 		this.edgeMapping = this.tree.getEdgeMapping();
 		this.algorithm = null;
 		this.isFinished = false;
+
+	}
+
+	/**
+	 * Sets the given edge to visited. Used for painting related logic.
+	 * 
+	 * @param mEdgeToPaint
+	 *            The edge which should be set to visited.
+	 */
+	@SuppressWarnings("static-method")
+	private void setVisited(final Edge mEdgeToPaint) {
+
+		// happens when robots try to walk edges backwards, since there is no
+		// destination -> source mapping for the edges. Handling needs to be
+		// implemented for animations.
+		if (mEdgeToPaint == null) {
+			return;
+
+		}
+		mEdgeToPaint.setVisited();
 
 	}
 
@@ -504,21 +572,17 @@ public final class LocalStorageExplorationGUIController
 	 * knowledge data.
 	 */
 	private synchronized void updateKnowledge() {
-		final Queue<ITreeNode> queue = new LinkedList<>();
-		queue.add(this.tree.getRoot());
-
-		while (!queue.isEmpty()) {
-			final ITreeNode node = queue.poll();
-
+		for (final ITreeNode node : this.tree.getNodes()) {
 			final NestedMap2<Integer, Integer, Information> map = this.nodeStorageManager.read(node);
 
-			for (int stepsToCount = 1; stepsToCount < this.step; stepsToCount++) {
+			for (int stepsToCount = 0; stepsToCount <= this.step; stepsToCount++) {
 				for (int i = 0; i < this.algorithm.getRobots().size(); i++) {
 
 					final Information currentNodeInformation = map.get(Integer.valueOf(stepsToCount),
 							Integer.valueOf(i));
 
 					if (currentNodeInformation != null) {
+
 						if (this.nodeInformationMapping.get(node) == null) {
 							this.nodeInformationMapping.put(node, new ArrayList<>());
 
@@ -532,12 +596,6 @@ public final class LocalStorageExplorationGUIController
 					}
 				}
 			}
-
-			for (final ITreeNode children : node.getChildren()) {
-				queue.add(children);
-
-			}
-
 		}
 	}
 }

@@ -2,15 +2,18 @@ package de.zabuza.treeflood.demo.gui.view;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeListener;
 
 import de.zabuza.treeflood.demo.gui.model.CoordinateTree;
+import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
+import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
+import de.zabuza.treeflood.exploration.localstorage.EStep;
 
 /**
  * The frame used to display all the view related components. Is the
@@ -26,6 +29,11 @@ public final class MainFrame extends JFrame {
 	 * The serial version UID used for serialization.
 	 */
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * The style manager used to handle styles.
+	 */
+	private final StyleManager manager;
 
 	/**
 	 * A panel providing options for the tree-generation and the algorithm
@@ -45,15 +53,18 @@ public final class MainFrame extends JFrame {
 	 *
 	 * @param mTitle
 	 *            The title of this frame.
+	 * @param mManager
+	 *            The style manager used to handle colors.
 	 */
-	public MainFrame(final String mTitle) {
+	public MainFrame(final String mTitle, final StyleManager mManager) {
 		final Window window = new Window();
+		this.manager = mManager;
 
 		final JPanel panel = new JPanel(new BorderLayout());
 
-		this.treePanel = new Treepanel(window);
+		this.treePanel = new Treepanel(window, mManager);
 
-		this.optionPanel = new Optionpanel(window);
+		this.optionPanel = new Optionpanel(window, mManager);
 
 		this.setTitle(mTitle);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -64,7 +75,6 @@ public final class MainFrame extends JFrame {
 		this.setResizable(false);
 
 		panel.add(this.treePanel, BorderLayout.WEST);
-		panel.add(new JSeparator(SwingConstants.VERTICAL), BorderLayout.CENTER);
 		panel.add(this.optionPanel, BorderLayout.EAST);
 
 		this.add(panel);
@@ -97,6 +107,17 @@ public final class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Adds a change listener to the slider used to control the size of the
+	 * tree.
+	 * 
+	 * @param mListener
+	 *            The listener to be added.
+	 */
+	public void addSizeSliderListener(final ChangeListener mListener) {
+		this.optionPanel.addSizeSliderListener(mListener);
+	}
+
+	/**
 	 * Adds an {@link ActionListener} to the "step"-button on the option panel.
 	 * 
 	 * @param mListener
@@ -104,6 +125,17 @@ public final class MainFrame extends JFrame {
 	 */
 	public void addStepButtonListener(final ActionListener mListener) {
 		this.optionPanel.addStepButtonListener(mListener);
+
+	}
+
+	/**
+	 * Adds an item listener to the combo box used to control the current style.
+	 * 
+	 * @param mListener
+	 *            The listener to be added.
+	 */
+	public void addStyleItemListener(final ItemListener mListener) {
+		this.optionPanel.addStyleItemListener(mListener);
 
 	}
 
@@ -165,6 +197,7 @@ public final class MainFrame extends JFrame {
 	public void repaint() {
 		super.repaint();
 		this.treePanel.repaint();
+		this.optionPanel.repaint();
 
 	}
 
@@ -191,6 +224,27 @@ public final class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Sets the step type shown on the GUI.
+	 * 
+	 * @param mStepType
+	 *            The step type.
+	 */
+	public void setStepType(final EStep mStepType) {
+		this.optionPanel.setStepType(mStepType);
+
+	}
+
+	/**
+	 * Sets the current style of this view.
+	 * 
+	 * @param mStyleToSet
+	 *            The new style of this view.
+	 */
+	public void setStyle(final EStyle mStyleToSet) {
+		this.manager.changeStyle(mStyleToSet);
+	}
+
+	/**
 	 * Sets a new tree for the tree panel.
 	 * 
 	 * @param mTree
@@ -200,4 +254,5 @@ public final class MainFrame extends JFrame {
 		this.treePanel.setTree(mTree);
 
 	}
+
 }

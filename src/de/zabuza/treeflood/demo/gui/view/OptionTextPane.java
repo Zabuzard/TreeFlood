@@ -1,9 +1,9 @@
 package de.zabuza.treeflood.demo.gui.view;
 
-import java.awt.Color;
-
 import javax.swing.JTextPane;
 
+import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
+import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
 
 /**
@@ -12,7 +12,7 @@ import de.zabuza.treeflood.demo.gui.view.util.Window;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class OptionTextPane extends JTextPane {
+public final class OptionTextPane extends JTextPane implements IRecolorable {
 
 	/**
 	 * The serial version UID used for serialization.
@@ -20,54 +20,53 @@ public final class OptionTextPane extends JTextPane {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Constructs a new OptionTextPane with no text and the background color
-	 * white.
+	 * The style manager used to handle colors.
 	 */
-	public OptionTextPane() {
-		this("");
-	}
+	private final StyleManager manager;
 
 	/**
-	 * Constructs a new OptionTextPane with no text and the background color
-	 * given.
-	 * 
-	 * @param mBackground
-	 *            The background color of this object.
-	 */
-	public OptionTextPane(final Color mBackground) {
-		this("", mBackground);
-
-	}
-
-	/**
-	 * Constructs a new OptionTextPane with the given text and the background
-	 * color white.
+	 * Constructs a new OptionTextPane with the given text and the given style
+	 * manager.
 	 * 
 	 * @param mContext
 	 *            The context written onto this pane.
+	 * @param mManager
+	 *            The style manager used to handle colors.
 	 */
-	public OptionTextPane(final String mContext) {
-		this(mContext, Color.WHITE);
-
-	}
-
-	/**
-	 * Constructs a new OptionTextPane with the given text and the given
-	 * background.
-	 * 
-	 * @param mContext
-	 *            The context written onto this pane.
-	 * @param mBackground
-	 *            The background color of this object.
-	 */
-	public OptionTextPane(final String mContext, final Color mBackground) {
+	public OptionTextPane(final String mContext, final StyleManager mManager) {
 		super();
 		this.setText(mContext);
-		this.setBackground(mBackground);
 
 		this.setFocusable(false);
 		this.setEditable(false);
 		this.setFont(Window.TEXT_PANE_FONT);
+
+		this.manager = mManager;
+
+		this.setBackground(mManager.getTextPaneColor());
+		this.setForeground(mManager.getDefaultFontColor());
+	}
+
+	/**
+	 * Constructs a new OptionTextPane with no text and the style manager given.
+	 * 
+	 * @param mManager
+	 *            The style manager used to handle colors.
+	 */
+	public OptionTextPane(final StyleManager mManager) {
+		this(" ", mManager);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.zabuza.treeflood.demo.gui.view.properties.IRecolorable#reColor()
+	 */
+	@Override
+	public void reColor() {
+		this.setBackground(this.manager.getTextPaneColor());
+		this.setForeground(this.manager.getDefaultFontColor());
 
 	}
 

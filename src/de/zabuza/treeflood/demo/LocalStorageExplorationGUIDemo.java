@@ -2,6 +2,8 @@ package de.zabuza.treeflood.demo;
 
 import de.zabuza.treeflood.demo.gui.controller.LocalStorageExplorationGUIController;
 import de.zabuza.treeflood.demo.gui.view.MainFrame;
+import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
+import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.exploration.localstorage.LocalStorageExploration;
 
 /**
@@ -22,7 +24,8 @@ public class LocalStorageExplorationGUIDemo {
 	 */
 	@SuppressWarnings("unused")
 	public static void main(final String[] args) {
-		new LocalStorageExplorationGUIController(new MainFrame("Local Storage Exploration"));
+		new LocalStorageExplorationGUIController(
+				new MainFrame("Local Storage Exploration", new StyleManager(EStyle.STANDARD)));
 
 	}
 

@@ -24,7 +24,7 @@ public class InformationPanel {
 	/**
 	 * A string representation for every information this panel currently holds.
 	 */
-	private List<String> informationsAsString;
+	private final List<String> informationsAsString;
 
 	/**
 	 * The node on which to operate.
@@ -125,12 +125,14 @@ public class InformationPanel {
 	}
 
 	/**
-	 * Sets the information holded by this panel.
+	 * Sets the information holded by this panel. Also calls
+	 * {@link InformationPanel#adjustHeight()} and
+	 * {@link InformationPanel#adjustWidth()}.
 	 * 
 	 * @param mInformation
 	 *            The new information for this panel.
 	 */
-	public void setInformation(final List<Information> mInformation) {
+	public synchronized void setInformation(final List<Information> mInformation) {
 		this.informations = mInformation;
 		this.adjustWidth();
 		this.adjustHeight();
@@ -153,16 +155,30 @@ public class InformationPanel {
 	 */
 	private void adjustWidth() {
 
+		int highestStep = 0;
+		for (final Information line : this.informations) {
+			if (line.getStep() > highestStep) {
+				highestStep = line.getStep();
+
+			}
+
+		}
+
 		int mostChars = 0;
 		for (final Information line : this.informations) {
-			final String informationString;
+			String informationString = "#";
+
+			final int spacesToAdd = ("" + highestStep).length() - (line.getStep() + "").length();
+
+			for (int i = 0; i < spacesToAdd; i++) {
+				informationString += "  ";
+
+			}
 
 			if (line.wasEnteredFromParent()) {
-				informationString = "#" + line.getStep() + ", [" + line.getRobotId() + "], ↑"
-						+ line.getPort();
+				informationString += line.getStep() + ", [" + line.getRobotId() + "], ↓ " + line.getPort();
 			} else {
-				informationString = "#" + line.getStep() + ", [" + line.getRobotId() + "],	 ↓"
-						+ line.getPort();
+				informationString += line.getStep() + ", [" + line.getRobotId() + "],	 ↑ " + line.getPort();
 			}
 
 			if (informationString.length() > mostChars) {
@@ -177,8 +193,7 @@ public class InformationPanel {
 			this.informationsAsString.add(informationString);
 
 		}
-		this.width = 8 * mostChars;
+		this.width = mostChars * 8 + 5;
 
 	}
-
 }

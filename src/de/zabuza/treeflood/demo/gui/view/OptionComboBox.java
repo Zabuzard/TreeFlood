@@ -1,19 +1,18 @@
 package de.zabuza.treeflood.demo.gui.view;
 
-import javax.swing.JButton;
+import javax.swing.JComboBox;
 
 import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
-import de.zabuza.treeflood.demo.gui.view.util.Window;
 
 /**
- * Provides a customized {@link JButton} having its own background color and
- * other values set.
+ * Provides a customized {@link JComboBox} by setting own colors and other set
+ * values.
  *
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public class OptionButton extends JButton implements IRecolorable {
+public class OptionComboBox<E> extends JComboBox<E> implements IRecolorable {
 
 	/**
 	 * The serial version UID used for serialization.
@@ -21,37 +20,24 @@ public class OptionButton extends JButton implements IRecolorable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The style manager used to handle colors.
+	 * The style manager used for handling colors.
 	 */
 	private final StyleManager manager;
 
 	/**
-	 * Constructs an option button with the given context set as title.
+	 * Creates a new option combo box setting specific parameters.
 	 * 
-	 * @param mContext
-	 *            The title of the button.
+	 * @param mElements
+	 *            The elements with which to initialize this combo box.
 	 * 
 	 * @param mManager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionButton(final String mContext, final StyleManager mManager) {
-		super(mContext);
-		this.setFont(Window.TEXT_BUTTON_FONT);
+	public OptionComboBox(final E[] mElements, final StyleManager mManager) {
+		super(mElements);
 		this.setBackground(mManager.getButtonColor());
 		this.setForeground(mManager.getDefaultFontColor());
-		this.setFocusPainted(false);
 		this.manager = mManager;
-
-	}
-
-	/**
-	 * Constructs an option button with no text set.
-	 * 
-	 * @param mManager
-	 *            The style manager used to handle colors.
-	 */
-	public OptionButton(final StyleManager mManager) {
-		this("", mManager);
 
 	}
 
@@ -66,4 +52,5 @@ public class OptionButton extends JButton implements IRecolorable {
 		this.setForeground(this.manager.getDefaultFontColor());
 
 	}
+
 }

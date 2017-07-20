@@ -1,6 +1,5 @@
 package de.zabuza.treeflood.demo.gui.view.util;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
@@ -15,19 +14,14 @@ import java.awt.Point;
 public final class Window {
 
 	/**
-	 * The font used by the ports displayed at edges.
-	 */
-	public static final Font EDGE_PORT_FONT = new Font("", Font.BOLD, 20);
-
-	/**
-	 * The color of the buttons used throughout this view.
-	 */
-	public static final Color BUTTON_COLOR = new Color(255, 255, 255);
-
-	/**
 	 * The font for the descriptions.
 	 */
 	public static final Font DESCRIPTION_FONT = new Font("", Font.BOLD, 20);
+
+	/**
+	 * The font used by the ports displayed at edges.
+	 */
+	public static final Font EDGE_PORT_FONT = new Font("", Font.BOLD, 20);
 
 	/**
 	 * The font used by text areas throughout this view.
@@ -45,34 +39,9 @@ public final class Window {
 	public static final Font TEXT_PANE_FONT = new Font("", Font.PLAIN, 18);
 
 	/**
-	 * The color of the rectangle surrounding the tooltips.
-	 */
-	public static final Color TOOLTIP_FILL_COLOR = new Color(230, 230, 230, 200);
-
-	/**
 	 * The font used for the tooltips.
 	 */
 	public static final Font TOOLTIP_FONT = new Font("", Font.PLAIN, 18);
-
-	/**
-	 * The color of an edge which has not yet been visited by robot.
-	 */
-	public static final Color UNVISITED_EDGE_COLOR = new Color(201, 201, 201);
-
-	/**
-	 * The color of a node which has not yet been visited by a robot.
-	 */
-	public static final Color UNVISITED_NODE_COLOR = new Color(201, 201, 201);
-
-	/**
-	 * The color of an edge which has been visited by a robot.
-	 */
-	public static final Color VISITED_EDGE_COLOR = new Color(255, 184, 136);
-
-	/**
-	 * The color of a node which has been visited by a robot.
-	 */
-	public static final Color VISITED_NODE_COLOR = new Color(245, 99, 99);
 
 	/**
 	 * This is used to maintain a stable frame size no matter on which device
