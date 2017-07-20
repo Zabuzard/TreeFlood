@@ -33,40 +33,40 @@ public final class MainFrame extends JFrame {
 	/**
 	 * The style manager used to handle styles.
 	 */
-	private final StyleManager manager;
+	private final StyleManager mManager;
 
 	/**
 	 * A panel providing options for the tree-generation and the algorithm
 	 * execution.
 	 */
-	private final Optionpanel optionPanel;
+	private final OptionPanel mOptionPanel;
 
 	/**
 	 * The panel on which the tree gets drawn.
 	 */
-	private final Treepanel treePanel;
+	private final TreePanel mTreePanel;
 
 	/**
 	 * The frame used to display all the view related components. Is the
 	 * top-level-container of the swing-hierarchy thus every element gets
 	 * eventually added to this object.
 	 *
-	 * @param mTitle
+	 * @param title
 	 *            The title of this frame.
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public MainFrame(final String mTitle, final StyleManager mManager) {
+	public MainFrame(final String title, final StyleManager manager) {
 		final Window window = new Window();
-		this.manager = mManager;
+		this.mManager = manager;
 
 		final JPanel panel = new JPanel(new BorderLayout());
 
-		this.treePanel = new Treepanel(window, mManager);
+		this.mTreePanel = new TreePanel(window, manager);
 
-		this.optionPanel = new Optionpanel(window, mManager);
+		this.mOptionPanel = new OptionPanel(window, manager);
 
-		this.setTitle(mTitle);
+		this.setTitle(title);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		this.setPreferredSize(window.getFrameSize());
 
@@ -74,8 +74,8 @@ public final class MainFrame extends JFrame {
 
 		this.setResizable(false);
 
-		panel.add(this.treePanel, BorderLayout.WEST);
-		panel.add(this.optionPanel, BorderLayout.EAST);
+		panel.add(this.mTreePanel, BorderLayout.WEST);
+		panel.add(this.mOptionPanel, BorderLayout.EAST);
 
 		this.add(panel);
 	}
@@ -83,23 +83,21 @@ public final class MainFrame extends JFrame {
 	/**
 	 * Adds an {@link ActionListener} to the "fully"-button on the option panel.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addFullyButtonListener(final ActionListener mListener) {
-		this.optionPanel.addFullyButtonListener(mListener);
-
+	public void addFullyButtonListener(final ActionListener listener) {
+		this.mOptionPanel.addFullyButtonListener(listener);
 	}
 
 	/**
 	 * Adds an {@link ActionListener} to the "round"-button on the option panel.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addRoundButtonListener(final ActionListener mListener) {
-		this.optionPanel.addRoundButtonListener(mListener);
-
+	public void addRoundButtonListener(final ActionListener listener) {
+		this.mOptionPanel.addRoundButtonListener(listener);
 	}
 
 	/**
@@ -110,145 +108,138 @@ public final class MainFrame extends JFrame {
 	 *            The listener to be added.
 	 */
 	public void addSizeSliderListener(final ChangeListener mListener) {
-		this.optionPanel.addSizeSliderListener(mListener);
+		this.mOptionPanel.addSizeSliderListener(mListener);
 	}
 
 	/**
 	 * Adds an {@link ActionListener} to the "step"-button on the option panel.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addStepButtonListener(final ActionListener mListener) {
-		this.optionPanel.addStepButtonListener(mListener);
-
+	public void addStepButtonListener(final ActionListener listener) {
+		this.mOptionPanel.addStepButtonListener(listener);
 	}
 
 	/**
 	 * Adds an item listener to the combo box used to control the current style.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addStyleItemListener(final ItemListener mListener) {
-		this.optionPanel.addStyleItemListener(mListener);
-
+	public void addStyleItemListener(final ItemListener listener) {
+		this.mOptionPanel.addStyleItemListener(listener);
 	}
 
 	/**
 	 * Adds an {@link ActionListener} to the "useSeed"-button on the option
 	 * panel.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addUseSeedButtonListener(final ActionListener mListener) {
-		this.optionPanel.addUseSeedButtonListener(mListener);
-
+	public void addUseSeedButtonListener(final ActionListener listener) {
+		this.mOptionPanel.addUseSeedButtonListener(listener);
 	}
 
 	/**
 	 * Adds an {@link ActionListener} to the "withoutSeed"-button on the option
 	 * panel.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addWithoutSeedButtonListener(final ActionListener mListener) {
-		this.optionPanel.addWithoutSeedButtonListener(mListener);
-
+	public void addWithoutSeedButtonListener(final ActionListener listener) {
+		this.mOptionPanel.addWithoutSeedButtonListener(listener);
 	}
 
 	/**
-	 * Gets the amount of robots currently inputted in a textfield on the option
+	 * Gets the amount of robots currently present in a text field on the option
 	 * panel.
 	 * 
 	 * @return The amount of robots to use.
 	 */
 	public int getAmountOfRobots() {
-		return this.optionPanel.getAmountOfRobots();
-
+		return this.mOptionPanel.getAmountOfRobots();
 	}
 
 	/**
-	 * Gets the current seed inputted in a textfield on the option panel.
+	 * Gets the current seed present in a text field on the option panel.
 	 * 
 	 * @return The seed mentioned.
 	 */
 	public long getSeed() {
-		return this.optionPanel.getSeed();
+		return this.mOptionPanel.getSeed();
 	}
 
 	/**
-	 * Gets the size of the tree currently inputted in a textfield on the option
+	 * Gets the size of the tree currently present in a text field on the option
 	 * panel.
 	 * 
 	 * @return The size of the tree.
 	 */
 	public int getTreeSize() {
-		return this.optionPanel.getTreeSize();
+		return this.mOptionPanel.getTreeSize();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see java.awt.Component#repaint()
+	 */
 	@Override
 	public void repaint() {
 		super.repaint();
-		this.treePanel.repaint();
-		this.optionPanel.repaint();
-
+		this.mTreePanel.repaint();
+		this.mOptionPanel.repaint();
 	}
 
 	/**
 	 * Sets the current executed step-count on the option panel.
 	 * 
-	 * @param mStep
+	 * @param step
 	 *            The current executed step-count.
 	 */
-	public void setCurrentStep(final String mStep) {
-		this.optionPanel.setCurrentStep(mStep);
-
+	public void setCurrentStep(final String step) {
+		this.mOptionPanel.setCurrentStep(step);
 	}
 
 	/**
 	 * Sets the seed given to the option panel.
 	 * 
-	 * @param mSeed
+	 * @param seed
 	 *            The new seed which should be shown on the option panel.
 	 */
-	public void setSeed(final long mSeed) {
-		this.optionPanel.setSeed(mSeed);
-
+	public void setSeed(final long seed) {
+		this.mOptionPanel.setSeed(seed);
 	}
 
 	/**
 	 * Sets the step type shown on the GUI.
 	 * 
-	 * @param mStepType
+	 * @param stepType
 	 *            The step type.
 	 */
-	public void setStepType(final EStep mStepType) {
-		this.optionPanel.setStepType(mStepType);
-
+	public void setStepType(final EStep stepType) {
+		this.mOptionPanel.setStepType(stepType);
 	}
 
 	/**
 	 * Sets the current style of this view.
 	 * 
-	 * @param mStyleToSet
+	 * @param styleToSet
 	 *            The new style of this view.
 	 */
-	public void setStyle(final EStyle mStyleToSet) {
-		this.manager.changeStyle(mStyleToSet);
+	public void setStyle(final EStyle styleToSet) {
+		this.mManager.changeStyle(styleToSet);
 	}
 
 	/**
 	 * Sets a new tree for the tree panel.
 	 * 
-	 * @param mTree
+	 * @param tree
 	 *            The tree to use.
 	 */
-	public void setTree(final CoordinateTree mTree) {
-		this.treePanel.setTree(mTree);
-
+	public void setTree(final CoordinateTree tree) {
+		this.mTreePanel.setTree(tree);
 	}
-
 }

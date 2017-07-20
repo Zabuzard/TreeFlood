@@ -2,7 +2,7 @@ package de.zabuza.treeflood.demo.gui.view;
 
 import javax.swing.JSeparator;
 
-import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
+import de.zabuza.treeflood.demo.gui.view.properties.IReColorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 
 /**
@@ -12,7 +12,7 @@ import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public class OptionSeparator extends JSeparator implements IRecolorable {
+public final class OptionSeparator extends JSeparator implements IReColorable {
 
 	/**
 	 * The serial version UID used for serialization.
@@ -22,22 +22,22 @@ public class OptionSeparator extends JSeparator implements IRecolorable {
 	/**
 	 * The style manager used to handle colors.
 	 */
-	private final StyleManager manager;
+	private final StyleManager mManager;
 
 	/**
 	 * Provides a customized {@link JSeparator} with its own color and other
 	 * values set.
 	 * 
-	 * @param mOrientation
+	 * @param orientation
 	 *            The orientation for this separator
 	 * 
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionSeparator(final int mOrientation, final StyleManager mManager) {
-		super(mOrientation);
-		this.setForeground(mManager.getSeparatorColor());
-		this.manager = mManager;
+	public OptionSeparator(final int orientation, final StyleManager manager) {
+		super(orientation);
+		this.setForeground(manager.getSeparatorColor());
+		this.mManager = manager;
 	}
 
 	/*
@@ -47,8 +47,6 @@ public class OptionSeparator extends JSeparator implements IRecolorable {
 	 */
 	@Override
 	public void reColor() {
-		this.setForeground(this.manager.getSeparatorColor());
-
+		this.setForeground(this.mManager.getSeparatorColor());
 	}
-
 }

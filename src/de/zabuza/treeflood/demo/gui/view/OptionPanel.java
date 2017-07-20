@@ -16,7 +16,7 @@ import javax.swing.event.ChangeListener;
 
 import de.zabuza.treeflood.demo.gui.model.DrawableNodeData;
 import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
-import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
+import de.zabuza.treeflood.demo.gui.view.properties.IReColorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
 import de.zabuza.treeflood.exploration.localstorage.EStep;
@@ -28,30 +28,30 @@ import de.zabuza.treeflood.exploration.localstorage.EStep;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class Optionpanel extends JPanel implements IRecolorable {
+public final class OptionPanel extends JPanel implements IReColorable {
 
 	/**
-	 * The title of {@link Optionpanel#fullyButton}.
+	 * The title of {@link OptionPanel#mFullyButton}.
 	 */
 	public final static String FULLY_BUTTON_TEXT = "Fully";
 
 	/**
-	 * The title of {@link Optionpanel#fullyButton}.
+	 * The title of {@link OptionPanel#mFullyButton}.
 	 */
 	public final static String ROUND_BUTTON_TEXT = "Round";
 
 	/**
-	 * The title of {@link Optionpanel#stepButton}.
+	 * The title of {@link OptionPanel#mStepButton}.
 	 */
 	public final static String STEP_BUTTON_TEXT = "Step";
 
 	/**
-	 * The title of {@link Optionpanel#useSeedButton}.
+	 * The title of {@link OptionPanel#mUseSeedButton}.
 	 */
 	public final static String USE_SEED_BUTTON_TEXT = "Use Seed";
 
 	/**
-	 * The title of {@link Optionpanel#withoutSeedButton}.
+	 * The title of {@link OptionPanel#mWithoutSeedButton}.
 	 */
 	public final static String WITHOUT_SEED_BUTTON_TEXT = "Without Seed";
 
@@ -63,105 +63,105 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	/**
 	 * All components added to this panel.
 	 */
-	private final List<IRecolorable> components;
+	private final List<IReColorable> mComponents;
 
 	/**
 	 * The button which fully executes the algorithm.
 	 */
-	private final OptionButton fullyButton;
+	private final OptionButton mFullyButton;
 
 	/**
 	 * The style manager used to manage colors.
 	 */
-	private final StyleManager manager;
+	private final StyleManager mManager;
 
 	/**
 	 * The text area which contains the amount of robots to use.
 	 */
-	private final OptionTextArea robotsArea;
+	private final OptionTextArea mRobotsArea;
 
 	/**
 	 * The button which executes the algorithm by one round.
 	 */
-	private final OptionButton roundButton;
+	private final OptionButton mRoundButton;
 
 	/**
 	 * The text area which contains the current seed of the tree.
 	 */
-	private final OptionTextArea seedArea;
+	private final OptionTextArea mSeedArea;
 
 	/**
 	 * The slider used to change the size of the tree.
 	 */
-	private final OptionSlider sizeSlider;
+	private final OptionSlider mSizeSlider;
 
 	/**
 	 * The text area which shows the amount of steps executed.
 	 */
-	private final OptionTextArea stepArea;
+	private final OptionTextArea mStepArea;
 
 	/**
 	 * The button which executes the algorithm by one step.
 	 */
-	private final OptionButton stepButton;
+	private final OptionButton mStepButton;
 
 	/**
 	 * The text pane used to display the current step type.
 	 */
-	private final OptionTextPane stepTypePane;
+	private final OptionTextPane mStepTypePane;
 
 	/**
 	 * The combo box used to select different styles.
 	 */
-	private final OptionComboBox<EStyle> styleSelect;
+	private final OptionComboBox<EStyle> mStyleSelect;
 
 	/**
 	 * The text area which contains the current size of the tree.
 	 */
-	private final OptionTextArea treeSizeArea;
+	private final OptionTextArea mTreeSizeArea;
 
 	/**
 	 * The button which generates a new tree with the given seed.
 	 */
-	private final OptionButton useSeedButton;
+	private final OptionButton mUseSeedButton;
 
 	/**
 	 * The button which generates a new tree without the given seed.
 	 */
-	private final OptionButton withoutSeedButton;
+	private final OptionButton mWithoutSeedButton;
 
 	/**
 	 * Constructs a new option panel which provides options for the
 	 * tree-generation and the algorithm-execution. Gets its placement
 	 * information from the given window object.
 	 * 
-	 * @param mWindow
+	 * @param window
 	 *            The object from which to get the placement related data for
 	 *            this object.
 	 * 
-	 * @param mManager
+	 * @param manager
 	 *            the manager used to get the color for objects.
 	 */
-	public Optionpanel(final Window mWindow, final StyleManager mManager) {
-		this.components = new LinkedList<>();
-		this.manager = mManager;
+	public OptionPanel(final Window window, final StyleManager manager) {
+		this.mComponents = new LinkedList<>();
+		this.mManager = manager;
 
 		this.setLayout(new GridBagLayout());
-		this.setPreferredSize(mWindow.getOptionPanelSize());
+		this.setPreferredSize(window.getOptionPanelSize());
 		this.setBorder(LineBorder.createBlackLineBorder());
 
 		final GridBagConstraints constraints = new GridBagConstraints();
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 
-		final OptionTextPane textPane = new OptionTextPane("Seed:", mManager);
+		final OptionTextPane textPane = new OptionTextPane("Seed:", manager);
 
 		constraints.gridx = 0;
 		constraints.insets = new Insets(0, 15, 0, 0);
 
 		this.add(textPane, constraints);
 
-		this.seedArea = new OptionTextArea(mManager);
+		this.mSeedArea = new OptionTextArea(manager);
 
 		constraints.weightx = 0.8;
 		constraints.gridx = 1;
@@ -169,9 +169,9 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 		constraints.gridy = 0;
 		constraints.insets = new Insets(0, 15, 0, 10);
 
-		this.add(this.seedArea, constraints);
+		this.add(this.mSeedArea, constraints);
 
-		final OptionTextPane textPane2 = new OptionTextPane("Tree Size:", mManager);
+		final OptionTextPane textPane2 = new OptionTextPane("Tree Size:", manager);
 
 		constraints.weightx = 0;
 		constraints.gridx = 0;
@@ -181,16 +181,16 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 
 		this.add(textPane2, constraints);
 
-		this.treeSizeArea = new OptionTextArea("10", mManager);
+		this.mTreeSizeArea = new OptionTextArea("10", manager);
 
 		constraints.weightx = 0.8;
 		constraints.gridx = 1;
 		constraints.gridwidth = 6;
 		constraints.insets = new Insets(5, 15, 0, 10);
 
-		this.add(this.treeSizeArea, constraints);
+		this.add(this.mTreeSizeArea, constraints);
 
-		this.useSeedButton = new OptionButton(USE_SEED_BUTTON_TEXT, mManager);
+		this.mUseSeedButton = new OptionButton(USE_SEED_BUTTON_TEXT, manager);
 
 		constraints.weightx = 0;
 		constraints.gridwidth = 3;
@@ -198,16 +198,16 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 		constraints.gridy = 2;
 		constraints.insets = new Insets(20, 30, 0, 10);
 
-		this.add(this.useSeedButton, constraints);
+		this.add(this.mUseSeedButton, constraints);
 
-		this.withoutSeedButton = new OptionButton(WITHOUT_SEED_BUTTON_TEXT, mManager);
+		this.mWithoutSeedButton = new OptionButton(WITHOUT_SEED_BUTTON_TEXT, manager);
 
 		constraints.gridx = 3;
 		constraints.insets = new Insets(20, 0, 0, 10);
 
-		this.add(this.withoutSeedButton, constraints);
+		this.add(this.mWithoutSeedButton, constraints);
 
-		final OptionSeparator firstSeparator = new OptionSeparator(SwingConstants.HORIZONTAL, mManager);
+		final OptionSeparator firstSeparator = new OptionSeparator(SwingConstants.HORIZONTAL, manager);
 
 		constraints.gridx = 0;
 		constraints.gridy = 3;
@@ -216,7 +216,7 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 
 		this.add(firstSeparator, constraints);
 
-		final OptionTextPane textPane3 = new OptionTextPane("Robots:", mManager);
+		final OptionTextPane textPane3 = new OptionTextPane("Robots:", manager);
 
 		constraints.gridx = 0;
 		constraints.gridwidth = 1;
@@ -225,15 +225,15 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 
 		this.add(textPane3, constraints);
 
-		this.robotsArea = new OptionTextArea("1", mManager);
+		this.mRobotsArea = new OptionTextArea("1", manager);
 
 		constraints.gridx = 1;
 		constraints.gridwidth = 6;
 		constraints.insets = new Insets(5, 15, 0, 10);
 
-		this.add(this.robotsArea, constraints);
+		this.add(this.mRobotsArea, constraints);
 
-		this.stepButton = new OptionButton(STEP_BUTTON_TEXT, mManager);
+		this.mStepButton = new OptionButton(STEP_BUTTON_TEXT, manager);
 
 		constraints.weightx = 0;
 		constraints.gridwidth = 1;
@@ -241,25 +241,25 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 		constraints.gridy = 5;
 		constraints.insets = new Insets(20, 20, 0, 0);
 
-		this.add(this.stepButton, constraints);
+		this.add(this.mStepButton, constraints);
 
-		this.roundButton = new OptionButton(ROUND_BUTTON_TEXT, mManager);
+		this.mRoundButton = new OptionButton(ROUND_BUTTON_TEXT, manager);
 
 		constraints.gridx = 3;
 		constraints.gridwidth = 1;
 		constraints.insets = new Insets(20, -25, 0, 0);
 
-		this.add(this.roundButton, constraints);
+		this.add(this.mRoundButton, constraints);
 
-		this.fullyButton = new OptionButton(FULLY_BUTTON_TEXT, mManager);
+		this.mFullyButton = new OptionButton(FULLY_BUTTON_TEXT, manager);
 
 		constraints.fill = 0;
 		constraints.gridx = 5;
 		constraints.insets = new Insets(20, 0, 0, -8);
 
-		this.add(this.fullyButton, constraints);
+		this.add(this.mFullyButton, constraints);
 
-		final OptionTextPane stepShow = new OptionTextPane("After Step:", mManager);
+		final OptionTextPane stepShow = new OptionTextPane("After Step:", manager);
 
 		constraints.fill = GridBagConstraints.HORIZONTAL;
 		constraints.gridx = 0;
@@ -269,25 +269,25 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 
 		this.add(stepShow, constraints);
 
-		this.stepArea = new OptionTextArea(mManager);
-		this.stepArea.setEditable(false);
+		this.mStepArea = new OptionTextArea(manager);
+		this.mStepArea.setEditable(false);
 
 		constraints.gridx = 2;
 		constraints.gridwidth = 2;
 		constraints.insets = new Insets(25, 0, 0, 15);
 
-		this.add(this.stepArea, constraints);
+		this.add(this.mStepArea, constraints);
 
-		this.stepTypePane = new OptionTextPane(mManager);
+		this.mStepTypePane = new OptionTextPane(manager);
 
 		constraints.gridx = 4;
 		constraints.gridwidth = 3;
 
 		constraints.insets = new Insets(25, -10, 0, 0);
 
-		this.add(this.stepTypePane, constraints);
+		this.add(this.mStepTypePane, constraints);
 
-		final OptionSeparator secondSeparator = new OptionSeparator(SwingConstants.HORIZONTAL, mManager);
+		final OptionSeparator secondSeparator = new OptionSeparator(SwingConstants.HORIZONTAL, manager);
 		secondSeparator.setForeground(Color.black);
 
 		constraints.weightx = 0;
@@ -297,154 +297,143 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 		constraints.insets = new Insets(30, 10, 50, 5);
 		this.add(secondSeparator, constraints);
 
-		this.sizeSlider = new OptionSlider(SwingConstants.HORIZONTAL, 0, DrawableNodeData.DEFAULT_RADIUS * 2,
-				DrawableNodeData.DEFAULT_RADIUS, mManager);
+		this.mSizeSlider = new OptionSlider(SwingConstants.HORIZONTAL, 0, DrawableNodeData.DEFAULT_RADIUS * 2,
+				DrawableNodeData.DEFAULT_RADIUS, manager);
 
 		constraints.gridx = 0;
 		constraints.gridwidth = 3;
 		constraints.gridy = 8;
 		constraints.insets = new Insets(270, 20, 0, 20);
 
-		this.add(this.sizeSlider, constraints);
+		this.add(this.mSizeSlider, constraints);
 
 		final EStyle[] supportedStyles = { EStyle.STANDARD, EStyle.DARK };
 
-		this.styleSelect = new OptionComboBox<>(supportedStyles, mManager);
-		this.styleSelect.setEditable(false);
-		this.styleSelect.setBackground(mManager.getButtonColor());
+		this.mStyleSelect = new OptionComboBox<>(supportedStyles, manager);
+		this.mStyleSelect.setEditable(false);
+		this.mStyleSelect.setBackground(manager.getButtonColor());
 
 		constraints.gridx = 3;
 		constraints.gridwidth = 4;
 
-		this.add(this.styleSelect, constraints);
+		this.add(this.mStyleSelect, constraints);
 
-		this.components.add(textPane);
-		this.components.add(this.seedArea);
-		this.components.add(textPane2);
-		this.components.add(textPane3);
-		this.components.add(this.treeSizeArea);
-		this.components.add(this.useSeedButton);
-		this.components.add(this.withoutSeedButton);
-		this.components.add(firstSeparator);
-		this.components.add(this.robotsArea);
-		this.components.add(this.stepButton);
-		this.components.add(this.roundButton);
-		this.components.add(this.fullyButton);
-		this.components.add(stepShow);
-		this.components.add(this.stepArea);
-		this.components.add(secondSeparator);
-		this.components.add(this.sizeSlider);
-		this.components.add(this.styleSelect);
-		this.components.add(this.stepTypePane);
-
+		this.mComponents.add(textPane);
+		this.mComponents.add(this.mSeedArea);
+		this.mComponents.add(textPane2);
+		this.mComponents.add(textPane3);
+		this.mComponents.add(this.mTreeSizeArea);
+		this.mComponents.add(this.mUseSeedButton);
+		this.mComponents.add(this.mWithoutSeedButton);
+		this.mComponents.add(firstSeparator);
+		this.mComponents.add(this.mRobotsArea);
+		this.mComponents.add(this.mStepButton);
+		this.mComponents.add(this.mRoundButton);
+		this.mComponents.add(this.mFullyButton);
+		this.mComponents.add(stepShow);
+		this.mComponents.add(this.mStepArea);
+		this.mComponents.add(secondSeparator);
+		this.mComponents.add(this.mSizeSlider);
+		this.mComponents.add(this.mStyleSelect);
+		this.mComponents.add(this.mStepTypePane);
 	}
 
 	/**
-	 * Adds an {@link ActionListener} to {@link Optionpanel#fullyButton}.
+	 * Adds an {@link ActionListener} to {@link OptionPanel#mFullyButton}.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added
 	 */
-	public void addFullyButtonListener(final ActionListener mListener) {
-		this.fullyButton.addActionListener(mListener);
-
+	public void addFullyButtonListener(final ActionListener listener) {
+		this.mFullyButton.addActionListener(listener);
 	}
 
 	/**
-	 * Adds an {@link ActionListener} to {@link Optionpanel#roundButton}.
+	 * Adds an {@link ActionListener} to {@link OptionPanel#mRoundButton}.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added
 	 */
-	public void addRoundButtonListener(final ActionListener mListener) {
-		this.roundButton.addActionListener(mListener);
-
+	public void addRoundButtonListener(final ActionListener listener) {
+		this.mRoundButton.addActionListener(listener);
 	}
 
 	/**
 	 * Adds a change listener to the slider used to control the size of the
 	 * tree.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addSizeSliderListener(final ChangeListener mListener) {
-		this.sizeSlider.addChangeListener(mListener);
+	public void addSizeSliderListener(final ChangeListener listener) {
+		this.mSizeSlider.addChangeListener(listener);
 	}
 
 	/**
-	 * Adds an {@link ActionListener} to {@link Optionpanel#stepButton}.
+	 * Adds an {@link ActionListener} to {@link OptionPanel#mStepButton}.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added
 	 */
-	public void addStepButtonListener(final ActionListener mListener) {
-		this.stepButton.addActionListener(mListener);
-
+	public void addStepButtonListener(final ActionListener listener) {
+		this.mStepButton.addActionListener(listener);
 	}
 
 	/**
 	 * Adds an item listener to the combo box used to control the current style.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added.
 	 */
-	public void addStyleItemListener(final ItemListener mListener) {
-		this.styleSelect.addItemListener(mListener);
-
+	public void addStyleItemListener(final ItemListener listener) {
+		this.mStyleSelect.addItemListener(listener);
 	}
 
 	/**
-	 * Adds an {@link ActionListener} to {@link Optionpanel#useSeedButton}.
+	 * Adds an {@link ActionListener} to {@link OptionPanel#mUseSeedButton}.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added
 	 */
-	public void addUseSeedButtonListener(final ActionListener mListener) {
-		this.useSeedButton.addActionListener(mListener);
-
+	public void addUseSeedButtonListener(final ActionListener listener) {
+		this.mUseSeedButton.addActionListener(listener);
 	}
 
 	/**
-	 * Adds an {@link ActionListener} to {@link Optionpanel#withoutSeedButton}.
+	 * Adds an {@link ActionListener} to {@link OptionPanel#mWithoutSeedButton}.
 	 * 
-	 * @param mListener
+	 * @param listener
 	 *            The listener to be added
 	 */
-	public void addWithoutSeedButtonListener(final ActionListener mListener) {
-		this.withoutSeedButton.addActionListener(mListener);
-
+	public void addWithoutSeedButtonListener(final ActionListener listener) {
+		this.mWithoutSeedButton.addActionListener(listener);
 	}
 
 	/**
-	 * Gets the amount of robots from {@link Optionpanel#robotsArea}.
+	 * Gets the amount of robots from {@link OptionPanel#mRobotsArea}.
 	 * 
 	 * @return The amount of robots to use.
 	 */
 	public int getAmountOfRobots() {
-		// TODO: handle parsing errors;
-		return Integer.parseInt(this.robotsArea.getText());
-
+		return Integer.parseInt(this.mRobotsArea.getText());
 	}
 
 	/**
-	 * Gets the seed from {@link Optionpanel#seedArea}.
+	 * Gets the seed from {@link OptionPanel#mSeedArea}.
 	 * 
 	 * @return The seed.
 	 */
 	public long getSeed() {
-		// TODO: handle parsing errors
-		return Long.parseLong(this.seedArea.getText());
+		return Long.parseLong(this.mSeedArea.getText());
 	}
 
 	/**
-	 * Gets the tree size from {@link Optionpanel#treeSizeArea}.
+	 * Gets the tree size from {@link OptionPanel#mTreeSizeArea}.
 	 * 
 	 * @return The tree size.
 	 */
 	public int getTreeSize() {
-		// TODO: handle parsing errors
-		return Integer.parseInt(this.treeSizeArea.getText());
+		return Integer.parseInt(this.mTreeSizeArea.getText());
 	}
 
 	/*
@@ -454,59 +443,55 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	 */
 	@Override
 	public void reColor() {
-		this.setBackground(this.manager.getOptionpanelColor());
-
+		this.setBackground(this.mManager.getOptionPanelColor());
 	}
 
 	@Override
 	public void repaint() {
 		super.repaint();
-		if (this.components == null) {
+		if (this.mComponents == null) {
 			return;
-
 		}
-		for (final IRecolorable comp : this.components) {
+
+		for (final IReColorable comp : this.mComponents) {
 			comp.reColor();
 		}
+
 		this.reColor();
 	}
 
 	/**
 	 * Sets the amount of current steps executed.
 	 * 
-	 * @param mSteps
+	 * @param steps
 	 *            The new amount of executed steps.
 	 */
-	public void setCurrentStep(final String mSteps) {
-		this.stepArea.setText(mSteps);
-
+	public void setCurrentStep(final String steps) {
+		this.mStepArea.setText(steps);
 	}
 
 	/**
-	 * Sets the seed on {@link Optionpanel#seedArea}.
+	 * Sets the seed on {@link OptionPanel#mSeedArea}.
 	 * 
-	 * @param mSeed
+	 * @param seed
 	 *            The seed to be set.
 	 */
-	public void setSeed(final long mSeed) {
-		this.seedArea.setText("" + mSeed);
-
+	public void setSeed(final long seed) {
+		this.mSeedArea.setText("" + seed);
 	}
 
 	/**
 	 * Sets the step type on the GUI.
 	 * 
-	 * @param mStepType
+	 * @param stepType
 	 *            The step type.
 	 */
-	public void setStepType(final EStep mStepType) {
-		if (mStepType == null) {
-			this.stepTypePane.setText("");
+	public void setStepType(final EStep stepType) {
+		if (stepType == null) {
+			this.mStepTypePane.setText("");
 			return;
-
 		}
-		this.stepTypePane.setText(mStepType.toString());
 
+		this.mStepTypePane.setText(stepType.toString());
 	}
-
 }

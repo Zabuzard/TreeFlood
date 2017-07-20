@@ -20,9 +20,9 @@ public interface IHasDescription {
 	 * Sets the description of this object. A description can be used to
 	 * describe an objects behavior or the like.
 	 * 
-	 * @param mDescription
+	 * @param description
 	 *            The description of this object.
 	 */
-	public void setDescription(String mDescription);
+	public void setDescription(String description);
 
 }

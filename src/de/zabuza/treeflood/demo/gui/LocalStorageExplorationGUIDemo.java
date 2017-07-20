@@ -13,7 +13,7 @@ import de.zabuza.treeflood.exploration.localstorage.LocalStorageExploration;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public class LocalStorageExplorationGUIDemo {
+public final class LocalStorageExplorationGUIDemo {
 
 	/**
 	 * GUI tool that demonstrates the execution of the algorithm

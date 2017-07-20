@@ -53,39 +53,38 @@ public final class Window {
 	 * The Location of the frame (the top left point of the frame where it
 	 * should be placed on the screen).
 	 */
-	private final Point frameLocation;
+	private final Point mFrameLocation;
 
 	/**
 	 * The Dimensions of the frame which holds every view related element.
 	 */
-	private final Dimension frameSize;
+	private final Dimension mFrameSize;
 
 	/**
 	 * The Dimensions of the
-	 * {@link de.zabuza.treeflood.demo.gui.view.Optionpanel}.
+	 * {@link de.zabuza.treeflood.demo.gui.view.OptionPanel}.
 	 */
-	private final Dimension optionPanelSize;
+	private final Dimension mOptionPanelSize;
 
 	/**
-	 * The Dimensions of the {@link de.zabuza.treeflood.demo.gui.view.Treepanel}
+	 * The Dimensions of the {@link de.zabuza.treeflood.demo.gui.view.TreePanel}
 	 * .
 	 */
-	private final Dimension treePanelSize;
+	private final Dimension mTreePanelSize;
 
 	/**
 	 * Initializes the Window object and calculates positional values for the
 	 * view.
 	 */
 	public Window() {
-		this.frameSize = new Dimension((int) (this.getScreenWidth() * 0.75f), (int) (this.getScreenHeight() * 0.75f));
-		this.treePanelSize = new Dimension((int) (this.getScreenWidth() * (0.75f * (4f / 5))),
-				(int) (this.getScreenHeight() * 0.75));
-		this.optionPanelSize = new Dimension((int) (this.getScreenWidth() * (0.75f * (1f / 5))),
-				(int) (this.getScreenHeight() * 0.75));
+		this.mFrameSize = new Dimension((int) (this.getScreenWidth() * 0.75F), (int) (this.getScreenHeight() * 0.75F));
+		this.mTreePanelSize = new Dimension((int) (this.getScreenWidth() * (0.75F * (4F / 5))),
+				(int) (this.getScreenHeight() * 0.75F));
+		this.mOptionPanelSize = new Dimension((int) (this.getScreenWidth() * (0.75F * (1F / 5))),
+				(int) (this.getScreenHeight() * 0.75F));
 
-		this.frameLocation = new Point(this.getScreenWidth() / 2 - this.getFrameSize().width / 2,
+		this.mFrameLocation = new Point(this.getScreenWidth() / 2 - this.getFrameSize().width / 2,
 				this.getScreenHeight() / 2 - this.getFrameSize().height / 2);
-
 	}
 
 	/**
@@ -95,8 +94,7 @@ public final class Window {
 	 * @return The point mentioned.
 	 */
 	public Point getFrameLocation() {
-		return this.frameLocation;
-
+		return this.mFrameLocation;
 	}
 
 	/**
@@ -105,8 +103,7 @@ public final class Window {
 	 * @return The dimensions mentioned.
 	 */
 	public Dimension getFrameSize() {
-		return this.frameSize;
-
+		return this.mFrameSize;
 	}
 
 	/**
@@ -115,8 +112,7 @@ public final class Window {
 	 * @return The dimensions mentioned.
 	 */
 	public Dimension getOptionPanelSize() {
-		return this.optionPanelSize;
-
+		return this.mOptionPanelSize;
 	}
 
 	/**
@@ -127,7 +123,6 @@ public final class Window {
 	@SuppressWarnings("static-method")
 	public int getScreenHeight() {
 		return SCREEN_SIZE.height;
-
 	}
 
 	/**
@@ -139,7 +134,6 @@ public final class Window {
 	@SuppressWarnings("static-method")
 	public Dimension getScreenSize() {
 		return SCREEN_SIZE;
-
 	}
 
 	/**
@@ -150,7 +144,6 @@ public final class Window {
 	@SuppressWarnings("static-method")
 	public int getScreenWidth() {
 		return SCREEN_SIZE.width;
-
 	}
 
 	/**
@@ -159,7 +152,6 @@ public final class Window {
 	 * @return The dimensions mentioned.
 	 */
 	public Dimension getTreePanelSize() {
-		return this.treePanelSize;
-
+		return this.mTreePanelSize;
 	}
 }

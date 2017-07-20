@@ -26,5 +26,4 @@ public interface INodeHoverListener {
 	 *            The node on which the event got fired.
 	 */
 	public void stopHover(ITreeNode mNode);
-
 }

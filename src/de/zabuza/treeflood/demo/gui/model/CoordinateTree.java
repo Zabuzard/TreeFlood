@@ -34,48 +34,48 @@ public final class CoordinateTree implements ITree {
 	 * A mapping which maps to every depth value the nodes which are present in
 	 * that depth. (depth == 0 only contains the root).
 	 */
-	private final HashMap<Integer, Set<ITreeNode>> depthToNodes;
+	private final HashMap<Integer, Set<ITreeNode>> mDepthToNodes;
 
 	/**
 	 * A list containing every edge of the tree. An edge is explicitly from
 	 * source -> destination and not the other way around.
 	 */
-	private final List<Edge> edges;
+	private final List<Edge> mEdges;
 
 	/**
 	 * A list containing every leaf in the tree.
 	 */
-	private final List<ITreeNode> leafs;
+	private final List<ITreeNode> mLeafs;
 
 	/**
 	 * All the listeners receiving the callbacks
 	 * {@link INodeHoverListener#startHover(ITreeNode)} and
 	 * {@link INodeHoverListener#stopHover(ITreeNode)}.
 	 */
-	private final List<INodeHoverListener> listeners;
+	private final List<INodeHoverListener> mListeners;
 
 	/**
 	 * The depth of this tree. (the depth of the root is 0).
 	 */
-	private int maxDepth;
+	private int mMaxDepth;
 
 	/**
 	 * The mapping for nodes to their extra information, e.g. coordinates,
 	 * color, ...
 	 */
-	private final HashMap<ITreeNode, DrawableNodeData> nodeMapping;
+	private final HashMap<ITreeNode, DrawableNodeData> mNodeMapping;
 
 	/**
 	 * Maps every {@link ITreeNode} -> {@link Integer}. The ID gets incremented
 	 * for every node we traverse (starting from 0). So the highest ID is
 	 * treeSize - 1.
 	 */
-	private final HashMap<ITreeNode, Integer> nodeToID;
+	private final HashMap<ITreeNode, Integer> mNodeToID;
 
 	/**
 	 * The proportions of this tree;
 	 */
-	private final int proportions;
+	private final int mProportions;
 
 	/**
 	 * Maps two nodes to their respective edge. The first key is the source of
@@ -83,12 +83,12 @@ public final class CoordinateTree implements ITree {
 	 * switching first and second key will result in <tt>null</tt> since there
 	 * are no "reversed" edges.
 	 */
-	private final NestedMap2<ITreeNode, ITreeNode, Edge> sourceDestinationToEdge;
+	private final NestedMap2<ITreeNode, ITreeNode, Edge> mSourceDestinationToEdge;
 
 	/**
 	 * The given tree, on which this wrapper is based on.
 	 */
-	private final ITree tree;
+	private final ITree mTree;
 
 	/**
 	 * Constructs a new CoordinateTree, providing a wrapper for the given
@@ -101,15 +101,15 @@ public final class CoordinateTree implements ITree {
 	 * {@link CoordinateTree#initializeData(Window)} should be called before
 	 * operating on this tree.
 	 * 
-	 * @param mTree
+	 * @param tree
 	 *            The tree on which this coordinate tree should be based.
 	 * 
-	 * @param mListeners
+	 * @param listeners
 	 *            The hover listeners receiving callbacks from the
 	 *            {@link INodeHoverListener} interface.
 	 */
-	public CoordinateTree(final ITree mTree, final List<INodeHoverListener> mListeners) {
-		this(mTree, mListeners, DrawableNodeData.DEFAULT_RADIUS);
+	public CoordinateTree(final ITree tree, final List<INodeHoverListener> listeners) {
+		this(tree, listeners, DrawableNodeData.DEFAULT_RADIUS);
 
 	}
 
@@ -124,27 +124,27 @@ public final class CoordinateTree implements ITree {
 	 * {@link CoordinateTree#initializeData(Window)} should be called before
 	 * operating on this tree.
 	 * 
-	 * @param mTree
+	 * @param tree
 	 *            The tree on which this coordinate tree should be based.
 	 * 
-	 * @param mListeners
+	 * @param listeners
 	 *            The hover listeners receiving callbacks from the
 	 *            {@link INodeHoverListener} interface.
 	 * 
-	 * @param mProportions
+	 * @param proportions
 	 *            the proportions of this tree (size of nodes, edges, e.t.c.)
 	 */
-	public CoordinateTree(final ITree mTree, final List<INodeHoverListener> mListeners, final int mProportions) {
-		this.tree = mTree;
-		this.nodeMapping = new HashMap<>();
-		this.depthToNodes = new HashMap<>();
-		this.leafs = new ArrayList<>();
-		this.edges = new ArrayList<>();
-		this.nodeToID = new HashMap<>();
-		this.sourceDestinationToEdge = new NestedMap2<>();
-		this.listeners = mListeners;
-		this.proportions = mProportions;
-		this.maxDepth = 0;
+	public CoordinateTree(final ITree tree, final List<INodeHoverListener> listeners, final int proportions) {
+		this.mTree = tree;
+		this.mNodeMapping = new HashMap<>();
+		this.mDepthToNodes = new HashMap<>();
+		this.mLeafs = new ArrayList<>();
+		this.mEdges = new ArrayList<>();
+		this.mNodeToID = new HashMap<>();
+		this.mSourceDestinationToEdge = new NestedMap2<>();
+		this.mListeners = listeners;
+		this.mProportions = proportions;
+		this.mMaxDepth = 0;
 	}
 
 	/*
@@ -156,7 +156,7 @@ public final class CoordinateTree implements ITree {
 	 */
 	@Override
 	public ITreeNode addNode(final ITreeNode parent) throws IllegalArgumentException {
-		return this.tree.addNode(parent);
+		return this.mTree.addNode(parent);
 	}
 
 	/**
@@ -164,65 +164,59 @@ public final class CoordinateTree implements ITree {
 	 * the spacing between the nodes "pretty", thus sets the coordinates of
 	 * every node and edge.
 	 * 
-	 * @param mWindow
+	 * @param window
 	 *            The window which holds placement data for the part where this
 	 *            tree is going to be drawn.
 	 */
-	public void alignComponents(final Window mWindow) {
-		this.initializeData(mWindow);
+	public void alignComponents(final Window window) {
+		this.initializeData(window);
 
-		final int width = mWindow.getTreePanelSize().width;
-		final int height = mWindow.getTreePanelSize().height;
+		final int width = window.getTreePanelSize().width;
+		final int height = window.getTreePanelSize().height;
 
-		final int ratio = width / this.leafs.size();
+		final int ratio = width / this.mLeafs.size();
 		final int spacingForNodes = ratio / 2;
 
 		// first, allocate space for the leafs, and also set their x position,
 		// since we don't yet know their y position yet.
-		for (int i = 0; i < this.leafs.size(); i++) {
-			final DrawableNodeData leafData = this.nodeMapping.get(this.leafs.get(i));
+		for (int i = 0; i < this.mLeafs.size(); i++) {
+			final DrawableNodeData leafData = this.mNodeMapping.get(this.mLeafs.get(i));
 			leafData.setX(i * ratio + spacingForNodes);
-
 		}
 
 		// now we start setting the coordinates for the missing nodes. We start
 		// from the bottom (the largest depth value for nodes) and work our way
 		// to the root.
-		for (int i = this.maxDepth; i >= 0; i--) {
-			final Set<ITreeNode> nodes = this.depthToNodes.get(Integer.valueOf(i));
+		for (int i = this.mMaxDepth; i >= 0; i--) {
+			final Set<ITreeNode> nodes = this.mDepthToNodes.get(Integer.valueOf(i));
 
 			for (final ITreeNode node : nodes) {
-				final DrawableNodeData nodeData = this.nodeMapping.get(node);
-				nodeData.setRadius(this.proportions);
+				final DrawableNodeData nodeData = this.mNodeMapping.get(node);
+				nodeData.setRadius(this.mProportions);
 
 				nodeData.setY(i * (int) (15f / 100f * height) + nodeData.getRadius() * 2);
 
-				if (!this.leafs.contains(node)) {
+				if (!this.mLeafs.contains(node)) {
 					nodeData.setX(nodeData.getRelativeXLocation());
-
 				}
 
 				if (node.getParent().isPresent()) {
-					final DrawableNodeData parentData = this.nodeMapping.get(node.getParent().get());
+					final DrawableNodeData parentData = this.mNodeMapping.get(node.getParent().get());
 					parentData.setChildX(nodeData.getX());
-
 				}
 				if (node.isLeaf()) {
 					continue;
-
 				}
 
 				for (int port = 1; port <= node.getAmountOfChildren(); port++) {
-					final DrawableNodeData childData = this.nodeMapping.get(node.getChild(port));
+					final DrawableNodeData childData = this.mNodeMapping.get(node.getChild(port));
 
 					final Edge edgeToAdd = new Edge(nodeData, childData);
 					edgeToAdd.setDescription("" + port);
 
-					this.edges.add(edgeToAdd);
-					this.sourceDestinationToEdge.put(node, node.getChild(port), edgeToAdd);
-
+					this.mEdges.add(edgeToAdd);
+					this.mSourceDestinationToEdge.put(node, node.getChild(port), edgeToAdd);
 				}
-
 			}
 		}
 	}
@@ -236,7 +230,7 @@ public final class CoordinateTree implements ITree {
 	 */
 	@Override
 	public boolean containsNode(final ITreeNode node) {
-		return this.tree.containsNode(node);
+		return this.mTree.containsNode(node);
 	}
 
 	/**
@@ -249,7 +243,7 @@ public final class CoordinateTree implements ITree {
 	 * @return The mapping mentioned.
 	 */
 	public NestedMap2<ITreeNode, ITreeNode, Edge> getEdgeMapping() {
-		return this.sourceDestinationToEdge;
+		return this.mSourceDestinationToEdge;
 
 	}
 
@@ -259,7 +253,7 @@ public final class CoordinateTree implements ITree {
 	 * @return An unmodifiable list view of the edges mentioned..
 	 */
 	public List<Edge> getEdges() {
-		return Collections.unmodifiableList(this.edges);
+		return Collections.unmodifiableList(this.mEdges);
 
 	}
 
@@ -271,7 +265,7 @@ public final class CoordinateTree implements ITree {
 	 * @return An unmodifiable map view of the mapping mentioned.
 	 */
 	public Map<ITreeNode, DrawableNodeData> getNodeMapping() {
-		return Collections.unmodifiableMap(this.nodeMapping);
+		return Collections.unmodifiableMap(this.mNodeMapping);
 
 	}
 
@@ -282,7 +276,7 @@ public final class CoordinateTree implements ITree {
 	 */
 	@Override
 	public Set<ITreeNode> getNodes() {
-		return this.tree.getNodes();
+		return this.mTree.getNodes();
 	}
 
 	/*
@@ -292,7 +286,7 @@ public final class CoordinateTree implements ITree {
 	 */
 	@Override
 	public ITreeNode getRoot() {
-		return this.tree.getRoot();
+		return this.mTree.getRoot();
 	}
 
 	/*
@@ -302,7 +296,7 @@ public final class CoordinateTree implements ITree {
 	 */
 	@Override
 	public int getSize() {
-		return this.tree.getSize();
+		return this.mTree.getSize();
 
 	}
 
@@ -310,14 +304,13 @@ public final class CoordinateTree implements ITree {
 	 * Calls {@link DrawableNodeData#checkHover(Point, List)} for every node
 	 * contained in this tree.
 	 * 
-	 * @param mPoint
+	 * @param point
 	 *            The position of the mouse.
 	 */
-	public void setMousePosition(final Point mPoint) {
-		for (final ITreeNode node : this.tree.getNodes()) {
-			final DrawableNodeData data = this.nodeMapping.get(node);
-			data.checkHover(mPoint, this.listeners);
-
+	public void setMousePosition(final Point point) {
+		for (final ITreeNode node : this.mTree.getNodes()) {
+			final DrawableNodeData data = this.mNodeMapping.get(node);
+			data.checkHover(point, this.mListeners);
 		}
 	}
 
@@ -325,23 +318,22 @@ public final class CoordinateTree implements ITree {
 	 * Initializes the data for this tree. Traverses the whole tree once and
 	 * fetches all the data needed to operate appropriately on the given tree.
 	 * 
-	 * @param mWindow
+	 * @param window
 	 *            the window object used for position related values.
 	 */
-	private void initializeData(final Window mWindow) {
+	private void initializeData(final Window window) {
 		final Queue<ITreeNode> queue = new LinkedList<>();
-		queue.add(this.tree.getRoot());
+		queue.add(this.mTree.getRoot());
 
 		int nodeID = 0;
 		while (!queue.isEmpty()) {
 			final ITreeNode node = queue.poll();
 
-			this.nodeToID.put(node, Integer.valueOf(nodeID));
+			this.mNodeToID.put(node, Integer.valueOf(nodeID));
 			nodeID++;
 
 			if (node.isLeaf()) {
-				this.leafs.add(node);
-
+				this.mLeafs.add(node);
 			}
 
 			for (final ITreeNode child : node.getChildren()) {
@@ -350,23 +342,20 @@ public final class CoordinateTree implements ITree {
 
 			int depth = 0;
 			if (!node.isRoot()) {
-				// it is a given that the parent of a node is included in the
+				// It is a given that the parent of a node is included in the
 				// tree, otherwise the tree couldn't have been generated, so
 				// this is safe.
-				depth = this.nodeMapping.get(node.getParent().get()).getDepth() + 1;
-
+				depth = this.mNodeMapping.get(node.getParent().get()).getDepth() + 1;
 			}
-			this.nodeMapping.put(node, new DrawableNodeData(depth, node, mWindow));
+			this.mNodeMapping.put(node, new DrawableNodeData(depth, node, window));
 
-			if (this.depthToNodes.get(Integer.valueOf(depth)) == null) {
-				this.depthToNodes.put(Integer.valueOf(depth), new HashSet<>());
-
+			if (this.mDepthToNodes.get(Integer.valueOf(depth)) == null) {
+				this.mDepthToNodes.put(Integer.valueOf(depth), new HashSet<>());
 			}
-			this.depthToNodes.get(Integer.valueOf(depth)).add(node);
+			this.mDepthToNodes.get(Integer.valueOf(depth)).add(node);
 
-			if (this.maxDepth < depth) {
-				this.maxDepth = depth;
-
+			if (this.mMaxDepth < depth) {
+				this.mMaxDepth = depth;
 			}
 		}
 	}

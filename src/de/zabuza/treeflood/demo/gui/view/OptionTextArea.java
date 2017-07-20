@@ -7,7 +7,7 @@ import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
-import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
+import de.zabuza.treeflood.demo.gui.view.properties.IReColorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
 
@@ -17,7 +17,7 @@ import de.zabuza.treeflood.demo.gui.view.util.Window;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class OptionTextArea extends JTextArea implements IRecolorable {
+public final class OptionTextArea extends JTextArea implements IReColorable {
 
 	/**
 	 * The serial version UID used for serialization.
@@ -27,48 +27,46 @@ public final class OptionTextArea extends JTextArea implements IRecolorable {
 	/**
 	 * The style manager used to handle colors.
 	 */
-	private final StyleManager manager;
+	private final StyleManager mManager;
 
 	/**
 	 * Constructs a new OptionTextArea with the text given.
 	 * 
-	 * @param mContent
+	 * @param content
 	 *            The content written onto this area.
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionTextArea(final String mContent, final StyleManager mManager) {
-		super(mContent);
-		// add a little margin to the left, so the content of this text area
+	public OptionTextArea(final String content, final StyleManager manager) {
+		super(content);
+		// Add a little margin to the left, so the content of this text area
 		// doesn't cling to its edge.
 		this.setBorder(
 				BorderFactory.createCompoundBorder(LineBorder.createBlackLineBorder(), new EmptyBorder(0, 2, 0, 0)));
 
-		// this isn't a good solution. We just set our preferred width to 1 so
+		// This isn't a good solution. We just set our preferred width to 1 so
 		// the layout manager managing this component doesn't try to resize it
 		// beyond its own "fill" parameter, since 1 < fill. This maintains a
-		// stable size of this text area and won't malform the layout if the
+		// stable size of this text area and won't deform the layout if the
 		// input query is too long.
 		this.setPreferredSize(new Dimension(1, (int) (Window.TEXT_AREA_FONT.getSize() * 1.3f)));
 
 		this.setFont(Window.TEXT_AREA_FONT);
 
-		this.manager = mManager;
+		this.mManager = manager;
 
-		this.setBackground(mManager.getTextAreaColor());
-		this.setForeground(mManager.getDefaultFontColor());
-
+		this.setBackground(manager.getTextAreaColor());
+		this.setForeground(manager.getDefaultFontColor());
 	}
 
 	/**
 	 * Constructs a new OptionTextArea with no text.
 	 * 
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionTextArea(final StyleManager mManager) {
-		this("", mManager);
-
+	public OptionTextArea(final StyleManager manager) {
+		this("", manager);
 	}
 
 	/*
@@ -78,8 +76,7 @@ public final class OptionTextArea extends JTextArea implements IRecolorable {
 	 */
 	@Override
 	public void reColor() {
-		this.setBackground(this.manager.getTextAreaColor());
-		this.setForeground(this.manager.getDefaultFontColor());
-
+		this.setBackground(this.mManager.getTextAreaColor());
+		this.setForeground(this.mManager.getDefaultFontColor());
 	}
 }

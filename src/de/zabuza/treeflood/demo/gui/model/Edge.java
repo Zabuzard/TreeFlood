@@ -21,38 +21,37 @@ public final class Edge implements IHasDescription {
 	/**
 	 * The description of this edge, e.g. the port number.
 	 */
-	private String description;
+	private String mDescription;
 
 	/**
 	 * The additional data for the destination-node.
 	 */
-	private final DrawableNodeData destination;
+	private final DrawableNodeData mDestination;
 
 	/**
 	 * determines whether this edge got visited.
 	 */
-	private boolean isVisited;
+	private boolean mIsVisited;
 
 	/**
 	 * The additional data for the source-node.
 	 */
-	private final DrawableNodeData source;
+	private final DrawableNodeData mSource;
 
 	/**
 	 * Constructs a new Edge with the given source and destination data from
 	 * their respective nodes.
 	 * 
-	 * @param mSource
+	 * @param source
 	 *            The additional data for the source node.
-	 * @param mDestination
+	 * @param destination
 	 *            The additional data for the destination node.
 	 */
-	public Edge(final DrawableNodeData mSource, final DrawableNodeData mDestination) {
-		this.source = mSource;
-		this.destination = mDestination;
-		this.description = "";
-		this.isVisited = false;
-
+	public Edge(final DrawableNodeData source, final DrawableNodeData destination) {
+		this.mSource = source;
+		this.mDestination = destination;
+		this.mDescription = "";
+		this.mIsVisited = false;
 	}
 
 	/*
@@ -63,7 +62,7 @@ public final class Edge implements IHasDescription {
 	 */
 	@Override
 	public String getDescription() {
-		return this.description;
+		return this.mDescription;
 	}
 
 	/**
@@ -77,21 +76,17 @@ public final class Edge implements IHasDescription {
 
 		if (this.getStartX() > this.getEndX()) {
 			valueToAdd = this.getEndX() - 20;
-
 		}
 
 		if (this.getSlope() == Double.MAX_VALUE) {
 			valueToAdd += 10;
-
 		} else {
 			if (this.getSlope() > 0) {
 				valueToAdd += (int) (5 * this.getSlope());
-
 			}
-
 		}
+		
 		return valueToAdd + (Math.abs(this.getStartX() - this.getEndX()) / 2);
-
 	}
 
 	/**
@@ -105,17 +100,14 @@ public final class Edge implements IHasDescription {
 
 		if (this.getStartY() > this.getEndY()) {
 			valueToAdd = this.getEndY();
-
 		}
 
 		int adjustmentY = 0;
 		if (!(this.getSlope() == Double.MAX_VALUE) && this.getSlope() < 1 && this.getSlope() > -1) {
 			adjustmentY = (int) (9 * (1 - Math.abs(this.getSlope())));
-
 		}
 
 		return valueToAdd + (Math.abs(this.getStartY() - this.getEndY()) / 2) - adjustmentY;
-
 	}
 
 	/**
@@ -124,8 +116,7 @@ public final class Edge implements IHasDescription {
 	 * @return The x-Coordinate mentioned.
 	 */
 	public int getEndX() {
-		return this.destination.getX();
-
+		return this.mDestination.getX();
 	}
 
 	/**
@@ -134,12 +125,11 @@ public final class Edge implements IHasDescription {
 	 * @return The y-Coordinate mentioned.
 	 */
 	public int getEndY() {
-		return this.destination.getY();
-
+		return this.mDestination.getY();
 	}
 
 	/**
-	 * Gets the slope of this edge. Retuns {@link Double#MAX_VALUE} if the slope
+	 * Gets the slope of this edge. Returns {@link Double#MAX_VALUE} if the slope
 	 * is infinite.
 	 * 
 	 * @return The slope of this edge.
@@ -151,13 +141,12 @@ public final class Edge implements IHasDescription {
 		final int x_2 = this.getEndX();
 		final int y_2 = this.getEndY();
 
-		// the slope is per definition infinite, returning special value;
+		// The slope is per definition infinite, returning special value;
 		if (x_1 - x_2 == 0) {
 			return Double.MAX_VALUE;
-
 		}
+		
 		return (float) (y_2 - y_1) / (float) (x_2 - x_1);
-
 	}
 
 	/**
@@ -166,18 +155,16 @@ public final class Edge implements IHasDescription {
 	 * @return The x-Coordinate mentioned.
 	 */
 	public int getStartX() {
-		return this.source.getX();
-
+		return this.mSource.getX();
 	}
 
 	/**
 	 * Gets the y-Coordinate of the source node.
 	 * 
-	 * @return the y-Coordinate mentioned.
+	 * @return The y-Coordinate mentioned.
 	 */
 	public int getStartY() {
-		return this.source.getY();
-
+		return this.mSource.getY();
 	}
 
 	/**
@@ -186,7 +173,7 @@ public final class Edge implements IHasDescription {
 	 * @return <tt>True</tt> if the edge was visited, <tt>false</tt> otherwise.
 	 */
 	public boolean getVisitedStatus() {
-		return this.isVisited;
+		return this.mIsVisited;
 	}
 
 	/*
@@ -196,16 +183,14 @@ public final class Edge implements IHasDescription {
 	 * setDescription(java.lang.String)
 	 */
 	@Override
-	public void setDescription(final String mDescription) {
-		this.description = mDescription;
-
+	public void setDescription(final String description) {
+		this.mDescription = description;
 	}
 
 	/**
 	 * Sets the visited status of this edge to true.
 	 */
 	public void setVisited() {
-		this.isVisited = true;
+		this.mIsVisited = true;
 	}
-
 }

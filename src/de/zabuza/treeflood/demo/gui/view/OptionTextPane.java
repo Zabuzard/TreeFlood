@@ -2,7 +2,7 @@ package de.zabuza.treeflood.demo.gui.view;
 
 import javax.swing.JTextPane;
 
-import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
+import de.zabuza.treeflood.demo.gui.view.properties.IReColorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
 
@@ -12,7 +12,7 @@ import de.zabuza.treeflood.demo.gui.view.util.Window;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class OptionTextPane extends JTextPane implements IRecolorable {
+public final class OptionTextPane extends JTextPane implements IReColorable {
 
 	/**
 	 * The serial version UID used for serialization.
@@ -22,40 +22,39 @@ public final class OptionTextPane extends JTextPane implements IRecolorable {
 	/**
 	 * The style manager used to handle colors.
 	 */
-	private final StyleManager manager;
+	private final StyleManager mManager;
 
 	/**
 	 * Constructs a new OptionTextPane with the given text and the given style
 	 * manager.
 	 * 
-	 * @param mContext
+	 * @param context
 	 *            The context written onto this pane.
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionTextPane(final String mContext, final StyleManager mManager) {
+	public OptionTextPane(final String context, final StyleManager manager) {
 		super();
-		this.setText(mContext);
+		this.setText(context);
 
 		this.setFocusable(false);
 		this.setEditable(false);
 		this.setFont(Window.TEXT_PANE_FONT);
 
-		this.manager = mManager;
+		this.mManager = manager;
 
-		this.setBackground(mManager.getTextPaneColor());
-		this.setForeground(mManager.getDefaultFontColor());
+		this.setBackground(manager.getTextPaneColor());
+		this.setForeground(manager.getDefaultFontColor());
 	}
 
 	/**
 	 * Constructs a new OptionTextPane with no text and the style manager given.
 	 * 
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionTextPane(final StyleManager mManager) {
-		this(" ", mManager);
-
+	public OptionTextPane(final StyleManager manager) {
+		this(" ", manager);
 	}
 
 	/*
@@ -65,9 +64,7 @@ public final class OptionTextPane extends JTextPane implements IRecolorable {
 	 */
 	@Override
 	public void reColor() {
-		this.setBackground(this.manager.getTextPaneColor());
-		this.setForeground(this.manager.getDefaultFontColor());
-
+		this.setBackground(this.mManager.getTextPaneColor());
+		this.setForeground(this.mManager.getDefaultFontColor());
 	}
-
 }

@@ -14,64 +14,64 @@ import de.zabuza.treeflood.exploration.localstorage.Information;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public class InformationPanel {
+public final class InformationPanel {
 
 	/**
 	 * The height-placement related coordinates of this panel.
 	 */
-	private int height;
+	private int mHeight;
 
 	/**
 	 * The information this panel holds at the moment.
 	 */
-	private List<Information> informations;
+	private List<Information> mInformations;
 
 	/**
 	 * A string representation for every information this panel currently holds.
 	 */
-	private final List<String> informationsAsString;
+	private final List<String> mInformationsAsString;
 
 	/**
 	 * The node on which to operate.
 	 */
-	private final DrawableNodeData nodeData;
+	private final DrawableNodeData mNodeData;
 
 	/**
 	 * The width-placement related coordinates of this panel.
 	 */
-	private int width;
+	private int mWidth;
 	/**
 	 * The window object used for placement related values.
 	 */
-	private final Window window;
+	private final Window mWindow;
 	/**
 	 * The x-placement related coordinates of this panel.
 	 */
-	private int x;
+	private int mX;
 	/**
 	 * The y-placement related coordinates of this panel.
 	 */
-	private int y;
+	private int mY;
 
 	/**
 	 * Constructs a new information panel, which holds
 	 * {@link de.zabuza.treeflood.exploration.localstorage.Information}s for the
 	 * given node.
 	 * 
-	 * @param mNodeData
+	 * @param nodeData
 	 *            The node on which to operate.
-	 * @param mWindow
+	 * @param window
 	 *            The window object used for placement related values.
 	 */
-	public InformationPanel(final DrawableNodeData mNodeData, final Window mWindow) {
-		this.nodeData = mNodeData;
-		this.x = 0;
-		this.y = 0;
-		this.height = 0;
-		this.width = 0;
-		this.window = mWindow;
-		this.informations = new ArrayList<>();
-		this.informationsAsString = new ArrayList<>();
+	public InformationPanel(final DrawableNodeData nodeData, final Window window) {
+		this.mNodeData = nodeData;
+		this.mX = 0;
+		this.mY = 0;
+		this.mHeight = 0;
+		this.mWidth = 0;
+		this.mWindow = window;
+		this.mInformations = new ArrayList<>();
+		this.mInformationsAsString = new ArrayList<>();
 	}
 
 	/**
@@ -80,18 +80,16 @@ public class InformationPanel {
 	 * @return The height mentioned.
 	 */
 	public int getHeight() {
-		return this.height;
-
+		return this.mHeight;
 	}
 
 	/**
-	 * Gets the information holded by this panel.
+	 * Gets the information hold by this panel.
 	 * 
 	 * @return The information mentioned.
 	 */
 	public List<String> getInformation() {
-		return this.informationsAsString;
-
+		return this.mInformationsAsString;
 	}
 
 	/**
@@ -100,8 +98,7 @@ public class InformationPanel {
 	 * @return The width mentioned.
 	 */
 	public int getWidth() {
-		return this.width;
-
+		return this.mWidth;
 	}
 
 	/**
@@ -110,14 +107,13 @@ public class InformationPanel {
 	 * @return The x-Coordinate mentioned.
 	 */
 	public int getX() {
-		this.x = this.nodeData.getX() + this.nodeData.getRadius();
+		this.mX = this.mNodeData.getX() + this.mNodeData.getRadius();
 
-		if (this.x + this.width > this.window.getTreePanelSize().width) {
-			this.x = this.x - this.width - this.nodeData.getRadius() * 2;
-
+		if (this.mX + this.mWidth > this.mWindow.getTreePanelSize().width) {
+			this.mX = this.mX - this.mWidth - this.mNodeData.getRadius() * 2;
 		}
-		return this.x;
-
+		
+		return this.mX;
 	}
 
 	/**
@@ -126,29 +122,27 @@ public class InformationPanel {
 	 * @return The y-Coordinate mentioned.
 	 */
 	public int getY() {
-		this.y = this.nodeData.getY() - this.nodeData.getRadius();
+		this.mY = this.mNodeData.getY() - this.mNodeData.getRadius();
 
-		if (this.y < 0) {
-			this.y = 0;
-
+		if (this.mY < 0) {
+			this.mY = 0;
 		}
-		return this.y;
-
+		
+		return this.mY;
 	}
 
 	/**
-	 * Sets the information holded by this panel. Also calls
+	 * Sets the information hold by this panel. Also calls
 	 * {@link InformationPanel#adjustHeight()} and
 	 * {@link InformationPanel#adjustWidth()}.
 	 * 
-	 * @param mInformation
+	 * @param information
 	 *            The new information for this panel.
 	 */
-	public synchronized void setInformation(final List<Information> mInformation) {
-		this.informations = mInformation;
-		this.adjustWidth();
-		this.adjustHeight();
-
+	public synchronized void setInformation(final List<Information> information) {
+		this.mInformations = information;
+		adjustWidth();
+		adjustHeight();
 	}
 
 	/**
@@ -157,8 +151,7 @@ public class InformationPanel {
 	 * 
 	 */
 	private void adjustHeight() {
-		this.height = 20 * this.informations.size() + 5;
-
+		this.mHeight = 20 * this.mInformations.size() + 5;
 	}
 
 	/**
@@ -166,25 +159,21 @@ public class InformationPanel {
 	 * stored in this panel.
 	 */
 	private void adjustWidth() {
-
 		int highestStep = 0;
-		for (final Information line : this.informations) {
+		for (final Information line : this.mInformations) {
 			if (line.getStep() > highestStep) {
 				highestStep = line.getStep();
-
 			}
-
 		}
 
 		int mostChars = 0;
-		for (final Information line : this.informations) {
+		for (final Information line : this.mInformations) {
 			String informationString = "#";
 
 			final int spacesToAdd = ("" + highestStep).length() - (line.getStep() + "").length();
 
 			for (int i = 0; i < spacesToAdd; i++) {
 				informationString += "  ";
-
 			}
 
 			if (line.wasEnteredFromParent()) {
@@ -195,17 +184,15 @@ public class InformationPanel {
 
 			if (informationString.length() > mostChars) {
 				mostChars = informationString.length();
-
 			}
 
-			if (this.informationsAsString.contains(informationString)) {
+			if (this.mInformationsAsString.contains(informationString)) {
 				continue;
-
 			}
-			this.informationsAsString.add(informationString);
-
+			
+			this.mInformationsAsString.add(informationString);
 		}
-		this.width = mostChars * 8 + 5;
-
+		
+		this.mWidth = mostChars * 8 + 5;
 	}
 }

@@ -2,7 +2,7 @@ package de.zabuza.treeflood.demo.gui.view;
 
 import javax.swing.JButton;
 
-import de.zabuza.treeflood.demo.gui.view.properties.IRecolorable;
+import de.zabuza.treeflood.demo.gui.view.properties.IReColorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
 
@@ -13,7 +13,7 @@ import de.zabuza.treeflood.demo.gui.view.util.Window;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public class OptionButton extends JButton implements IRecolorable {
+public final class OptionButton extends JButton implements IReColorable {
 
 	/**
 	 * The serial version UID used for serialization.
@@ -23,36 +23,34 @@ public class OptionButton extends JButton implements IRecolorable {
 	/**
 	 * The style manager used to handle colors.
 	 */
-	private final StyleManager manager;
+	private final StyleManager mManager;
 
 	/**
 	 * Constructs an option button with the given context set as title.
 	 * 
-	 * @param mContext
+	 * @param context
 	 *            The title of the button.
 	 * 
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionButton(final String mContext, final StyleManager mManager) {
-		super(mContext);
+	public OptionButton(final String context, final StyleManager manager) {
+		super(context);
 		this.setFont(Window.TEXT_BUTTON_FONT);
-		this.setBackground(mManager.getButtonColor());
-		this.setForeground(mManager.getDefaultFontColor());
+		this.setBackground(manager.getButtonColor());
+		this.setForeground(manager.getDefaultFontColor());
 		this.setFocusPainted(false);
-		this.manager = mManager;
-
+		this.mManager = manager;
 	}
 
 	/**
 	 * Constructs an option button with no text set.
 	 * 
-	 * @param mManager
+	 * @param manager
 	 *            The style manager used to handle colors.
 	 */
-	public OptionButton(final StyleManager mManager) {
-		this("", mManager);
-
+	public OptionButton(final StyleManager manager) {
+		this("", manager);
 	}
 
 	/*
@@ -62,8 +60,7 @@ public class OptionButton extends JButton implements IRecolorable {
 	 */
 	@Override
 	public void reColor() {
-		this.setBackground(this.manager.getButtonColor());
-		this.setForeground(this.manager.getDefaultFontColor());
-
+		this.setBackground(this.mManager.getButtonColor());
+		this.setForeground(this.mManager.getDefaultFontColor());
 	}
 }

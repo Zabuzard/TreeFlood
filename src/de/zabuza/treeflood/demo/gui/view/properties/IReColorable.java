@@ -1,16 +1,14 @@
 package de.zabuza.treeflood.demo.gui.view.properties;
 
 /**
- * Interface for objects which should be recolorable.
+ * Interface for objects which should be able to change their color.
  *
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public interface IRecolorable {
-
+public interface IReColorable {
 	/**
 	 * Re-colors this object.
 	 */
 	public void reColor();
-
 }
