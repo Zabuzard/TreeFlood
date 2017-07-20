@@ -17,6 +17,11 @@ import de.zabuza.treeflood.exploration.localstorage.Information;
 public class InformationPanel {
 
 	/**
+	 * The height-placement related coordinates of this panel.
+	 */
+	private int height;
+
+	/**
 	 * The information this panel holds at the moment.
 	 */
 	private List<Information> informations;
@@ -32,14 +37,21 @@ public class InformationPanel {
 	private final DrawableNodeData nodeData;
 
 	/**
+	 * The width-placement related coordinates of this panel.
+	 */
+	private int width;
+	/**
 	 * The window object used for placement related values.
 	 */
 	private final Window window;
-
 	/**
-	 * The placement related coordinates of this panel.
+	 * The x-placement related coordinates of this panel.
 	 */
-	private int x, y, height, width;
+	private int x;
+	/**
+	 * The y-placement related coordinates of this panel.
+	 */
+	private int y;
 
 	/**
 	 * Constructs a new information panel, which holds

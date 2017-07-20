@@ -30,17 +30,6 @@ public final class OptionTextArea extends JTextArea implements IRecolorable {
 	private final StyleManager manager;
 
 	/**
-	 * Constructs a new OptionTextArea with no text.
-	 * 
-	 * @param mManager
-	 *            The style manager used to handle colors.
-	 */
-	public OptionTextArea(final StyleManager mManager) {
-		this("", mManager);
-
-	}
-
-	/**
 	 * Constructs a new OptionTextArea with the text given.
 	 * 
 	 * @param mContent
@@ -68,6 +57,17 @@ public final class OptionTextArea extends JTextArea implements IRecolorable {
 
 		this.setBackground(mManager.getTextAreaColor());
 		this.setForeground(mManager.getDefaultFontColor());
+
+	}
+
+	/**
+	 * Constructs a new OptionTextArea with no text.
+	 * 
+	 * @param mManager
+	 *            The style manager used to handle colors.
+	 */
+	public OptionTextArea(final StyleManager mManager) {
+		this("", mManager);
 
 	}
 

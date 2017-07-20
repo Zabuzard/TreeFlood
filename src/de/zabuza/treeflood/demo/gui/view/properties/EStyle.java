@@ -9,13 +9,13 @@ package de.zabuza.treeflood.demo.gui.view.properties;
 public enum EStyle {
 
 	/**
-	 * The standard style for this GUI, uses simple light colors.
-	 */
-	STANDARD,
-
-	/**
 	 * The dark style for this GUI, uses simple dark colors.
 	 */
-	DARK;
+	DARK,
+
+	/**
+	 * The standard style for this GUI, uses simple light colors.
+	 */
+	STANDARD;
 
 }

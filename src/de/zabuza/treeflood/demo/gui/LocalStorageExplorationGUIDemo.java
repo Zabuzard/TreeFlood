@@ -1,4 +1,4 @@
-package de.zabuza.treeflood.demo;
+package de.zabuza.treeflood.demo.gui;
 
 import de.zabuza.treeflood.demo.gui.controller.LocalStorageExplorationGUIController;
 import de.zabuza.treeflood.demo.gui.view.MainFrame;
@@ -22,11 +22,13 @@ public class LocalStorageExplorationGUIDemo {
 	 * @param args
 	 *            Not supported.
 	 */
-	@SuppressWarnings("unused")
 	public static void main(final String[] args) {
-		new LocalStorageExplorationGUIController(
-				new MainFrame("Local Storage Exploration", new StyleManager(EStyle.STANDARD)));
+		final MainFrame frame = new MainFrame("Local Storage Exploration", new StyleManager(EStyle.STANDARD));
+		@SuppressWarnings("unused")
+		final LocalStorageExplorationGUIController controller = new LocalStorageExplorationGUIController(frame);
 
+		frame.setVisible(true);
+		frame.pack();
 	}
 
 	/**

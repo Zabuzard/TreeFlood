@@ -10,6 +10,8 @@ import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
  * values.
  *
  * @author Ativelox {@literal <ativelox.dev@web.de>}
+ * @param <E>
+ *            The class of the objects this combo box contains
  *
  */
 public class OptionComboBox<E> extends JComboBox<E> implements IRecolorable {

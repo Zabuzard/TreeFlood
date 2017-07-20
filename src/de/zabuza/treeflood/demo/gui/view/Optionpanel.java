@@ -61,19 +61,19 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The combo box used to select different styles.
+	 * All components added to this panel.
 	 */
-	private final OptionComboBox<EStyle> styleSelect;
-
-	/**
-	 * The slider used to change the size of the tree.
-	 */
-	private final OptionSlider sizeSlider;
+	private final List<IRecolorable> components;
 
 	/**
 	 * The button which fully executes the algorithm.
 	 */
 	private final OptionButton fullyButton;
+
+	/**
+	 * The style manager used to manage colors.
+	 */
+	private final StyleManager manager;
 
 	/**
 	 * The text area which contains the amount of robots to use.
@@ -91,6 +91,11 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	private final OptionTextArea seedArea;
 
 	/**
+	 * The slider used to change the size of the tree.
+	 */
+	private final OptionSlider sizeSlider;
+
+	/**
 	 * The text area which shows the amount of steps executed.
 	 */
 	private final OptionTextArea stepArea;
@@ -99,6 +104,16 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	 * The button which executes the algorithm by one step.
 	 */
 	private final OptionButton stepButton;
+
+	/**
+	 * The text pane used to display the current step type.
+	 */
+	private final OptionTextPane stepTypePane;
+
+	/**
+	 * The combo box used to select different styles.
+	 */
+	private final OptionComboBox<EStyle> styleSelect;
 
 	/**
 	 * The text area which contains the current size of the tree.
@@ -114,21 +129,6 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	 * The button which generates a new tree without the given seed.
 	 */
 	private final OptionButton withoutSeedButton;
-
-	/**
-	 * The text pane used to display the current step type.
-	 */
-	private final OptionTextPane stepTypePane;
-
-	/**
-	 * All components added to this panel.
-	 */
-	private final List<IRecolorable> components;
-
-	/**
-	 * The style manager used to manage colors.
-	 */
-	private final StyleManager manager;
 
 	/**
 	 * Constructs a new option panel which provides options for the
@@ -339,19 +339,6 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 
 	}
 
-	@Override
-	public void repaint() {
-		super.repaint();
-		if (this.components == null) {
-			return;
-
-		}
-		for (final IRecolorable comp : this.components) {
-			comp.reColor();
-		}
-		this.reColor();
-	}
-
 	/**
 	 * Adds an {@link ActionListener} to {@link Optionpanel#fullyButton}.
 	 * 
@@ -375,6 +362,17 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	}
 
 	/**
+	 * Adds a change listener to the slider used to control the size of the
+	 * tree.
+	 * 
+	 * @param mListener
+	 *            The listener to be added.
+	 */
+	public void addSizeSliderListener(final ChangeListener mListener) {
+		this.sizeSlider.addChangeListener(mListener);
+	}
+
+	/**
 	 * Adds an {@link ActionListener} to {@link Optionpanel#stepButton}.
 	 * 
 	 * @param mListener
@@ -382,6 +380,17 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 	 */
 	public void addStepButtonListener(final ActionListener mListener) {
 		this.stepButton.addActionListener(mListener);
+
+	}
+
+	/**
+	 * Adds an item listener to the combo box used to control the current style.
+	 * 
+	 * @param mListener
+	 *            The listener to be added.
+	 */
+	public void addStyleItemListener(final ItemListener mListener) {
+		this.styleSelect.addItemListener(mListener);
 
 	}
 
@@ -438,6 +447,30 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 		return Integer.parseInt(this.treeSizeArea.getText());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.zabuza.treeflood.demo.gui.view.properties.IRecolorable#reColor()
+	 */
+	@Override
+	public void reColor() {
+		this.setBackground(this.manager.getOptionpanelColor());
+
+	}
+
+	@Override
+	public void repaint() {
+		super.repaint();
+		if (this.components == null) {
+			return;
+
+		}
+		for (final IRecolorable comp : this.components) {
+			comp.reColor();
+		}
+		this.reColor();
+	}
+
 	/**
 	 * Sets the amount of current steps executed.
 	 * 
@@ -473,39 +506,6 @@ public final class Optionpanel extends JPanel implements IRecolorable {
 
 		}
 		this.stepTypePane.setText(mStepType.toString());
-
-	}
-
-	/**
-	 * Adds a change listener to the slider used to control the size of the
-	 * tree.
-	 * 
-	 * @param mListener
-	 *            The listener to be added.
-	 */
-	public void addSizeSliderListener(final ChangeListener mListener) {
-		this.sizeSlider.addChangeListener(mListener);
-	}
-
-	/**
-	 * Adds an item listener to the combo box used to control the current style.
-	 * 
-	 * @param mListener
-	 *            The listener to be added.
-	 */
-	public void addStyleItemListener(final ItemListener mListener) {
-		this.styleSelect.addItemListener(mListener);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.zabuza.treeflood.demo.gui.view.properties.IRecolorable#reColor()
-	 */
-	@Override
-	public void reColor() {
-		this.setBackground(this.manager.getOptionpanelColor());
 
 	}
 

@@ -20,15 +20,15 @@ import de.zabuza.treeflood.tree.RandomTreeGenerator;
  */
 public final class RandomBenchmark {
 	/**
-	 * Determines after how many finished trees the benchmark will print a
-	 * logging information.
-	 */
-	private static final int LOG_EVERY = 100;
-	/**
 	 * Default path where the benchmark data gets saved to.
 	 */
 	public static final File DATA_PATH = new File(new File(System.getProperty("user.home"), "Desktop"),
 			"treeFloodBenchmarkData");
+	/**
+	 * Determines after how many finished trees the benchmark will print a
+	 * logging information.
+	 */
+	private static final int LOG_EVERY = 100;
 
 	/**
 	 * Creates and executes a benchmark with a fixed size of robots.

@@ -29,14 +29,14 @@ public final class Edge implements IHasDescription {
 	private final DrawableNodeData destination;
 
 	/**
-	 * The additional data for the source-node.
-	 */
-	private final DrawableNodeData source;
-
-	/**
 	 * determines whether this edge got visited.
 	 */
 	private boolean isVisited;
+
+	/**
+	 * The additional data for the source-node.
+	 */
+	private final DrawableNodeData source;
 
 	/**
 	 * Constructs a new Edge with the given source and destination data from
@@ -119,22 +119,6 @@ public final class Edge implements IHasDescription {
 	}
 
 	/**
-	 * Sets the visited status of this edge to true.
-	 */
-	public void setVisited() {
-		this.isVisited = true;
-	}
-
-	/**
-	 * Gets the current visited status of this edge.
-	 * 
-	 * @return <tt>True</tt> if the edge was visited, <tt>false</tt> otherwise.
-	 */
-	public boolean getVisitedStatus() {
-		return this.isVisited;
-	}
-
-	/**
 	 * Gets the x-Coordinate of the destination node.
 	 * 
 	 * @return The x-Coordinate mentioned.
@@ -151,26 +135,6 @@ public final class Edge implements IHasDescription {
 	 */
 	public int getEndY() {
 		return this.destination.getY();
-
-	}
-
-	/**
-	 * Gets the x-Coordinate of the source node.
-	 * 
-	 * @return The x-Coordinate mentioned.
-	 */
-	public int getStartX() {
-		return this.source.getX();
-
-	}
-
-	/**
-	 * Gets the y-Coordinate of the source node.
-	 * 
-	 * @return the y-Coordinate mentioned.
-	 */
-	public int getStartY() {
-		return this.source.getY();
 
 	}
 
@@ -196,6 +160,35 @@ public final class Edge implements IHasDescription {
 
 	}
 
+	/**
+	 * Gets the x-Coordinate of the source node.
+	 * 
+	 * @return The x-Coordinate mentioned.
+	 */
+	public int getStartX() {
+		return this.source.getX();
+
+	}
+
+	/**
+	 * Gets the y-Coordinate of the source node.
+	 * 
+	 * @return the y-Coordinate mentioned.
+	 */
+	public int getStartY() {
+		return this.source.getY();
+
+	}
+
+	/**
+	 * Gets the current visited status of this edge.
+	 * 
+	 * @return <tt>True</tt> if the edge was visited, <tt>false</tt> otherwise.
+	 */
+	public boolean getVisitedStatus() {
+		return this.isVisited;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -206,6 +199,13 @@ public final class Edge implements IHasDescription {
 	public void setDescription(final String mDescription) {
 		this.description = mDescription;
 
+	}
+
+	/**
+	 * Sets the visited status of this edge to true.
+	 */
+	public void setVisited() {
+		this.isVisited = true;
 	}
 
 }

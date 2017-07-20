@@ -15,7 +15,7 @@ public interface IRobotPulseManager {
 	 * single step.
 	 * 
 	 * @return <tt>True</tt> if all robots have stopped because they finished
-	 *         the algorithm, <tt>false<tt> otherwise
+	 *         the algorithm, <tt>false</tt> otherwise
 	 */
 	public boolean pulse();
 

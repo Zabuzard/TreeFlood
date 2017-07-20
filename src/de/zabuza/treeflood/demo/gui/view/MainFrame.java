@@ -78,10 +78,6 @@ public final class MainFrame extends JFrame {
 		panel.add(this.optionPanel, BorderLayout.EAST);
 
 		this.add(panel);
-
-		this.setVisible(true);
-		this.pack();
-
 	}
 
 	/**

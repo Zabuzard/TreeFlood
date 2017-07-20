@@ -98,8 +98,8 @@ public final class CoordinateTree implements ITree {
 	 * of the given tree have accurate coordinates. Make sure that the given
 	 * tree is "finished", in a sense that no more elements get added to the
 	 * tree, otherwise this class may not work as expected. Also note that
-	 * {@link CoordinateTree#initializeData()} should be called before operating
-	 * on this tree.
+	 * {@link CoordinateTree#initializeData(Window)} should be called before
+	 * operating on this tree.
 	 * 
 	 * @param mTree
 	 *            The tree on which this coordinate tree should be based.
@@ -121,8 +121,8 @@ public final class CoordinateTree implements ITree {
 	 * of the given tree have accurate coordinates. Make sure that the given
 	 * tree is "finished", in a sense that no more elements get added to the
 	 * tree, otherwise this class may not work as expected. Also note that
-	 * {@link CoordinateTree#initializeData()} should be called before operating
-	 * on this tree.
+	 * {@link CoordinateTree#initializeData(Window)} should be called before
+	 * operating on this tree.
 	 * 
 	 * @param mTree
 	 *            The tree on which this coordinate tree should be based.
@@ -240,7 +240,7 @@ public final class CoordinateTree implements ITree {
 	}
 
 	/**
-	 * Returns the ({@link ITreeNode}, {@link ITreeNode}) -> {@link Edge}
+	 * Returns the ({@link ITreeNode}, {@link ITreeNode}) -&gt; {@link Edge}
 	 * mapping, which maps two nodes to their respective edge. The first key is
 	 * the source of the edge and the second key is the destination of the edge.
 	 * Note that switching first and second key will result in <tt>null</tt>
@@ -264,8 +264,8 @@ public final class CoordinateTree implements ITree {
 	}
 
 	/**
-	 * Returns the {@link ITreeNode} -> {@link DrawableNodeData} mapping, where
-	 * {@link DrawableNodeData} holds extra information, e.g. coordinates,
+	 * Returns the {@link ITreeNode} -&gt; {@link DrawableNodeData} mapping,
+	 * where {@link DrawableNodeData} holds extra information, e.g. coordinates,
 	 * color, ... for the nodes.
 	 * 
 	 * @return An unmodifiable map view of the mapping mentioned.
