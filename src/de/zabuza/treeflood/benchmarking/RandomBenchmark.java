@@ -23,7 +23,7 @@ public final class RandomBenchmark {
 	 * Determines after how many finished trees the benchmark will print a
 	 * logging information.
 	 */
-	private static final int LOG_EVERY = 50;
+	private static final int LOG_EVERY = 100;
 	/**
 	 * Default path where the benchmark data gets saved to.
 	 */
@@ -57,10 +57,10 @@ public final class RandomBenchmark {
 			// Write header
 			fw.write("TREE_SIZE\tROBOTS\tTIME\tSTEPS" + lineSeparator);
 
-			final int benchmarkDensity = 500;
+			final int benchmarkDensity = 200;
 			final int minTreeSize = 0;
-			final int maxTreeSize = 5_000;
-			final int stepWidth = 50;
+			final int maxTreeSize = 3_500;
+			final int stepWidth = 100;
 
 			for (int treeSize = minTreeSize; treeSize <= maxTreeSize; treeSize += stepWidth) {
 				final int treeSizeToUse;
@@ -80,6 +80,61 @@ public final class RandomBenchmark {
 				fw.flush();
 
 				System.out.println("From size " + minTreeSize + " to " + maxTreeSize + ", at " + treeSizeToUse);
+			}
+		}
+	}
+
+	/**
+	 * Creates and executes a benchmark with a fixed tree size.
+	 * 
+	 * @param treeSize
+	 *            The tree size to use
+	 * 
+	 * @throws IOException
+	 *             If an I/O-Exception occurs
+	 */
+	public static void executeBenchmarkFixedTree(final int treeSize) throws IOException {
+		// Create a file for the results
+		final String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+		final String fileName = "fixedTreeBenchmark_" + treeSize + "_" + timeStamp;
+		final String fileFormat = ".tsv";
+
+		if (!DATA_PATH.exists()) {
+			DATA_PATH.mkdirs();
+		} else if (!DATA_PATH.isDirectory()) {
+			throw new IllegalArgumentException("The provided path exists but is no directory: " + DATA_PATH);
+		}
+
+		final File dataFile = new File(DATA_PATH, fileName + fileFormat);
+		try (final FileWriter fw = new FileWriter(dataFile)) {
+			final String lineSeparator = System.lineSeparator();
+			// Write header
+			fw.write("TREE_SIZE\tROBOTS\tTIME\tSTEPS" + lineSeparator);
+
+			final int benchmarkDensity = 200;
+			final int minAmountOfRobots = 0;
+			final int maxAmountOfRobots = 1_000;
+			final int stepWidth = 50;
+
+			for (int amountOfRobots = minAmountOfRobots; amountOfRobots <= maxAmountOfRobots; amountOfRobots += stepWidth) {
+				final int amountOfRobotsToUse;
+				if (amountOfRobots == 0) {
+					amountOfRobotsToUse = 1;
+				} else {
+					amountOfRobotsToUse = amountOfRobots;
+				}
+				final RandomBenchmark benchmark = new RandomBenchmark(benchmarkDensity, treeSize, amountOfRobotsToUse);
+				benchmark.executeMeasuring();
+				final long overalTime = benchmark.getAverageOverallTime();
+				final int amountOfSteps = benchmark.getAverageAmountOfSteps();
+
+				// Log the data in a file
+				fw.write(treeSize + "\t" + amountOfRobotsToUse + "\t" + overalTime + "\t" + amountOfSteps
+						+ lineSeparator);
+				fw.flush();
+
+				System.out.println("From robots " + minAmountOfRobots + " to " + maxAmountOfRobots + ", at "
+						+ amountOfRobotsToUse);
 			}
 		}
 	}
@@ -110,10 +165,10 @@ public final class RandomBenchmark {
 			// Write header
 			fw.write("TREE_SIZE\tROBOTS\tTIME\tSTEPS" + lineSeparator);
 
-			final int benchmarkDensity = 500;
+			final int benchmarkDensity = 200;
 			final int minTreeSize = 0;
-			final int maxTreeSize = 5_000;
-			final int stepWidth = 50;
+			final int maxTreeSize = 3_500;
+			final int stepWidth = 100;
 
 			for (int treeSize = minTreeSize; treeSize <= maxTreeSize; treeSize += stepWidth) {
 				final int treeSizeToUse;
@@ -148,18 +203,20 @@ public final class RandomBenchmark {
 	 *             If an I/O-Exception occurs
 	 */
 	public static void main(final String[] args) throws IOException {
-		executeBenchmarkFixedRobots(200);
-		System.out.println("--Finished fixed 200");
-		executeBenchmarkFixedRobots(1_000);
-		System.out.println("--Finished fixed 1_000");
-		executeBenchmarkFixedRobots(3_000);
-		System.out.println("--Finished fixed 3_000");
-		executeBenchmarkScalingRobots(0.1f);
-		System.out.println("--Finished scaling 10%");
-		executeBenchmarkScalingRobots(0.5f);
-		System.out.println("--Finished scaling 50%");
-		executeBenchmarkScalingRobots(0.7f);
-		System.out.println("--Finished scaling 70%");
+		// executeBenchmarkFixedRobots(1);
+		// System.out.println("--Finished fixed 1");
+		// executeBenchmarkFixedRobots(5);
+		// System.out.println("--Finished fixed 5");
+		// executeBenchmarkFixedRobots(10);
+		// System.out.println("--Finished fixed 10");
+		// executeBenchmarkScalingRobots(0.05f);
+		// System.out.println("--Finished scaling 5%");
+		// executeBenchmarkScalingRobots(0.1f);
+		// System.out.println("--Finished scaling 10%");
+		// executeBenchmarkScalingRobots(1f);
+		// System.out.println("--Finished scaling 100%");
+		executeBenchmarkFixedTree(1_000);
+		System.out.println("--Finished fixed tree 1_000");
 	}
 
 	/**

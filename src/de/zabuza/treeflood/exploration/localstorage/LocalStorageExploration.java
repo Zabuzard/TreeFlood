@@ -174,7 +174,7 @@ public final class LocalStorageExploration implements IRobotEncounteredException
 	private boolean pulse() {
 		final boolean finished = this.mPulseManager.pulse();
 
-		// Fail if a robot encounter an exception
+		// Fail if a robot encounters an exception
 		if (this.mExceptionEncounteredByRobot != null) {
 			throw new RobotFailedException(this.mRobotIdThatEncounteredException, this.mExceptionEncounteredByRobot);
 		}
