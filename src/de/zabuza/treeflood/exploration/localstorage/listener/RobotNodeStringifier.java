@@ -48,7 +48,7 @@ public final class RobotNodeStringifier implements ITreeNodeStringifier, IRobotM
 	 * de.zabuza.treeflood.tree.ITreeNode, de.zabuza.treeflood.tree.ITreeNode)
 	 */
 	@Override
-	public synchronized void movedTo(Robot robot, ITreeNode source, ITreeNode destination) {
+	public synchronized void movedTo(final Robot robot, final ITreeNode source, final ITreeNode destination) {
 		// Remove the robot from the source
 		if (source != null) {
 			final SortedSet<Robot> robotsAtSource = this.mNodeToRobots.get(source);

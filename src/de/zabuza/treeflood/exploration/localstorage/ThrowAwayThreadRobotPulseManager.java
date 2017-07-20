@@ -36,7 +36,7 @@ public final class ThrowAwayThreadRobotPulseManager implements IRobotPulseManage
 	@Override
 	public boolean pulse() {
 		final ExecutorService executor = Executors.newFixedThreadPool(this.mRobots.size());
-		LinkedList<RobotPulse> pulses = new LinkedList<>();
+		final LinkedList<RobotPulse> pulses = new LinkedList<>();
 
 		for (final Robot robot : this.mRobots) {
 			final RobotPulse pulse = new RobotPulse(robot);
