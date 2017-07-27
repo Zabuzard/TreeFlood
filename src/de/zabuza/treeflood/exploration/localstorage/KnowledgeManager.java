@@ -65,7 +65,7 @@ public final class KnowledgeManager {
 			// We now simulate this procedure until the given robot was assigned
 			final Set<Integer> robotsAtLocation = knowledge.getRobotsAtLocation();
 			final Set<Integer> unfinishedChildren = knowledge.getUnfinishedChildrenPorts();
-			final Set<Integer> advantagedChildren = knowledge.getAdvantagedChildrenPorts();
+			final Set<Integer> advantagedChildren = knowledge.getBeforeRoundAdvantagedChildrenPorts();
 			final Iterator<Integer> robotsToAssign = robotsAtLocation.iterator();
 
 			// Assign robots equally to all unfinished children
@@ -191,7 +191,8 @@ public final class KnowledgeManager {
 		// above the children at its first discovery
 		// The algorithm creates this set newly every step so we do not need a
 		// sorted set structure now
-		final Set<Integer> advantagedChildrenPorts = Collections.emptySet();
+		final Set<Integer> beforeAdvantagedChildrenPorts = Collections.emptySet();
+		final Set<Integer> afterAdvantagedChildrenPorts = Collections.emptySet();
 		// Initially there are no finished children at all as they have not been
 		// visited yet
 		// The algorithm can not guarantee a sorted order on this sets so we
@@ -206,8 +207,8 @@ public final class KnowledgeManager {
 		}
 
 		final Knowledge initialKnowledge = new Knowledge(initialRound, node, parentPort, unfinishedChildrenPorts,
-				advantagedChildrenPorts, finishedButInhabitedChildrenPorts, finishedAndNotInhabitedChildrenPorts,
-				robotsAtLocation);
+				beforeAdvantagedChildrenPorts, afterAdvantagedChildrenPorts, finishedButInhabitedChildrenPorts,
+				finishedAndNotInhabitedChildrenPorts, robotsAtLocation);
 		return initialKnowledge;
 	}
 
@@ -299,12 +300,13 @@ public final class KnowledgeManager {
 			final Set<Integer> finishedButInhabitedChildrenPorts = pastKnowledge.getFinishedButInhabitedChildrenPorts();
 			final Set<Integer> finishedAndNotInhabitedChildrenPorts = pastKnowledge
 					.getFinishedAndNotInhabitedChildrenPorts();
-			final Set<Integer> advantagedChildrenPortsStart = pastKnowledge.getAdvantagedChildrenPorts();
+			final Set<Integer> beforeRoundAdvantagedChildrenPortsStart = pastKnowledge
+					.getAfterRoundAdvantagedChildrenPorts();
 			for (final Information info : pastUpdateEntries.values()) {
 				// The child of that port is now finished
 				final Integer port = Integer.valueOf(info.getPort());
 				unfinishedChildrenPorts.remove(port);
-				advantagedChildrenPortsStart.remove(port);
+				beforeRoundAdvantagedChildrenPortsStart.remove(port);
 
 				// First assume that it also is inhabited
 				finishedButInhabitedChildrenPorts.add(port);
@@ -320,7 +322,7 @@ public final class KnowledgeManager {
 				}
 				final Integer portOfChild = Integer.valueOf(info.getPort());
 				if (finishedButInhabitedChildrenPorts.contains(portOfChild)) {
-					// The robot entered from a inhabited child, it is now not
+					// The robot entered from an inhabited child, it is now not
 					// inhabited anymore
 					finishedButInhabitedChildrenPorts.remove(portOfChild);
 					finishedAndNotInhabitedChildrenPorts.add(portOfChild);
@@ -328,8 +330,8 @@ public final class KnowledgeManager {
 			}
 
 			// We compute the complete past distribution of robots to children
-			// in order to know which children are advantaged
-			final LinkedHashSet<Integer> advantagedChildrenPorts = new LinkedHashSet<>();
+			// in order to know which children are advantaged after this round
+			final LinkedHashSet<Integer> afterRoundAdvantagedChildrenPorts = new LinkedHashSet<>();
 			// If all children are finished then obviously there can not be any
 			// unfinished advantaged children anymore
 			if (!unfinishedChildrenPorts.isEmpty()) {
@@ -345,13 +347,15 @@ public final class KnowledgeManager {
 				// left to this position (inclusive) are advantaged now, all to
 				// the right are disadvantaged.
 				final int amountOfAdvantagedChildren;
-				if (amountOfRemainingRobots <= unfinishedChildrenPorts.size() - advantagedChildrenPortsStart.size()) {
+				if (amountOfRemainingRobots <= unfinishedChildrenPorts.size()
+						- beforeRoundAdvantagedChildrenPortsStart.size()) {
 					// We have not enough robots to even assign them to all
 					// disadvantaged children in the first place
-					amountOfAdvantagedChildren = advantagedChildrenPortsStart.size() + amountOfRemainingRobots;
+					amountOfAdvantagedChildren = beforeRoundAdvantagedChildrenPortsStart.size()
+							+ amountOfRemainingRobots;
 				} else {
 					amountOfAdvantagedChildren = amountOfRemainingRobots - unfinishedChildrenPorts.size()
-							+ advantagedChildrenPortsStart.size();
+							+ beforeRoundAdvantagedChildrenPortsStart.size();
 				}
 				// Iterate unfinished children and determine all advantaged
 				// children
@@ -359,14 +363,14 @@ public final class KnowledgeManager {
 				for (int i = 1; i <= amountOfAdvantagedChildren; i++) {
 					// The child specified by this port is advantaged
 					final Integer port = unfinishedChildrenIter.next();
-					advantagedChildrenPorts.add(port);
+					afterRoundAdvantagedChildrenPorts.add(port);
 				}
 			}
 
 			// Create the knowledge for the next round
 			pastKnowledge = new Knowledge(pastRound + 1, node, parentPort, unfinishedChildrenPorts,
-					advantagedChildrenPorts, finishedButInhabitedChildrenPorts, finishedAndNotInhabitedChildrenPorts,
-					robotsAtLocation);
+					beforeRoundAdvantagedChildrenPortsStart, afterRoundAdvantagedChildrenPorts,
+					finishedButInhabitedChildrenPorts, finishedAndNotInhabitedChildrenPorts, robotsAtLocation);
 		}
 
 		// Take the last knowledge built, it is valid for the round 'round'

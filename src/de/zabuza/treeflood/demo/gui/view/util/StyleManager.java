@@ -193,7 +193,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.BUTTON_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -209,7 +209,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.DEFAULT_FONT_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -225,7 +225,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.FRINGE_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -241,7 +241,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.OPTIONPANEL_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -257,7 +257,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.SEPARATOR_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -273,7 +273,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.SLIDER_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -289,7 +289,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.TEXT_AREA_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -305,7 +305,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.TEXT_PANE_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -321,7 +321,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.TOOLTIP_FILL_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -337,7 +337,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.TREEPANEL_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -353,7 +353,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.UNVISITED_EDGE_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -369,7 +369,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.UNVISITED_NODE_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -385,7 +385,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.VISITED_EDGE_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}
@@ -401,7 +401,7 @@ public final class StyleManager {
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.VISITED_NODE_COLOR_DARK;
 		}
-		
+
 		// Couldn't find a color for the given style.
 		throw new AssertionError();
 	}

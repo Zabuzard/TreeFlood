@@ -325,7 +325,8 @@ public final class DrawableNodeData implements IHasDescription {
 	}
 
 	/**
-	 * Gets a boolean that signalizes whether the tooltip should be rendered or not.
+	 * Gets a boolean that signalizes whether the tooltip should be rendered or
+	 * not.
 	 * 
 	 * @return The boolean mentioned.
 	 */

@@ -85,7 +85,7 @@ public final class Edge implements IHasDescription {
 				valueToAdd += (int) (5 * this.getSlope());
 			}
 		}
-		
+
 		return valueToAdd + (Math.abs(this.getStartX() - this.getEndX()) / 2);
 	}
 
@@ -129,8 +129,8 @@ public final class Edge implements IHasDescription {
 	}
 
 	/**
-	 * Gets the slope of this edge. Returns {@link Double#MAX_VALUE} if the slope
-	 * is infinite.
+	 * Gets the slope of this edge. Returns {@link Double#MAX_VALUE} if the
+	 * slope is infinite.
 	 * 
 	 * @return The slope of this edge.
 	 */
@@ -145,7 +145,7 @@ public final class Edge implements IHasDescription {
 		if (x_1 - x_2 == 0) {
 			return Double.MAX_VALUE;
 		}
-		
+
 		return (float) (y_2 - y_1) / (float) (x_2 - x_1);
 	}
 

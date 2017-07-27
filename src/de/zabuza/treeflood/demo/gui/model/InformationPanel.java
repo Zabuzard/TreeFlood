@@ -112,7 +112,7 @@ public final class InformationPanel {
 		if (this.mX + this.mWidth > this.mWindow.getTreePanelSize().width) {
 			this.mX = this.mX - this.mWidth - this.mNodeData.getRadius() * 2;
 		}
-		
+
 		return this.mX;
 	}
 
@@ -127,7 +127,7 @@ public final class InformationPanel {
 		if (this.mY < 0) {
 			this.mY = 0;
 		}
-		
+
 		return this.mY;
 	}
 
@@ -177,9 +177,9 @@ public final class InformationPanel {
 			}
 
 			if (line.wasEnteredFromParent()) {
-				informationString += line.getStep() + ", [" + line.getRobotId() + "], ↓ " + line.getPort();
+				informationString += line.getStep() + ", [" + line.getRobotId() + "], \u2193 " + line.getPort();
 			} else {
-				informationString += line.getStep() + ", [" + line.getRobotId() + "],	 ↑ " + line.getPort();
+				informationString += line.getStep() + ", [" + line.getRobotId() + "], \u2191 " + line.getPort();
 			}
 
 			if (informationString.length() > mostChars) {
@@ -189,10 +189,10 @@ public final class InformationPanel {
 			if (this.mInformationsAsString.contains(informationString)) {
 				continue;
 			}
-			
+
 			this.mInformationsAsString.add(informationString);
 		}
-		
+
 		this.mWidth = mostChars * 8 + 5;
 	}
 }

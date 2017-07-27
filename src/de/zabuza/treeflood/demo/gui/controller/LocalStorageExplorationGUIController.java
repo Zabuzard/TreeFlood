@@ -73,6 +73,22 @@ public final class LocalStorageExplorationGUIController implements WindowListene
 	}
 
 	/**
+	 * Sets the given edge to visited. Used for painting related logic.
+	 * 
+	 * @param edgeToPaint
+	 *            The edge which should be set to visited.
+	 */
+	private static void setEdgeVisited(final Edge edgeToPaint) {
+		// Happens when robots try to walk edges backwards, since there is no
+		// destination -> source mapping for the edges. Handling needs to be
+		// implemented for animations.
+		if (edgeToPaint == null) {
+			return;
+		}
+		edgeToPaint.setVisited();
+	}
+
+	/**
 	 * The current {@link LocalStorageExploration} in progress.
 	 */
 	private LocalStorageExploration mAlgorithm;
@@ -496,22 +512,6 @@ public final class LocalStorageExplorationGUIController implements WindowListene
 	}
 
 	/**
-	 * Sets the given edge to visited. Used for painting related logic.
-	 * 
-	 * @param edgeToPaint
-	 *            The edge which should be set to visited.
-	 */
-	private static void setEdgeVisited(final Edge edgeToPaint) {
-		// Happens when robots try to walk edges backwards, since there is no
-		// destination -> source mapping for the edges. Handling needs to be
-		// implemented for animations.
-		if (edgeToPaint == null) {
-			return;
-		}
-		edgeToPaint.setVisited();
-	}
-
-	/**
 	 * Starts the algorithm. Should only be called if the algorithm is not
 	 * running, otherwise this method may not work as expected.
 	 */
@@ -548,12 +548,12 @@ public final class LocalStorageExplorationGUIController implements WindowListene
 	private synchronized void updateKnowledge() {
 		for (final ITreeNode node : this.mTree.getNodes()) {
 			final NestedMap2<Integer, Integer, Information> map = this.mNodeStorageManager.read(node);
-			
+
 			for (int stepsToCount = 0; stepsToCount <= this.mStep; stepsToCount++) {
 				for (int i = 0; i < this.mAlgorithm.getRobots().size(); i++) {
 					final Information currentNodeInformation = map.get(Integer.valueOf(stepsToCount),
 							Integer.valueOf(i));
-					
+
 					if (currentNodeInformation != null) {
 						if (this.mNodeInformationMapping.get(node) == null) {
 							this.mNodeInformationMapping.put(node, new ArrayList<>());

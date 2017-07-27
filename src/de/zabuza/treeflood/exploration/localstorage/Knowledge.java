@@ -13,13 +13,23 @@ import de.zabuza.treeflood.tree.ITreeNode;
  */
 public final class Knowledge {
 	/**
-	 * The set of children ports that are advantaged, i.e. they have one more
-	 * robot located in them than the other children. The set must be a subset
-	 * of the unfinishedChildrenPorts, that means that we only count unfinished
+	 * The set of children ports that are advantaged after the round this
+	 * knowledge corresponds to is executed, i.e. they have one more robot
+	 * located in them than the other children. The set must be a subset of the
+	 * unfinishedChildrenPorts, that means that we only count unfinished
 	 * children here. Finished but inhabited children do not count for this set.
 	 * It is important that this set is maintained in a sorted order.
 	 */
-	private final Set<Integer> mAdvantagedChildrenPorts;
+	private final Set<Integer> mAfterRoundAdvantagedChildrenPorts;
+	/**
+	 * The set of children ports that are advantaged before the round this
+	 * knowledge corresponds to is executed, i.e. they have one more robot
+	 * located in them than the other children. The set must be a subset of the
+	 * unfinishedChildrenPorts, that means that we only count unfinished
+	 * children here. Finished but inhabited children do not count for this set.
+	 * It is important that this set is maintained in a sorted order.
+	 */
+	private final Set<Integer> mBeforeRoundAdvantagedChildrenPorts;
 	/**
 	 * The set of children ports that are finished and not inhabited. It is
 	 * important that this set is maintained in a sorted order.
@@ -65,13 +75,22 @@ public final class Knowledge {
 	 * @param unfinishedChildrenPorts
 	 *            The set of children ports that are unfinished. It is important
 	 *            that this set is in a sorted order.
-	 * @param advantagedChildrenPorts
-	 *            The set of children ports that are advantaged, i.e. they have
-	 *            one more robot located in them than the other children. The
-	 *            set must be a subset of the unfinishedChildrenPorts, that
-	 *            means that we only count unfinished children here. Finished
-	 *            but inhabited children do not count for this set. It is
-	 *            important that this set is in a sorted order.
+	 * @param beforeRoundAdvantagedChildrenPorts
+	 *            The set of children ports that are advantaged before the round
+	 *            was executed, i.e. they have one more robot located in them
+	 *            than the other children. The set must be a subset of the
+	 *            unfinishedChildrenPorts, that means that we only count
+	 *            unfinished children here. Finished but inhabited children do
+	 *            not count for this set. It is important that this set is in a
+	 *            sorted order.
+	 * @param afterRoundAdvantagedChildrenPorts
+	 *            The set of children ports that are advantaged after the round
+	 *            was executed, i.e. they have one more robot located in them
+	 *            than the other children. The set must be a subset of the
+	 *            unfinishedChildrenPorts, that means that we only count
+	 *            unfinished children here. Finished but inhabited children do
+	 *            not count for this set. It is important that this set is in a
+	 *            sorted order.
 	 * @param finishedButInhabitedChildrenPorts
 	 *            The set of children ports that are finished but inhabited. It
 	 *            is important that this set is in a sorted order.
@@ -84,31 +103,48 @@ public final class Knowledge {
 	 *            order.
 	 */
 	public Knowledge(final int round, final ITreeNode node, final int parentPort,
-			final Set<Integer> unfinishedChildrenPorts, final Set<Integer> advantagedChildrenPorts,
-			final Set<Integer> finishedButInhabitedChildrenPorts,
+			final Set<Integer> unfinishedChildrenPorts, final Set<Integer> beforeRoundAdvantagedChildrenPorts,
+			final Set<Integer> afterRoundAdvantagedChildrenPorts, final Set<Integer> finishedButInhabitedChildrenPorts,
 			final Set<Integer> finishedAndNotInhabitedChildrenPorts, final Set<Integer> robotsAtLocation) {
 		this.mRound = round;
 		this.mNode = node;
 		this.mParentPort = parentPort;
 		this.mUnfinishedChildrenPorts = unfinishedChildrenPorts;
-		this.mAdvantagedChildrenPorts = advantagedChildrenPorts;
+		this.mBeforeRoundAdvantagedChildrenPorts = beforeRoundAdvantagedChildrenPorts;
+		this.mAfterRoundAdvantagedChildrenPorts = afterRoundAdvantagedChildrenPorts;
 		this.mFinishedButInhabitedChildrenPorts = finishedButInhabitedChildrenPorts;
 		this.mFinishedAndNotInhabitedChildrenPorts = finishedAndNotInhabitedChildrenPorts;
 		this.mRobotsAtLocation = robotsAtLocation;
 	}
 
 	/**
-	 * Gets the set of children ports that are advantaged, i.e. they have one
-	 * more robot located in them than the other children. The set must be a
-	 * subset of the unfinishedChildrenPorts, that means that we only count
-	 * unfinished children here. Finished but inhabited children do not count
-	 * for this set. It is important that this set is maintained in a sorted
-	 * order.
+	 * Gets the set of children ports that are advantaged after this round is
+	 * executed, i.e. they have one more robot located in them than the other
+	 * children. The set must be a subset of the unfinishedChildrenPorts, that
+	 * means that we only count unfinished children here. Finished but inhabited
+	 * children do not count for this set. It is important that this set is
+	 * maintained in a sorted order.
 	 * 
-	 * @return The set of children ports that are advantaged
+	 * @return The set of children ports that are advantaged after this round is
+	 *         executed
 	 */
-	public Set<Integer> getAdvantagedChildrenPorts() {
-		return this.mAdvantagedChildrenPorts;
+	public Set<Integer> getAfterRoundAdvantagedChildrenPorts() {
+		return this.mAfterRoundAdvantagedChildrenPorts;
+	}
+
+	/**
+	 * Gets the set of children ports that are advantaged before this round is
+	 * executed, i.e. they have one more robot located in them than the other
+	 * children. The set must be a subset of the unfinishedChildrenPorts, that
+	 * means that we only count unfinished children here. Finished but inhabited
+	 * children do not count for this set. It is important that this set is
+	 * maintained in a sorted order.
+	 * 
+	 * @return The set of children ports that are advantaged before this round
+	 *         is executed
+	 */
+	public Set<Integer> getBeforeRoundAdvantagedChildrenPorts() {
+		return this.mBeforeRoundAdvantagedChildrenPorts;
 	}
 
 	/**
@@ -188,8 +224,10 @@ public final class Knowledge {
 	public String toString() {
 		return "Knowledge [round=" + this.mRound + ", node=" + this.mNode + ", parentPort=" + this.mParentPort
 				+ ", mRobotsAtLocation=" + this.mRobotsAtLocation + ", unfinishedChildrenPorts="
-				+ this.mUnfinishedChildrenPorts + ", advantagedChildrenPorts=" + this.mAdvantagedChildrenPorts
-				+ ", finishedButInhabitedChildrenPorts=" + this.mFinishedButInhabitedChildrenPorts
-				+ ", finishedAndNotInhabitedChildrenPorts=" + this.mFinishedAndNotInhabitedChildrenPorts + "]";
+				+ this.mUnfinishedChildrenPorts + ", beforeRoundAdvantagedChildrenPorts="
+				+ this.mBeforeRoundAdvantagedChildrenPorts + ", afterRoundAdvantagedChildrenPorts="
+				+ this.mAfterRoundAdvantagedChildrenPorts + ", finishedButInhabitedChildrenPorts="
+				+ this.mFinishedButInhabitedChildrenPorts + ", finishedAndNotInhabitedChildrenPorts="
+				+ this.mFinishedAndNotInhabitedChildrenPorts + "]";
 	}
 }

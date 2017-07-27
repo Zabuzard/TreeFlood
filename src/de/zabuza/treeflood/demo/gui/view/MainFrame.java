@@ -184,6 +184,7 @@ public final class MainFrame extends JFrame {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see java.awt.Component#repaint()
 	 */
 	@Override
