@@ -105,8 +105,7 @@ public class OptionHighlightTextPane extends OptionTextPane implements IHighligh
 		this.setBackground(this.mManager.getTextPaneColor());
 
 		if (this.mHighlighted) {
-			this.setForeground(this.mManager.getHighlightingColor());
-			return;
+			this.setBackground(this.mManager.getHighlightingColor());
 
 		}
 		this.setForeground(this.mManager.getDefaultFontColor());

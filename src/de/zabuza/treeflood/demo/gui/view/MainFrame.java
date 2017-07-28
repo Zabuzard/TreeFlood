@@ -216,6 +216,17 @@ public final class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Sets the stage type on the GUI.
+	 * 
+	 * @param stageType
+	 *            The stage type.
+	 */
+	public void setStageType(final EStage stageType) {
+		this.mOptionPanel.setStageType(stageType);
+
+	}
+
+	/**
 	 * Sets the step type shown on the GUI.
 	 * 
 	 * @param stepType
@@ -243,16 +254,5 @@ public final class MainFrame extends JFrame {
 	 */
 	public void setTree(final CoordinateTree tree) {
 		this.mTreePanel.setTree(tree);
-	}
-
-	/**
-	 * Sets the stage type on the GUI.
-	 * 
-	 * @param stageType
-	 *            The stage type.
-	 */
-	public void setStageType(final EStage stageType) {
-		this.mOptionPanel.setStageType(stageType);
-
 	}
 }
