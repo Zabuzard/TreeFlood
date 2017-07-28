@@ -4,20 +4,35 @@ import de.zabuza.treeflood.demo.gui.view.properties.IHighlightable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 
 /**
- *
+ * A {@link OptionTextPane} which is highlightable.
  *
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
 public class OptionHighlightTextPane extends OptionTextPane implements IHighlightable {
 
-	private final StyleManager mManager;
+	/**
+	 * The serial version UID used for serialization.
+	 */
+	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Determining whether this object is currently highlighted or not.
+	 */
 	private boolean mHighlighted;
 
 	/**
+	 * The style manager used to get the current styles color.
+	 */
+	private final StyleManager mManager;
+
+	/**
+	 * A {@link OptionTextPane} which is highlightable.
+	 * 
 	 * @param context
+	 *            The context written onto this pane.
 	 * @param manager
+	 *            The style manager used to get the current styles color.
 	 */
 	public OptionHighlightTextPane(final String context, final StyleManager manager) {
 		super(context, manager);
@@ -28,32 +43,16 @@ public class OptionHighlightTextPane extends OptionTextPane implements IHighligh
 	}
 
 	/**
+	 * A {@link OptionTextPane} which is highlightable.
 	 * 
 	 * @param manager
+	 *            The style manager used to get the current styles color.
 	 */
 	public OptionHighlightTextPane(final StyleManager manager) {
 		super(manager);
 
 		this.mManager = manager;
 		this.mHighlighted = false;
-
-	}
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.zabuza.treeflood.demo.gui.view.properties.IHighlightable#highlight()
-	 */
-	@Override
-	public void highlight() {
-		this.mHighlighted = true;
-		this.setForeground(this.mManager.getHighlightingColor());
 
 	}
 
@@ -67,6 +66,19 @@ public class OptionHighlightTextPane extends OptionTextPane implements IHighligh
 	public void deHighlight() {
 		this.mHighlighted = false;
 		this.setForeground(this.mManager.getDefaultFontColor());
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.zabuza.treeflood.demo.gui.view.properties.IHighlightable#highlight()
+	 */
+	@Override
+	public void highlight() {
+		this.mHighlighted = true;
+		this.setForeground(this.mManager.getHighlightingColor());
 
 	}
 

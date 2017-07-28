@@ -1,6 +1,5 @@
 package de.zabuza.treeflood.demo.gui.view;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -37,6 +36,36 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	public final static String FULLY_BUTTON_TEXT = "Fully";
 
 	/**
+	 * The title of {@link OptionPanel#mInitialPane}.
+	 */
+	public final static String INITIAL_TEXT = "INITIAL";
+
+	/**
+	 * The title of {@link OptionPanel#mInitialPane}.
+	 */
+	public final static String MOVE_TEXT = "MOVE";
+
+	/**
+	 * The title of {@link OptionPanel#mNopPane}.
+	 */
+	public final static String NOP_TEXT = "NOP";
+
+	/**
+	 * The title of {@link OptionPanel#mReadPane}.
+	 */
+	public final static String READ_TEXT = "READ";
+
+	/**
+	 * The title of {@link OptionPanel#mRegularPane}.
+	 */
+	public final static String REGULAR_TEXT = "REGULAR";
+
+	/**
+	 * The title of {@link OptionPanel#mReturnPane}.
+	 */
+	public final static String RETURN_TEXT = "RETURN";
+
+	/**
 	 * The title of {@link OptionPanel#mFullyButton}.
 	 */
 	public final static String ROUND_BUTTON_TEXT = "Round";
@@ -45,6 +74,11 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	 * The title of {@link OptionPanel#mStepButton}.
 	 */
 	public final static String STEP_BUTTON_TEXT = "Step";
+
+	/**
+	 * The title of {@link OptionPanel#mUpdatePane}.
+	 */
+	public final static String UPDATE_TEXT = "UPDATE";
 
 	/**
 	 * The title of {@link OptionPanel#mUseSeedButton}.
@@ -56,21 +90,10 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	 */
 	public final static String WITHOUT_SEED_BUTTON_TEXT = "Without Seed";
 
-	public final static String INITIAL_TEXT = "INITIAL";
-
-	public final static String NOP_TEXT = "NOP";
-
-	public final static String REGULAR_TEXT = "REGULAR";
-
-	public final static String UPDATE_TEXT = "UPDATE";
-
-	public final static String RETURN_TEXT = "RETURN";
-
-	public final static String MOVE_TEXT = "MOVE";
-
+	/**
+	 * The title of {@link OptionPanel#mWritePane}.
+	 */
 	public final static String WRITE_TEXT = "WRITE";
-
-	public final static String READ_TEXT = "READ";
 
 	/**
 	 * The serial version UID used for serialization.
@@ -88,9 +111,39 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	private final OptionButton mFullyButton;
 
 	/**
+	 * The pane used to display the initial step type.
+	 */
+	private final OptionHighlightTextPane mInitialPane;
+
+	/**
 	 * The style manager used to manage colors.
 	 */
 	private final StyleManager mManager;
+
+	/**
+	 * The pane used to display the move stage.
+	 */
+	private final OptionHighlightTextPane mMovePane;
+
+	/**
+	 * The pane used to display the NOP step type.
+	 */
+	private final OptionHighlightTextPane mNopPane;
+
+	/**
+	 * The pane used to display the read stage.
+	 */
+	private final OptionHighlightTextPane mReadPane;
+
+	/**
+	 * The pane used to display the regular step type.
+	 */
+	private final OptionHighlightTextPane mRegularPane;
+
+	/**
+	 * The pane used to display the return step type.
+	 */
+	private final OptionHighlightTextPane mReturnPane;
 
 	/**
 	 * The text area which contains the amount of robots to use.
@@ -123,6 +176,11 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	private final OptionButton mStepButton;
 
 	/**
+	 * A list holding all the step types displayed on the GUI.
+	 */
+	private final List<OptionHighlightTextPane> mStepTypes;
+
+	/**
 	 * The combo box used to select different styles.
 	 */
 	private final OptionComboBox<EStyle> mStyleSelect;
@@ -131,6 +189,11 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	 * The text area which contains the current size of the tree.
 	 */
 	private final OptionTextArea mTreeSizeArea;
+
+	/**
+	 * The pane used to display the update step type.
+	 */
+	private final OptionHighlightTextPane mUpdatePane;
 
 	/**
 	 * The button which generates a new tree with the given seed.
@@ -143,49 +206,9 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	private final OptionButton mWithoutSeedButton;
 
 	/**
-	 * The pane used to display the initial step type.
-	 */
-	private final OptionHighlightTextPane mInitialPane;
-
-	/**
-	 * The pane used to display the NOP step type.
-	 */
-	private final OptionHighlightTextPane mNopPane;
-
-	/**
-	 * The pane used to display the regular step type.
-	 */
-	private final OptionHighlightTextPane mRegularPane;
-
-	/**
-	 * The pane used to display the update step type.
-	 */
-	private final OptionHighlightTextPane mUpdatePane;
-
-	/**
-	 * The pane used to display the return step type.
-	 */
-	private final OptionHighlightTextPane mReturnPane;
-
-	/**
-	 * The pane used to display the move stage.
-	 */
-	private final OptionHighlightTextPane mMovePane;
-
-	/**
 	 * The pane used to display the write stage.
 	 */
 	private final OptionHighlightTextPane mWritePane;
-
-	/**
-	 * The pane used to display the read stage.
-	 */
-	private final OptionHighlightTextPane mReadPane;
-
-	/**
-	 * A list holding all the step types displayed on the GUI.
-	 */
-	private final List<OptionHighlightTextPane> mStepTypes;
 
 	/**
 	 * Constructs a new option panel which provides options for the
@@ -647,6 +670,17 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	}
 
 	/**
+	 * Sets the stage type on the GUI.
+	 * 
+	 * @param stageType
+	 *            The stage type.
+	 */
+	@SuppressWarnings("unused")
+	public void setStageType(final EStage stageType) {
+		// Possible implementation in the future
+	}
+
+	/**
 	 * Sets the step type on the GUI.
 	 *
 	 * @param stepType
@@ -669,15 +703,5 @@ public final class OptionPanel extends JPanel implements IReColorable {
 
 			}
 		}
-	}
-
-	/**
-	 * Sets the stage type on the GUI.
-	 * 
-	 * @param stageType
-	 *            The stage type.
-	 */
-	public void setStageType(final EStage stageType) {
-
 	}
 }

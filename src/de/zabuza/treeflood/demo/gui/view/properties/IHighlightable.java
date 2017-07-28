@@ -9,14 +9,14 @@ package de.zabuza.treeflood.demo.gui.view.properties;
 public interface IHighlightable {
 
 	/**
-	 * Highlights this object.
-	 */
-	public void highlight();
-
-	/**
 	 * De-Highlights this object.
 	 */
 	public void deHighlight();
+
+	/**
+	 * Highlights this object.
+	 */
+	public void highlight();
 
 	/**
 	 * Returns whether this object is currently highlighted or not.
