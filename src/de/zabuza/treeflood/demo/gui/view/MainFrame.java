@@ -13,6 +13,7 @@ import de.zabuza.treeflood.demo.gui.model.CoordinateTree;
 import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
+import de.zabuza.treeflood.exploration.localstorage.EStage;
 import de.zabuza.treeflood.exploration.localstorage.EStep;
 
 /**
@@ -242,5 +243,16 @@ public final class MainFrame extends JFrame {
 	 */
 	public void setTree(final CoordinateTree tree) {
 		this.mTreePanel.setTree(tree);
+	}
+
+	/**
+	 * Sets the stage type on the GUI.
+	 * 
+	 * @param stageType
+	 *            The stage type.
+	 */
+	public void setStageType(final EStage stageType) {
+		this.mOptionPanel.setStageType(stageType);
+
 	}
 }
