@@ -12,7 +12,7 @@ import de.zabuza.treeflood.demo.gui.view.util.Window;
  * @author Ativelox {@literal <ativelox.dev@web.de>}
  *
  */
-public final class OptionTextPane extends JTextPane implements IReColorable {
+public class OptionTextPane extends JTextPane implements IReColorable {
 
 	/**
 	 * The serial version UID used for serialization.

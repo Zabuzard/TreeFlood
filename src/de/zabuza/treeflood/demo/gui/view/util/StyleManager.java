@@ -157,6 +157,16 @@ public final class StyleManager {
 	private static final Color VISITED_NODE_COLOR_STANDARD = new Color(245, 99, 99);
 
 	/**
+	 * The color for highlighting. (standard style)
+	 */
+	private static final Color HIGHLIGHT_COLOR_STANDARD = new Color(245, 99, 99);
+
+	/**
+	 * The color for highlighting. (dark style)
+	 */
+	private static final Color HIGHLIGHT_COLOR_DARK = new Color(14, 69, 3);
+
+	/**
 	 * The current style of this manager.
 	 */
 	private EStyle mCurrentStyle;
@@ -400,6 +410,22 @@ public final class StyleManager {
 			return StyleManager.VISITED_NODE_COLOR_STANDARD;
 		} else if (this.mCurrentStyle == EStyle.DARK) {
 			return StyleManager.VISITED_NODE_COLOR_DARK;
+		}
+
+		// Couldn't find a color for the given style.
+		throw new AssertionError();
+	}
+
+	/**
+	 * Gets the color for the highlighting on the GUI.
+	 * 
+	 * @return The color mentioned.
+	 */
+	public Color getHighlightingColor() {
+		if (this.mCurrentStyle == EStyle.STANDARD) {
+			return StyleManager.HIGHLIGHT_COLOR_STANDARD;
+		} else if (this.mCurrentStyle == EStyle.DARK) {
+			return StyleManager.HIGHLIGHT_COLOR_DARK;
 		}
 
 		// Couldn't find a color for the given style.

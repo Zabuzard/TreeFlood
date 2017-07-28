@@ -19,6 +19,7 @@ import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
 import de.zabuza.treeflood.demo.gui.view.properties.IReColorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
+import de.zabuza.treeflood.exploration.localstorage.EStage;
 import de.zabuza.treeflood.exploration.localstorage.EStep;
 
 /**
@@ -54,6 +55,22 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	 * The title of {@link OptionPanel#mWithoutSeedButton}.
 	 */
 	public final static String WITHOUT_SEED_BUTTON_TEXT = "Without Seed";
+
+	public final static String INITIAL_TEXT = "INITIAL";
+
+	public final static String NOP_TEXT = "NOP";
+
+	public final static String REGULAR_TEXT = "REGULAR";
+
+	public final static String UPDATE_TEXT = "UPDATE";
+
+	public final static String RETURN_TEXT = "RETURN";
+
+	public final static String MOVE_TEXT = "MOVE";
+
+	public final static String WRITE_TEXT = "WRITE";
+
+	public final static String READ_TEXT = "READ";
 
 	/**
 	 * The serial version UID used for serialization.
@@ -106,11 +123,6 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	private final OptionButton mStepButton;
 
 	/**
-	 * The text pane used to display the current step type.
-	 */
-	private final OptionTextPane mStepTypePane;
-
-	/**
 	 * The combo box used to select different styles.
 	 */
 	private final OptionComboBox<EStyle> mStyleSelect;
@@ -131,6 +143,51 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	private final OptionButton mWithoutSeedButton;
 
 	/**
+	 * The pane used to display the initial step type.
+	 */
+	private final OptionHighlightTextPane mInitialPane;
+
+	/**
+	 * The pane used to display the NOP step type.
+	 */
+	private final OptionHighlightTextPane mNopPane;
+
+	/**
+	 * The pane used to display the regular step type.
+	 */
+	private final OptionHighlightTextPane mRegularPane;
+
+	/**
+	 * The pane used to display the update step type.
+	 */
+	private final OptionHighlightTextPane mUpdatePane;
+
+	/**
+	 * The pane used to display the return step type.
+	 */
+	private final OptionHighlightTextPane mReturnPane;
+
+	/**
+	 * The pane used to display the move stage.
+	 */
+	private final OptionHighlightTextPane mMovePane;
+
+	/**
+	 * The pane used to display the write stage.
+	 */
+	private final OptionHighlightTextPane mWritePane;
+
+	/**
+	 * The pane used to display the read stage.
+	 */
+	private final OptionHighlightTextPane mReadPane;
+
+	/**
+	 * A list holding all the step types displayed on the GUI.
+	 */
+	private final List<OptionHighlightTextPane> mStepTypes;
+
+	/**
 	 * Constructs a new option panel which provides options for the
 	 * tree-generation and the algorithm-execution. Gets its placement
 	 * information from the given window object.
@@ -145,6 +202,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	public OptionPanel(final Window window, final StyleManager manager) {
 		this.mComponents = new LinkedList<>();
 		this.mManager = manager;
+		this.mStepTypes = new LinkedList<>();
 
 		this.setLayout(new GridBagLayout());
 		this.setPreferredSize(window.getOptionPanelSize());
@@ -247,7 +305,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 
 		constraints.gridx = 3;
 		constraints.gridwidth = 1;
-		constraints.insets = new Insets(20, -25, 0, 0);
+		constraints.insets = new Insets(20, -37, 0, 0);
 
 		this.add(this.mRoundButton, constraints);
 
@@ -273,37 +331,118 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		this.mStepArea.setEditable(false);
 
 		constraints.gridx = 2;
-		constraints.gridwidth = 2;
-		constraints.insets = new Insets(25, 0, 0, 15);
+		constraints.gridwidth = 5;
+		constraints.insets = new Insets(25, 10, 0, 10);
 
 		this.add(this.mStepArea, constraints);
 
-		this.mStepTypePane = new OptionTextPane(manager);
-
-		constraints.gridx = 4;
-		constraints.gridwidth = 3;
-
-		constraints.insets = new Insets(25, -10, 0, 0);
-
-		this.add(this.mStepTypePane, constraints);
-
 		final OptionSeparator secondSeparator = new OptionSeparator(SwingConstants.HORIZONTAL, manager);
-		secondSeparator.setForeground(Color.black);
 
 		constraints.weightx = 0;
 		constraints.gridx = 0;
 		constraints.gridwidth = 7;
 		constraints.gridy = 7;
-		constraints.insets = new Insets(30, 10, 50, 5);
+		constraints.insets = new Insets(30, 10, 10, 5);
 		this.add(secondSeparator, constraints);
+
+		this.mInitialPane = new OptionHighlightTextPane(INITIAL_TEXT, manager);
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.gridx = 0;
+		constraints.gridwidth = 2;
+		constraints.insets = new Insets(-20, 20, 30, 0);
+		constraints.gridy = 8;
+
+		this.add(this.mInitialPane, constraints);
+
+		this.mMovePane = new OptionHighlightTextPane(MOVE_TEXT, manager);
+
+		constraints.gridx = 3;
+		constraints.gridwidth = 3;
+		constraints.insets = new Insets(30, 40, 30, 0);
+		constraints.gridy = 8;
+
+		this.add(this.mMovePane, constraints);
+
+		this.mNopPane = new OptionHighlightTextPane(NOP_TEXT, manager);
+
+		constraints.gridx = 0;
+		constraints.gridwidth = 2;
+		constraints.insets = new Insets(-35, 20, 15, 0);
+		constraints.gridy = 9;
+
+		this.add(this.mNopPane, constraints);
+
+		final OptionSeparator stepSeperator = new OptionSeparator(SwingConstants.HORIZONTAL, manager);
+
+		constraints.gridx = 0;
+		constraints.gridwidth = 3;
+		constraints.gridy = 10;
+		constraints.insets = new Insets(0, 10, 15, 0);
+
+		this.add(stepSeperator, constraints);
+
+		this.mRegularPane = new OptionHighlightTextPane(REGULAR_TEXT, manager);
+
+		constraints.gridx = 0;
+		constraints.gridwidth = 2;
+		constraints.insets = new Insets(0, 20, 30, 0);
+		constraints.gridy = 11;
+
+		this.add(this.mRegularPane, constraints);
+
+		this.mWritePane = new OptionHighlightTextPane(WRITE_TEXT, manager);
+
+		constraints.gridx = 3;
+		constraints.gridwidth = 3;
+		constraints.insets = new Insets(0, 38, 30, 0);
+		constraints.gridy = 11;
+
+		this.add(this.mWritePane, constraints);
+
+		this.mUpdatePane = new OptionHighlightTextPane(UPDATE_TEXT, manager);
+
+		constraints.gridx = 0;
+		constraints.gridwidth = 2;
+		constraints.insets = new Insets(-30, 20, 30, 0);
+		constraints.gridy = 12;
+
+		this.add(this.mUpdatePane, constraints);
+
+		this.mReadPane = new OptionHighlightTextPane(READ_TEXT, manager);
+
+		constraints.gridx = 3;
+		constraints.gridwidth = 3;
+		constraints.insets = new Insets(30, 40, 30, 0);
+		constraints.gridy = 12;
+
+		this.add(this.mReadPane, constraints);
+
+		this.mReturnPane = new OptionHighlightTextPane(RETURN_TEXT, manager);
+
+		constraints.gridx = 0;
+		constraints.gridwidth = 2;
+		constraints.insets = new Insets(-30, 20, 30, 0);
+		constraints.gridy = 13;
+
+		this.add(this.mReturnPane, constraints);
+
+		final OptionSeparator finalSeparator = new OptionSeparator(SwingConstants.HORIZONTAL, manager);
+
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.gridx = 0;
+		constraints.gridy = 14;
+		constraints.insets = new Insets(0, 10, 0, 5);
+		constraints.gridwidth = 7;
+
+		this.add(finalSeparator, constraints);
 
 		this.mSizeSlider = new OptionSlider(SwingConstants.HORIZONTAL, 0, DrawableNodeData.DEFAULT_RADIUS * 2,
 				DrawableNodeData.DEFAULT_RADIUS, manager);
 
 		constraints.gridx = 0;
 		constraints.gridwidth = 3;
-		constraints.gridy = 8;
-		constraints.insets = new Insets(270, 20, 0, 20);
+		constraints.gridy = 15;
+		constraints.insets = new Insets(30, 20, 0, 20);
 
 		this.add(this.mSizeSlider, constraints);
 
@@ -317,6 +456,22 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		constraints.gridwidth = 4;
 
 		this.add(this.mStyleSelect, constraints);
+
+		final OptionSeparator stepSeperatorVertical = new OptionSeparator(SwingConstants.VERTICAL, manager);
+		constraints.fill = GridBagConstraints.VERTICAL;
+		constraints.gridx = 3;
+		constraints.gridwidth = 1;
+		constraints.gridheight = 6;
+		constraints.insets = new Insets(-10, 0, 0, 45);
+		constraints.gridy = 8;
+
+		this.add(stepSeperatorVertical, constraints);
+
+		this.mStepTypes.add(this.mInitialPane);
+		this.mStepTypes.add(this.mNopPane);
+		this.mStepTypes.add(this.mRegularPane);
+		this.mStepTypes.add(this.mUpdatePane);
+		this.mStepTypes.add(this.mReturnPane);
 
 		this.mComponents.add(textPane);
 		this.mComponents.add(this.mSeedArea);
@@ -335,7 +490,18 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		this.mComponents.add(secondSeparator);
 		this.mComponents.add(this.mSizeSlider);
 		this.mComponents.add(this.mStyleSelect);
-		this.mComponents.add(this.mStepTypePane);
+		this.mComponents.add(this.mInitialPane);
+		this.mComponents.add(this.mNopPane);
+		this.mComponents.add(this.mRegularPane);
+		this.mComponents.add(this.mUpdatePane);
+		this.mComponents.add(this.mReturnPane);
+		this.mComponents.add(stepSeperator);
+		this.mComponents.add(stepSeperatorVertical);
+		this.mComponents.add(finalSeparator);
+		this.mComponents.add(this.mMovePane);
+		this.mComponents.add(this.mWritePane);
+		this.mComponents.add(this.mReadPane);
+
 	}
 
 	/**
@@ -482,16 +648,36 @@ public final class OptionPanel extends JPanel implements IReColorable {
 
 	/**
 	 * Sets the step type on the GUI.
-	 * 
+	 *
 	 * @param stepType
 	 *            The step type.
 	 */
 	public void setStepType(final EStep stepType) {
-		if (stepType == null) {
-			this.mStepTypePane.setText("");
-			return;
-		}
 
-		this.mStepTypePane.setText(stepType.toString());
+		for (final OptionHighlightTextPane stepPane : this.mStepTypes) {
+			if (stepType == null) {
+				stepPane.deHighlight();
+				continue;
+
+			}
+
+			if (stepPane.getText().equals(stepType.toString())) {
+				stepPane.highlight();
+
+			} else {
+				stepPane.deHighlight();
+
+			}
+		}
+	}
+
+	/**
+	 * Sets the stage type on the GUI.
+	 * 
+	 * @param stageType
+	 *            The stage type.
+	 */
+	public void setStageType(final EStage stageType) {
+
 	}
 }
