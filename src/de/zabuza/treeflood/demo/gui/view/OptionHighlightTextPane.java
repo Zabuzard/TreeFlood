@@ -65,7 +65,7 @@ public class OptionHighlightTextPane extends OptionTextPane implements IHighligh
 	@Override
 	public void deHighlight() {
 		this.mHighlighted = false;
-		this.setForeground(this.mManager.getDefaultFontColor());
+		this.setBackground(this.mManager.getTextPaneColor());
 
 	}
 
@@ -78,7 +78,7 @@ public class OptionHighlightTextPane extends OptionTextPane implements IHighligh
 	@Override
 	public void highlight() {
 		this.mHighlighted = true;
-		this.setForeground(this.mManager.getHighlightingColor());
+		this.setBackground(this.mManager.getHighlightingColor());
 
 	}
 
@@ -102,13 +102,14 @@ public class OptionHighlightTextPane extends OptionTextPane implements IHighligh
 	 */
 	@Override
 	public void reColor() {
-		this.setBackground(this.mManager.getTextPaneColor());
+		this.setForeground(this.mManager.getDefaultFontColor());
 
 		if (this.mHighlighted) {
-			this.setBackground(this.mManager.getHighlightingColor());
+			this.highlight();
+			return;
 
 		}
-		this.setForeground(this.mManager.getDefaultFontColor());
+		this.deHighlight();
 
 	}
 }
