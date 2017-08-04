@@ -4,12 +4,17 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeListener;
+
+import de.zabuza.treeflood.demo.gui.model.DrawableNodeData;
+import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
 import de.zabuza.treeflood.demo.gui.view.properties.IReColorable;
 import de.zabuza.treeflood.demo.gui.view.util.StyleManager;
 import de.zabuza.treeflood.demo.gui.view.util.Window;
@@ -156,6 +161,11 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	private final OptionTextArea mSeedArea;
 
 	/**
+	 * The slider used to change the size of the tree.
+	 */
+	private final OptionSlider mSizeSlider;
+
+	/**
 	 * The text area which shows the amount of steps executed.
 	 */
 	private final OptionTextArea mStepArea;
@@ -169,6 +179,11 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	 * A list holding all the step types displayed on the GUI.
 	 */
 	private final List<OptionHighlightTextPane> mStepTypes;
+
+	/**
+	 * The combo box used to select different styles.
+	 */
+	private final OptionComboBox<EStyle> mStyleSelect;
 
 	/**
 	 * The text area which contains the current size of the tree.
@@ -223,7 +238,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		final OptionTextPane textPane = new OptionTextPane("Seed:", manager);
 
 		constraints.gridx = 0;
-		constraints.insets = new Insets(0, 10, 0, 0);
+		constraints.insets = new Insets(0, 15, 0, 0);
 
 		this.add(textPane, constraints);
 
@@ -233,7 +248,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		constraints.gridx = 1;
 		constraints.gridwidth = 6;
 		constraints.gridy = 0;
-		constraints.insets = new Insets(0, 10, 0, 10);
+		constraints.insets = new Insets(0, 15, 0, 10);
 
 		this.add(this.mSeedArea, constraints);
 
@@ -243,7 +258,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		constraints.gridx = 0;
 		constraints.gridwidth = 1;
 		constraints.gridy = 1;
-		constraints.insets = new Insets(5, 10, 0, 0);
+		constraints.insets = new Insets(5, 15, 0, 0);
 
 		this.add(textPane2, constraints);
 
@@ -252,7 +267,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		constraints.weightx = 0.8;
 		constraints.gridx = 1;
 		constraints.gridwidth = 6;
-		constraints.insets = new Insets(5, 10, 0, 10);
+		constraints.insets = new Insets(5, 15, 0, 10);
 
 		this.add(this.mTreeSizeArea, constraints);
 
@@ -262,14 +277,14 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		constraints.gridwidth = 3;
 		constraints.gridx = 0;
 		constraints.gridy = 2;
-		constraints.insets = new Insets(20, 20, 0, 5);
+		constraints.insets = new Insets(20, 30, 0, 10);
 
 		this.add(this.mUseSeedButton, constraints);
 
 		this.mWithoutSeedButton = new OptionButton(WITHOUT_SEED_BUTTON_TEXT, manager);
 
 		constraints.gridx = 3;
-		constraints.insets = new Insets(20, 0, 0, 5);
+		constraints.insets = new Insets(20, 0, 0, 10);
 
 		this.add(this.mWithoutSeedButton, constraints);
 
@@ -313,7 +328,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 
 		constraints.gridx = 3;
 		constraints.gridwidth = 1;
-		constraints.insets = new Insets(20, -20, 0, 0);
+		constraints.insets = new Insets(20, -37, 0, 0);
 
 		this.add(this.mRoundButton, constraints);
 
@@ -434,6 +449,37 @@ public final class OptionPanel extends JPanel implements IReColorable {
 
 		this.add(this.mReturnPane, constraints);
 
+		final OptionSeparator finalSeparator = new OptionSeparator(SwingConstants.HORIZONTAL, manager);
+
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.gridx = 0;
+		constraints.gridy = 14;
+		constraints.insets = new Insets(0, 10, 0, 5);
+		constraints.gridwidth = 7;
+
+		this.add(finalSeparator, constraints);
+
+		this.mSizeSlider = new OptionSlider(SwingConstants.HORIZONTAL, 0, DrawableNodeData.DEFAULT_RADIUS * 2,
+				DrawableNodeData.DEFAULT_RADIUS, manager);
+
+		constraints.gridx = 0;
+		constraints.gridwidth = 3;
+		constraints.gridy = 15;
+		constraints.insets = new Insets(30, 20, 0, 20);
+
+		this.add(this.mSizeSlider, constraints);
+
+		final EStyle[] supportedStyles = { EStyle.STANDARD, EStyle.DARK };
+
+		this.mStyleSelect = new OptionComboBox<>(supportedStyles, manager);
+		this.mStyleSelect.setEditable(false);
+		this.mStyleSelect.setBackground(manager.getButtonColor());
+
+		constraints.gridx = 3;
+		constraints.gridwidth = 4;
+
+		this.add(this.mStyleSelect, constraints);
+
 		final OptionSeparator stepSeperatorVertical = new OptionSeparator(SwingConstants.VERTICAL, manager);
 		constraints.fill = GridBagConstraints.VERTICAL;
 		constraints.gridx = 3;
@@ -465,6 +511,8 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		this.mComponents.add(stepShow);
 		this.mComponents.add(this.mStepArea);
 		this.mComponents.add(secondSeparator);
+		this.mComponents.add(this.mSizeSlider);
+		this.mComponents.add(this.mStyleSelect);
 		this.mComponents.add(this.mInitialPane);
 		this.mComponents.add(this.mNopPane);
 		this.mComponents.add(this.mRegularPane);
@@ -472,6 +520,7 @@ public final class OptionPanel extends JPanel implements IReColorable {
 		this.mComponents.add(this.mReturnPane);
 		this.mComponents.add(stepSeperator);
 		this.mComponents.add(stepSeperatorVertical);
+		this.mComponents.add(finalSeparator);
 		this.mComponents.add(this.mMovePane);
 		this.mComponents.add(this.mWritePane);
 		this.mComponents.add(this.mReadPane);
@@ -499,6 +548,17 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	}
 
 	/**
+	 * Adds a change listener to the slider used to control the size of the
+	 * tree.
+	 * 
+	 * @param listener
+	 *            The listener to be added.
+	 */
+	public void addSizeSliderListener(final ChangeListener listener) {
+		this.mSizeSlider.addChangeListener(listener);
+	}
+
+	/**
 	 * Adds an {@link ActionListener} to {@link OptionPanel#mStepButton}.
 	 * 
 	 * @param listener
@@ -506,6 +566,16 @@ public final class OptionPanel extends JPanel implements IReColorable {
 	 */
 	public void addStepButtonListener(final ActionListener listener) {
 		this.mStepButton.addActionListener(listener);
+	}
+
+	/**
+	 * Adds an item listener to the combo box used to control the current style.
+	 * 
+	 * @param listener
+	 *            The listener to be added.
+	 */
+	public void addStyleItemListener(final ItemListener listener) {
+		this.mStyleSelect.addItemListener(listener);
 	}
 
 	/**
