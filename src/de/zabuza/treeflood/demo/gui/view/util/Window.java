@@ -26,17 +26,17 @@ public final class Window {
 	/**
 	 * The font used by text areas throughout this view.
 	 */
-	public static final Font TEXT_AREA_FONT = new Font("", Font.BOLD, 20);
+	public static final Font TEXT_AREA_FONT = new Font("", Font.BOLD, 16);
 
 	/**
 	 * The font used by buttons throughout this view.
 	 */
-	public static final Font TEXT_BUTTON_FONT = new Font("", Font.BOLD, 14);
+	public static final Font TEXT_BUTTON_FONT = new Font("", Font.BOLD, 12);
 
 	/**
 	 * The font used by text panes throughout this view.
 	 */
-	public static final Font TEXT_PANE_FONT = new Font("", Font.PLAIN, 18);
+	public static final Font TEXT_PANE_FONT = new Font("", Font.PLAIN, 16);
 
 	/**
 	 * The font used for the tooltips.
@@ -47,7 +47,7 @@ public final class Window {
 	 * This is used to maintain a stable frame size no matter on which device
 	 * this application is run.
 	 */
-	private static final Dimension SCREEN_SIZE = new Dimension(1920, 1080);
+	private static final Dimension SCREEN_SIZE = new Dimension(1600, 900);
 
 	/**
 	 * The Location of the frame (the top left point of the frame where it

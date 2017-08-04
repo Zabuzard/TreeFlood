@@ -177,8 +177,6 @@ public final class LocalStorageExplorationGUIController implements WindowListene
 		view.addStepButtonListener(this);
 		view.addFullyButtonListener(this);
 		view.addRoundButtonListener(this);
-		view.addSizeSliderListener(this);
-		view.addStyleItemListener(this);
 
 	}
 

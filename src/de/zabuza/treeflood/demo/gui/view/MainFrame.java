@@ -2,12 +2,10 @@ package de.zabuza.treeflood.demo.gui.view;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeListener;
 
 import de.zabuza.treeflood.demo.gui.model.CoordinateTree;
 import de.zabuza.treeflood.demo.gui.view.properties.EStyle;
@@ -102,17 +100,6 @@ public final class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Adds a change listener to the slider used to control the size of the
-	 * tree.
-	 * 
-	 * @param mListener
-	 *            The listener to be added.
-	 */
-	public void addSizeSliderListener(final ChangeListener mListener) {
-		this.mOptionPanel.addSizeSliderListener(mListener);
-	}
-
-	/**
 	 * Adds an {@link ActionListener} to the "step"-button on the option panel.
 	 * 
 	 * @param listener
@@ -120,16 +107,6 @@ public final class MainFrame extends JFrame {
 	 */
 	public void addStepButtonListener(final ActionListener listener) {
 		this.mOptionPanel.addStepButtonListener(listener);
-	}
-
-	/**
-	 * Adds an item listener to the combo box used to control the current style.
-	 * 
-	 * @param listener
-	 *            The listener to be added.
-	 */
-	public void addStyleItemListener(final ItemListener listener) {
-		this.mOptionPanel.addStyleItemListener(listener);
 	}
 
 	/**
